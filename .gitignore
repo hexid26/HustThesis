@@ -1,0 +1,12 @@
+Materials/
+figures/
+fonts/
+help/
+.DS_Store
+*.aux
+*.bbl
+*.blg
+*.out
+*.gz
+*.thm
+*.toc

@@ -1,0 +1,20 @@
+{
+  "latex-workshop.latex.autoBuild.onSave.enabled": true,
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "lualatex-quick-compile",
+      "tools": [
+        "xelatex"
+      ]
+    },
+    {
+      "name": "rebuild",
+      "tools": [
+        "xelatex",
+        "bibtex",
+        "xelatex",
+        "xelatex"
+      ]
+    },
+  ]
+}

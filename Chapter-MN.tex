@@ -1,0 +1,348 @@
+\chapter{边缘计算中面向群智感知的服务资源资源调度}
+
+% 摘要
+建议使用边缘计算来支持移动群体感应( MCS )应用程序进行传感数据处理。在这篇论文中，我们考虑了公交乘客手机支持的MCS应用程序，他们在装有边缘服务器的不同公交车站之间进行换乘。部署有相应MCS服务的边缘服务器可以通过设备间通信直接从参与者的传感器获取和处理传感数据。因此，希望部署更多的MCS服务来探索更多的D2D通信，而不会导致蜂窝通信成本。但是这与服务部署成本相矛盾。考虑到公共汽车乘客的流动性特征，我们将在通信成本和服务部署成本之间寻求一个平衡，以追求整体成本效益。我们首先将问题表达成混合整数线性规划模型，然后设计一个低复杂度的启发式算法。实验结果验证了我们算法的高效率，因为它能更接近最优解。
+
+
+\section{概述}
+
+移动群体感应（MCS）~\cite{ganti2011mobile,DBLP:journals/csur/GuoWYWYHZ15}已经成为一个吸引人的范例，有助于天气预报~\cite{DBLP:conf/icc/YuZZWKL10}、空气质量监测~\cite{DBLP:conf/huc/ZhangXWC14}和交通监测~\cite{DBLP:conf/icdcs/ZhouJL15}。传统上，这种应用是通过专门部署的传感器进行的，具有很高的建造和维护成本。由于传感器丰富的智能设备的流行，MCS利用无处不在的无线连接和众多智能设备的内置传感器来执行参与式和机会式感测。借助具有移动性的地理分布式智能设备，MCS可以通过扩展传感覆盖区域与专用传感系统互补或甚至替代。
+
+\begin{figure}[!h]
+\centering
+% \vspace{-1.5em}
+\includegraphics[width=210pt]{figures/MN/CPS.eps}
+\vspace{-0.5em}
+\caption{Architecture of edge computing empowered MCS}
+% \vspace{-1em}
+\label{Figure_edge}
+\end{figure}
+
+对于智能城市应用，MCS应用通常需要覆盖整个城市的传感数据。这对于当前MCS架构在大量额外的移动网络流量以及相应的数据处理任务方面提出了新的挑战。针对这种现象，边缘计算作为将云服务扩展到网络边缘的新型计算范例，可能是MCS的一种有前景的候选计算资源提供手段，如图~\ref{Figure_edge}所示。作为地理分布式计算范例，边缘计算使计算、控制和存储更接近移动设备。同时，数据传输延迟可以显著减少，因为数据不再需要通过长距离完全上传到云服务器。这些特点引起了学术界的极大兴趣。例如，唐等人。~\cite{DBLP:journals/tii/TangCHPWHY17}创建一个分层分布式边缘网络体系结构来执行数据表示和特征提取，并展示城市范围内服务提供的可行性。在论文~\cite{DBLP:conf/wasa/Yan0WWW17}中，作者发现，考虑到人类社会关系和设备对设备( D2D )通信，边缘计算可以提高网络运营的效率。詹诺夫·艾尔~\cite{DBLP:journals/iotj/ZhanXZW18}最近证明D2D通信在提高MCS效率方面是有效.上述研究表明，随着D2D通信的引入，边缘计算对MCS应用产生积极影响。
+
+
+对于面向智能城市的MCS应用来说，居民必须从他们配备有各种传感器的智能设备中提供传感数据。许多居民通常乘坐公共交通系统，例如公共汽车，在城市里旅行。一辆公共汽车将按照计划的路线参观多个不同的公共汽车站。最近许多研究提倡将公交车站作为部署边缘服务器以托管各种边缘服务的兴趣点（PoI），MCS服务也不例外，用于感知数据采集和处理~\cite{DBLP:journals/iotj/ZhanXZW18}。与此同时，由于公共汽车通常会在每个汽车站停一会儿,这为乘客通过D2D通信上传感测数据提供了一个很好的机会。这进一步意味着，位于每个公交车站的边缘服务器有望承载用于感测数据处理的MCS服务，并探索用于数据采集的D2D通信。
+
+
+在本文中，我们考虑了一个延迟容忍但截止时间受限的MCS应用。也就是说，一旦应用程序被调用并招募了一些参与乘客，传感数据将在预定的期限内被完全处理，该期限通常不是短暂的。例如，我们对城市每小时的平均噪音水平感兴趣，可能会招募乘客通过智能手机感知噪音水平，并在一小时内将他们的感应数据报告给MCS服务。从MCS应用管理器的角度来看，降低运营成本总是有意义的，运营成本主要由两部分组成，即MCS服务部署成本和蜂窝通信成本。请注意，我们认为D2D通信是免费的合理假设。如果不能在预定期限内及时报告数据，蜂窝通信将用于报告数据，这不可避免地会导致蜂窝通信成本。因此，人们可以尝试部署大量MCS服务来探索D2D通信机会。不幸的是，服务部署成本是另一个不可忽视的问题。这迫使我们寻求一种适当的解决方案，能够平衡蜂窝通信成本和服务部署成本，以最小化总成本。为此，除了在所有公交车站部署MCS服务外，我们还将在适当的公交车站部署适当数量的MCS服务。我们注意到，由于公共汽车的常规和人们的生活习惯，存在着一种移动模式。移动性模式可以使用公交车站网络来描述，在该网络中，乘客以不同的速率到达、离开、在不同的顶点(即公交车站)之间转移。通过各种数据分析手段可以很容易地获得这些统计数据。这正是我们可以用来寻求MCS服务放置解决方案的特性。本文的主要贡献总结如下:
+
+- 据我们所知，我们是第一个针对基于公共汽车乘客的MCS应用研究成本-效益高的MCS服务布局问题。特别是，我们考虑了整个城市的乘客流动模式。
+
+- 我们将问题正式表述为混合整数线性规划( MILP )，以提供对问题的深刻理解。因此，提出了一种低计算复杂度的启发式算法。
+
+- 我们进行了广泛的基于仿真的研究来评估我们提出的启发式算法的性能。实验结果表明，该算法能够很好地逼近最优解，优于其他竞争对手。
+
+本文的其余部分组织如下。第2节介绍了边缘服务放置的相关工作。我们在第三节中介绍了系统模型。在第四节中，我们给出了成本最小化问题的MILP公式，并在第五节中提出了我们的启发式算法。第6节报告了绩效评估结果。最后，第7节结束了这项工作。
+
+
+\section{系统模型}
+
+在这一部分，我们首先介绍了本文所研究问题的系统模型，主要包括公交乘客移动模型和基于边缘服务的拥挤数据处理模型。之后，我们陈述了本文要研究的问题。
+
+\subsection{背景和系统模型}
+
+在本文中，我们考虑了公交车乘客参与拥挤的情况，他们可能会被转移到城市的不同地方。在基于公共汽车乘客的人群中，乘客负责收集从家里到公共汽车站的道路上的监控数据。我们不对传感数据采集施加任何限制。乘客可以通过从道路上专门部署的传感器收集感测数据或者通过嵌入智能手机中的传感器生成数据来获取数据。为了减轻基于基础设施的通信(例如蜂窝通信)的负担，我们提倡参与者尽可能使用设备对设备( D2D )通信。因此，D2D通信可能发生在乘客的智能手机和传感阶段专门部署的传感器之间。为了便于处理，我们假设乘客在感知阶段可以获得相同的数据量，用$s$表示。很容易将其扩展到不同乘客可以获取需要上传处理的大量数据的情况。
+
+
+乘客在不同的公交车站上车，形成乘客换乘图。因此，我们使用有向图$G=<V, E>$来描述乘客的流动性。顶点$v\in V$代表乘客乘坐的公交车站。可以大致估计公交车站上的乘客到达率和离开率$v\in V$，分别表示为 $\lambda_v$和$d_v$。按照公交车习惯，乘客将在不同的公交车站之间换乘。我们还可以获得不同公交车站之间换乘速度和时间的统计估计。从公交车站 $u\in V$到$v\in V$ 的换乘速度和时间分别由 $\lambda_{uv}$和$t_{uv}$表示。注意，由于考虑了公交车线路规划和交通条件，在实际中$t_{uv}$不一定等于 $t_{vu}$。
+
+为了确保传感数据的及时性，采集的传感数据必须及时上传和处理。通常，众包应用程序具有一定的生命周期$T$，在此周期内，必须完成整个过程，即感测、通信和处理。乘客可以通过D2D通信将感测数据上传到部署有数据处理服务的公交车站，或者通过蜂窝通信上传到云。我们假设在公交车站持续时间内，所有感测数据都可以通过D2D通信成功上传。通过D2D通信不会产生通信费用，在蜂窝通信的情况下，每数据单元收取$c_c$。尽管在公交车站启用数据处理时，公交车站必须部署相应的边缘计算服务，这与云中的服务相同。在网络边缘部署众包数据处理服务并不是免费的，边缘服务每单位时间收费$c_v$。
+
+\subsection{用于群体数据处理的边缘服务}
+
+由于大多数移动设备具有多种通信手段，这些移动设备可以通过D2D无线通信技术(例如蓝牙、WiFi )或长途无线通信(例如蜂窝网络)与其他移动设备交换数据。利用D2D无线通信，数据交换和能耗的成本大大低于长途无线通信。在公交车站部署边缘服务后，乘客可以在这些车站等候时将传感数据发送给这些服务器。如果一些车站没有部署边缘服务，则从这些车站出发的乘客可以在通过带有边缘服务的车站时上传他们的感测数据。一般来说，来自一名乘客的这些感测数据量并不太大，当公交车停在有边缘服务的车站时，上传的时间就足够了。
+
+另一方面，公交车站容纳了大量的人。这意味着部署在公交车站的边缘服务可以获取大量传感数据。这些站点是预处理传感数据的最佳场所，例如冗余消除、数据挖掘、数据学习。借助边缘服务，主干网和云服务的过载可以大大减少。与此同时，由于这些边缘服务在地理上更接近乘客，因此自然可以减少服务的延迟。但是，在所有公交车站部署边缘服务是不现实的。如何部署边缘服务是一个紧迫的挑战。
+
+
+例如，武汉市有2000多个汽车站。很难想象在每个站点部署边缘服务的成本。考虑到每个站点的人员流量可能存在巨大的差异，部署边缘服务后每个站点产生的收入也会有很大的不同。因此，对于不同的站点来说，部署边缘服务的权重将取决于许多实际因素，如人员流量、位置、连通性等。
+
+\subsection{基于动机示例的问题陈述}
+
+让我们用图2~\ref{Figure_puzzle}来解释成本效率高的MCS服务放置问题的动机。我们考虑有五个站点的情况，2100人参与了交通，这表明有2100个数据单元需要上传和处理。对于每个车站，绿色箭头上的数字表示从车站上车的人数，蓝色箭头上的数字表示在这个车站乘坐公交车的人数。直观地说，我们将在连接最紧密的公交车站部署服务。例如，如果只部署一个边缘服务，最好的选择必须是站1。该服务可以获取1300单位的传感数据，剩下800单位通过蜂窝通信。如果要部署两个边缘服务，最好的解决方案是在站点2和站点3上部署它们，并且可以通过D2D通信直接获取1900个传感数据单元。同时，我们注意到，我们可以在5号站、3号站和1号站部署3项服务，使用D2D通信获取所有数据。然而，这些站点的排名并不是最高的连接度。我们将这种现象归因于这样一个事实，即乘客可能在应用寿命内通过多个不同的公交车站。仔细利用移动模式以最大限度地利用D2D通信，而不招致过多的服务部署成本，这一点至关重要。
+
+\begin{figure}[!h]
+\centering
+% \vspace{-1em}
+\includegraphics[width=210pt]{figures/MN/Puzzle.eps}
+% \vspace{-0.5em}
+\caption{An example of traffic statistics}
+% \vspace{-1em}
+\label{Figure_puzzle}
+\end{figure}
+
+\section{Problem Formulation}
+
+为了表示我们是否在公交车站$v\in V$上提供边缘服务，我们定义了一个二进制变量为
+\[
+x_v =\left\{
+\begin{aligned}
+&1, \; \text{the service is placed on $v\in V$, }\\
+&0, \; \text{otherwise}.
+\end{aligned}
+\right.
+\]
+
+对于群体感知生命周期$T$，边缘服务部署总成本$C_v$可以计算为
+\begin{equation}
+C_v = \sum_{v\in V}x_v c_v T
+\end{equation}
+
+我们将从$u$站出发的乘客在$v$站的出发率定义为$d^u_v$。不同于乘客的出发率， $f^u_v$用于表示从$u$站出发的乘客在$v$站的数据出发率。对于每个乘客，他/她可以通过具有边缘服务的站，并通过D2D通信上传数据。因此，我们可以得到:
+\begin{equation}
+f^u_v \leq d^u_v s, \forall u, v\in V (u \neq v)
+\end{equation}
+
+来自公交车站$u$的乘客，从公交车站$w$到公交车站$v$的到达率为λ$\lambda^u_{wv}$。
+
+来自公交车站$u$的乘客，从公共汽车站$w$ 上传到$v$ 的有效数据速率为$f^u_{wv}$。显然，我们有:
+\begin{equation}
+	f^u_{wv} \leq \lambda^u_{wv} s, \forall u, v, w \in V
+\end{equation}
+
+每当乘客经过部署有数据处理边缘服务的汽车站时，所有携带的传感数据都将通过D2D通信上传。一旦数据被上传，无需冗余上传。因此，来自公交车站$u$的乘客的有效数据率应满足
+\begin{equation}
+  %	d^u_v s (1-x_v)
+    \sum_{x\in V}f^u_{xv} (1-x_v) = f^u_v + \sum_{w\in V}f^u_{vw}, \forall u\in V, v\in V
+\end{equation}
+如果公交车站$v$部署有数据处理边缘服务，即$x_v = 1$，所有乘客携带的数据将通过D2D通信上传。 
+
+对于每个公交车站，有效数据率应满足
+\begin{equation}
+	\lambda_u s (1 - x_u) = \sum_{w\in V}f^u_{uw}, \forall u\in V
+\end{equation}
+显然，如果一个公交车站，比如$u\in V$，部署了边缘服务，所有到达车站的乘客都应该直接上传他们的感应数据。在这种情况下，来自公交车站$u$的乘客的有效数据率应为0
+
+可以通过D2D通信上传的总数据可以计算为
+\begin{equation}
+	\sum_{v\in V}(\sum_{u\in V}\sum_{x\in V}f^u_{xv} x_v + \lambda_v s x_v)
+\end{equation}
+
+现在，我们可以将成本最小化问题表述为
+\begin{equation}
+\min: \sum_{v\in V}x_v c_vT+\sum_{u\in U}c_c(\lambda_u - \max_{v\in V} x_v \lambda'_{uv} s - \sum_{v\in V}x_v d_{uv} s)T
+\label{eq:origin_opt}
+\end{equation}
+
+接下来，我们将上述优化问题线性化为混合整数线性规划( MILP )，该规划通过引入辅助变量$f_{u} \leq \lambda'_{uv}, \forall u\in U, v\in V$形成。通过这样的定义，$f_u s$可以用来代替$\max_{v\in V} x_v \lambda'_{uv} s$，以表示D2D可为首次到达公交车站$u$的乘客上传的最大数据速率。因此，( 8 )中的优化问题 可以等效地转换成以下形式:
+
+\begin{equation}
+\begin{aligned}
+\min: &\quad \sum_{v\in V}x_v c_vT \ + \\&\quad \sum_{u\in V}c_c(\lambda_u s -  \lambda_u s x_u - \sum_{x\in V}\sum_{v\in V}f^u_{xv} x_v ))T \\
+\text{s.t.:} &\quad  f^u_v \leq d^u_v s, \forall u, v\in V, u\neq v\\
+% &\quad  f^u_v \geq d^u_v (1-x_v) s, \forall u, v\in V, u\neq v \\
+&\quad f^u_{vw} \leq \lambda^u_{vw} s, \forall u, v, w \in V \\
+% &\quad f^u_{vw} \geq \lambda^u_{vw} (1-x_v) s, \forall u, v, w \in V,\\
+&\quad \lambda_u s (1 - x_u) = \sum_{w\in V}f^u_{uw}, \forall u\in V\\
+&\quad \sum_{x\in V}f^u_{xv} (1-x_v) = f^u_v + \sum_{w\in V}f^u_{vw}, \forall u\in V, v\in V
+%&\quad x_v \in \{0, 1\}, \forall v\in V
+\end{aligned}
+\label{eq:MILP}
+\end{equation}
+
+
+
+\section{算法设计}
+
+式~\eqref{eq:MILP}是MILP形式，被广泛认为是NP难，因此不可能在多项式时间内解决。当问题规模较大时，使用通过求解式~\eqref{eq:origin_opt}得到的解是不可行的，尽管我们可以通过各种MILP求解器获得最优解，例如Gurobi。为了使该算法实用，我们将设计一种低计算复杂度的算法，该算法能够以可接受的计算复杂度逼近最优解。为此，我们设计了一个两阶段算法，介绍如下。
+
+阶段1 (算法1 ) :由于公共交通中的乘客数量非常大，不可能直接解决最佳边缘服务安置位置。因为公交路线是乘客的一种社交图，我们使用乘客的路径来确定边缘服务的位置。从交通统计数据中，我们可以得到每个乘客的轨迹。跟踪路径由乘客经过的车站的顺序列表表示。然后，通过交通统计数据可以找到具有相同轨迹的乘客。如果跟踪路径中有一个车站部署了边缘服务来获取数据，所有沿着该跟踪路径行驶的乘客都可以更新他们的传感数据
+
+在算法1中，我们假设公共交通中的乘客总数是$n$。乘客$i$的轨迹路径被表示为$p_i$。然后，所有路径的集合是$P$，并且$P = \sum_{i = 1}^{n}{p_i}$。因为一些乘客可能有相同的轨迹路径，因此可以找出独立的轨迹路径以及每个路径上的乘客数量。独立的跟踪路径在集合$IP$中存储为$(count, p)$， $count$是沿着跟踪路径$p$行进的乘客数量。借助数据集$IP$，如果在跟踪路径中有包含边缘服务的站点，则可以方便地计算跟踪路径中的数据采集。
+
+另一方面，如果一个站已经部署了边缘服务，这个站的数据采集可以通过$IP$获得。这意味着可以计算站点的预期产量。剔除收入不足的公交车站是有帮助的，可以避免成本的浪费。
+
+\begin{algorithm}[h]
+\setstretch{\algostretch}
+\KwIn{$P$ : 『解释说明』}
+\KwIn{$n$ : 『解释说明』}
+% \KwIn{$\es$ : 『解释说明』}
+\KwData{『输入数据』}
+\For{$p \in P$}{
+  \If {$p \not\in IP$}{
+    add (1,$p$) in $IP$
+  }
+  \Else{
+    use $p \in P$ to find ($count, p$) in $IP$\\
+    $count$++
+  }
+}
+\For{$s \in Stations$}{
+  \For{$p \in IP$}{
+    \If{$s in p$}{
+      $s.data$ += $p.count$
+    }
+  }
+  \If{$s.data > c_v/c_c$}{
+    add $s$ to $ChoiceSet$
+  }
+}
+\KwOut{$ChoiceSet$}
+\caption{Build independent paths set $IP$}
+\label{algo_IP}
+\end{algorithm}
+
+% \vspace{-1.5em}
+% \begin{algorithm}[b]
+% \caption{Build independent paths set $IP$}
+% \label{algo_IP}
+% \textbf{Requires:\\}
+% \text{\quad \quad $P$, $n$.}
+% \begin{algorithmic}[1]
+% \For{$p \in P$}
+%   \If {$p \not\in IP$}
+%     \State add (1,$p$) in $IP$
+%   \Else
+%     \State use $p \in P$ to find ($count, p$) in $IP$
+%     \State $count$++
+%   \EndIf
+% \EndFor
+% \For{$s \in Stations$}
+%   \For{$p \in IP$}
+%     \If ($s in p$)
+%       \State $s.data$ += $p.count$
+%     \EndIf
+%   \EndFor
+%   \If{$s.data > c_v/c_c$}
+%     \State add $s$ to $ChoiceSet$
+%   \EndIf
+% \EndFor
+% \end{algorithmic}
+% \end{algorithm}
+
+\begin{algorithm}[h]
+\setstretch{\algostretch}
+\KwIn{$IP$ : 『解释说明』}
+\KwIn{$ChoiceSet$ : 『解释说明』}
+\KwIn{$c_c$: 『解释说明』}
+\KwIn{$c_v$: 『解释说明』}
+% \KwIn{$\es$ : 『解释说明』}
+\KwData{『输入数据』}
+\For{$s_{sum}$ from $0$ to min($ChoiceSet$.size(), $n \times c_c/c_v$)}{
+  \For{$Stations$ with $s_{sum}$ stations in $ChoiceSet$}{
+    $Data$ = 0
+    \For{$p \in IP$}{
+      \For{$\forall station \in p$ ($station \in ChoiceSet$)}{
+        $Data = Data + p.count$
+      }
+    }
+    $cost$ = $s_{sum} * c_v + (n-Data)\times c_c$\\
+    add ($cost, Stations$) in $Res$
+  }
+}
+\KwOut{$\as, \au, L_{us}$}
+\caption{Find out the best combination of stations}
+\label{algo_choice}
+\end{algorithm}
+
+% \begin{algorithm}[b]
+% \caption{Find out the best combination of stations}
+% \label{algo_choice}
+% \textbf{Requires:\\}
+% \text{\quad \quad $IP$, $ChoiceSet$, $c_c$, $c_v$.}
+% \begin{algorithmic}[1]
+% \For{$s_{sum}$ from $0$ to min($ChoiceSet$.size(), $n \times c_c/c_v$)}
+%   \For{$Stations$ with $s_{sum}$ stations in $ChoiceSet$}
+%     \State $Data$ = 0
+%     \For{$p \in IP$}
+%       \For{$\forall station \in p$ ($station \in ChoiceSet$)}
+%         \State $Data = Data + p.count$
+%       \EndFor
+%     \EndFor
+%     \State $cost$ = $s_{sum} * c_v + (n-Data)\times c_c$
+%     \State add ($cost, Stations$) in $Res$
+%   \EndFor
+% \EndFor
+% \State choose $Stations$ whose $cost$ is minimum in $Res$
+% \end{algorithmic}
+% \end{algorithm}
+
+阶段2 (算法2 ) :在算法1中，具有足够收入的一组站点被表示为$ChoiceSet$。算法2是找出合理的站点组合，以最小的成本收集所有感测数据。由于具有边缘服务的站的总数有限，并且只能在集合 $ChoiceSet$中选择这些站，所以选择的站的组合被限制在小范围内。在$IP$的帮助下，通过 $ChoiceSet$中选定站点获取的数据非常有效。在知道通过D2D通信上传的数据量后，我们可以得到不同放置解决方案的总体数据获取成本。最后，与最低成本相对应的站点组合是最佳的边缘服务放置解决方案。当选择多个站点部署边缘服务时，冗余数据也可以通过 $IP$来计算。由于蜂窝通信的成本被称为 $c_c$，在一个站部署边缘服务的成本被称为$c_v$，具有边缘服务的站的数量不超过 $n\times c_c / c_v$。同时，在数据采集量小于$c_v/c_c$的站上部署边缘服务也是不值得的。这两个条件指定了具有边缘服务的站点数量的上限。
+
+\section{实验测试}
+
+为了验证问题公式和两阶段算法，我们在本节中报告了基于模拟的结果。此外，我们比较了不同边缘服务放置解决方案，以证明在智能城市应用中，两阶段算法是在公交车站部署边缘服务的最佳方法。
+
+\subsection{模拟器BTSP}
+
+
+为了回放乘客等候、乘车、到达和上传数据的行为，我们建立了一个公交车模拟平台( BTSP )来模拟一个城市的交通行为。BTSP的主要输入可分为两部分。
+
+输入的第一部分是城市的公共汽车时刻表，第二部分是每个乘客的路线。从公共汽车时刻表中，我们可以得到所有公交汽车的过往路线、到达时间和出发间隔。此外，可以立即生成交通有向图。输入的第二部分是每个乘客的路线，其中包含所有乘客的信息，每个乘客的起点站和终点站。对于每个乘客，都有几种可用的路径来满足乘客的需求。然后，我们按照可用路径构建一个乘车计划列表，然后按时间成本对列表进行排序。因此乘客可以优先选择时间成本最小的乘坐计划。
+
+通过输入的两个部分数据，BTSP知道一辆公共汽车是否停在车站。如果一辆公交车在车站，公交车上的乘客可以按照他们的乘车计划下车，车站的乘客可以决定是否上车。与此同时，如果这个站点已经部署了边缘服务，公交车上或站点上没有上传传感数据的乘客可以在公交车在站点停车时上传数据。总之，BTSP可以实时完整地重放交通过程和数据上传过程。
+
+\subsection{The Cost under Diﬀerent Placement Strategy}
+
+在BTSP中，我们按照实际公交时间表在武汉市试验了30条公交线路。BTSP共有273个站点，241个公共汽车在60分钟内从7:00到8:00运行。公交线路图如图~\ref{Figure_test_bus_lines}所示，所有公交线路用绿色高亮显示。在这种情况下，我们假设众包应用程序有60分钟的特定寿命，边缘服务只能部署在公交车站。在车站部署边缘服务的成本是每小时500($c_v = 500$)。通过蜂窝网络上传一段数据的成本是1 ($c_c = 1$)。
+
+\begin{figure}[!h]
+\centering
+\vspace{-1em}
+\includegraphics[width=300pt]{figures/MN/test_bus_lines.png}
+\vspace{-0.5em}
+\caption{Bus lines in BSTP}
+% \vspace{-1em}
+\label{Figure_test_bus_lines 用白底图}
+\end{figure}
+
+遵循前文描述的系统模型，我们使用Gurobi找出边缘服务的最佳放置解决方案。与本文中的两阶段算法相比，我们构建了另外两种不同的布局策略。第一种算法是根据人员流动( FoP )选择站点来部署边缘服务。第二种算法是选择站点，在站点连接后部署边缘服务。由于交通的繁忙程度随着时间的推移而变化，我们在BTSP中使用不同数量的乘客进行模拟。
+
+当乘客量设置为5000、10000和50000时，BTSP中的结果如图~\ref{fig_5000}、图~\ref{fig_10000}和图~\ref{fig_50000}所示。由于$c_c$设置为1，最大成本等于乘客人数。在图~\ref{fig_5000}(a)、图~\ref{fig_10000}(a)和图~\ref{fig_50000}(a)中，结果表明，我们的两阶段算法可以找到一个更好的布局解决方案，以最小化成本，这类似于Gurobi找到的最佳解决方案。然而，FoP和CoS放置策略的性能不令人满意，它们的部署成本比最佳放置策略高出20\%。比较FoP和CoS的放置策略，它们的成本非常接近。因此，按照人员流动或站点连接部署边缘服务不是节省成本的有效方法。
+
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=200pt]{./figures/MN/cost5000.pdf}
+    \label{fig_cost5000}
+    \caption{Cost}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=200pt]{./figures/MN/data5000.pdf}
+    \label{fig_data5000}
+    \caption{Data volume}
+  \end{subfigure}
+  \caption{5000 passengers in BTSP}
+  \label{fig_5000}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=200pt]{./figures/MN/cost10000.pdf}
+    \label{fig_cost10000}
+    \caption{Cost}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=200pt]{./figures/MN/data10000.pdf}
+    \label{fig_data10000}
+    \caption{Data volume}
+  \end{subfigure}
+  \caption{10000 passengers in BTSP}
+  \label{fig_10000}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=200pt]{./figures/MN/cost50000.pdf}
+    \label{fig_cost50000}
+    \caption{Cost}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=200pt]{./figures/MN/data50000.pdf}
+    \label{fig_data50000}
+    \caption{Data volume}
+  \end{subfigure}
+  \caption{50000 passengers in BTSP}
+  \label{fig_50000}
+\end{figure}
+
+在数据采集中，每条数据都有固定的体积，等于$s$。由于所有乘客都必须上传他们的传感数据，所以收集的数据总量是乘客人数乘以$s$。如图~\ref{fig_5000}(b)、图~\ref{fig_10000}(b)、图~\ref{fig_50000}(b)所示，当成本较低时，D2D通信上传的数据变得更多。当边缘服务按照FoP策略和CoS策略部署时，D2D通信上传的数据显著减少。
+
+在评估之前，我们已经告知60分钟内有241辆公共汽车在行驶。公共汽车的最大载客量设定为50人。在这个模拟场景中，5000名乘客造成较轻的交通负载，10000名乘客几乎交通满载，50000名乘客造成交通过载。结果显示，当交通负载接近满时，通过D2D通信上传的数据比例变得最大。相反，当交通负载太重或太轻时，通过D2D通信上传的数据量将变得更小。当交通负载较轻时，交通流量的减少会导致不经济的布局决策。当交通负载很重时，大量乘客将滞留在起点站或中转站。如果这个车站没有部署边缘服务，严重阻碍乘客通过D2D通信上传数据。
+
+\section{本章小结}
+
+在这篇论文中，我们研究了智慧城市的拥挤感知。通过在公交车站部署边缘服务，众包应用程序可以灵活地归档数据采集。由于城市交通构成了一个巨大的网络拓扑，人类的社交活动允许他们的智能设备在这个网络中流动。由于公共汽车将在公共汽车站短暂停留，它为公共汽车上的智能设备和车站的边缘服务之间的数据交互提供了机会。为了深入分析边缘服务的位置，我们建立了一个数学模型，并将问题转化为MILP，MILP的最优解可以通过现有的工具如Gurobi来计算。然后我们创建了一个公交车交通模拟平台，名为BTSP。它用于重放和模拟交通行为。评估结果证明，我们的两个阶段能够以最低的成本找到最佳的放置解决方案。
+

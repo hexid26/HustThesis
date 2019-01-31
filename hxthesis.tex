@@ -1,0 +1,105 @@
+\documentclass[format=draft,language=chinese,degree=phd,table,usenames,dvipsnames]{hustthesis}
+
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\usepackage{setspace}
+\usepackage{algorithm2e, setspace}
+% \usepackage[caption=false,font=footnotesize]{subfig}
+\usepackage{etoolbox}
+
+\newcommand{\algostretch}{1.25}
+%\onehalfspacing
+\setstretch{1.66666}
+%\setlength{\tabcolsep}{1.2}
+\renewcommand{\arraystretch}{1.2}
+
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\def\fp{\textit{fp}}
+\def\ft{\textit{ft}}
+\def\vfp{\textit{vfp}}
+\def\vft{\textit{vft}}
+\def\mr{\textit{mr}}
+\def\vmr{\textit{vmr}}
+\def\sz{\textit{sz}}
+\def\bw{\textit{bw}}
+\def\trfc{\textit{trfc}}
+\def\fr{\textit{fr}}
+\def\dram{\textit{dram}}
+\def\pcm{\textit{pcm}}
+\def\miss{\textit{miss}}
+\def\wss{\textit{wss}}
+
+%\def\FC{\textit{FractionCache}}
+\def\FC{\text{FractionCache}}
+
+\def\AR{\textit{AR}}
+\def\MR{\textit{MR}}
+\def\SFMR{\textit{SFMR}}
+
+\stuno{D201177565}
+\schoolcode{10487}
+\title{面向群智感知的\\边缘计算资源调度机制研究}{EN Title}
+\author{侯海翔}{Haixiang Hou}
+\major{计算机系统结构}{Computer Architecture}
+\supervisor{金海\hspace{1em}教授}{Prof. Hai Jin}
+\date{2019}{1}{5}
+
+\zhabstract{
+中文摘要。
+}
+
+\zhkeywords{}
+
+\enabstract{
+English abstract.
+}
+\enkeywords{}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+\makeabstract
+\tableofcontents
+%\listoffigures
+%\listoftables
+\mainmatter
+\input{Macro_Define}
+
+\input{第一章资料}
+
+\input{Chapter-Introduction}
+
+\input{Chapter-UIC}
+
+\input{Chapter-ISPA}
+
+\input{Chapter-MN}
+
+\chapter{总结}
+
+
+\begin{ack}
+感谢我的老师
+
+\end{ack}
+
+\bibliography{ref}
+
+\appendix
+
+
+\begin{publications}
+\item Liao X, Li H, Jin H, \textbf{Hou H}, Jiang Y, Liu H. VMStore: Distributed storage system for multiple virtual machines. SCIENCE CHINA Information Sciences, 2011, 54(6):1104-1118. DOI 10.1007/s11432-011-4273-0
+\item \textbf{Hou H}, Jin H, Liao X, Zeng D. Multi-path Routing for Energy Efﬁcient Mobile Ofﬂoading in Software Deﬁned Networks. in Proceedings of The IEEE International Symposium on Parallel and Distributed Processing with Applications, 2017, pp. 360-367. DOI 10.1109/ISPA/IUCC.2017.00058
+\item \textbf{Hou H}, Jin H, Liao X, Zeng D. Stochastic Analysis on Fog Computing Empowered Mobile Crowdsensing with D2D Communications. in Proceedings of The IEEE International Conference on Ubiquitous Intelligence and Computing, 2018, pp. 656-663. DOI 10.1109/SmartWorld.2018.00131
+\item \textbf{Hou H}, Jin H, Liao X, Zeng D. Cost Efficient Edge Service Placement for Crowdsensing via Bus Passengers.
+\end{publications}
+
+\end{document}
+
+\endinput
+%%
+%% End of file `hustthesis-zh-example。tex'。

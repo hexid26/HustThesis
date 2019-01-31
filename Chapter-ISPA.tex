@@ -1,0 +1,455 @@
+\chapter{Multi-pathRouting for Energy Efﬁcient Mobile Ofﬂoading in Software Deﬁned Networks}
+
+在软件定义网络( SDN )中，规则空间是由三进制内容可寻址存储器( TCAM )引起的不可避免的限制。当负载变得更受欢迎时，负载数量的急剧增加会影响链路调度和客户的服务质量( QoS )。因此，SDN中的链路调度必须考虑规则空间、带宽和QoS的约束。为了优化移动计算中的能耗，我们构建了一个模型来理解负载决策、延迟和能耗之间的关系。我们实现了一个两阶段算法，通过使用交换机中的规则空间和链路中的带宽来调度链路。通过对比评估，验证了算法的可行性。当SDN网络中规则空间的使用不充分时，与最佳解决方案相比，该算法可以将超过90 \%的能量效率存档。
+
+\section{研究背景}
+
+随着移动网络技术的发展，人们在日常生活中越来越离不开移动设备，如手机、平板电脑、笔记本电脑。手机可以帮助人们完成许多任务，比如导航、购物、拍照、分享等等。移动计算和云计算技术的进步~\cite{Lee:2013fj, Linthicum:2017vv}允许移动设备更容易、更灵活地访问云中的各种资源。如今，用户可以使用各种移动设备将个人数据存储到云存储服务中，例如Dropbox、OneDrive或Simple Storage Service（S3）。大多数云服务的目标是为客户有效地完成复杂的任务，并降低成本。为了灵活地从更多的云服务器中受益，一个名为“卸载”~\cite{Kumar:2013dq}的解决方案通过将任务从本地设备迁移到云服务器来提供移动设备来增强能力。通过将计算交付给云，移动设备可以完成各种任务，如GPS导航、环境感知、监控、增强现实等。此外，能耗显著降低，因此移动设备的待机时间大大提高。因此，卸载在移动网络环境中被广泛使用。
+
+网络中的设备数量和流量类型正在急剧增长。为了更有效地管理网络，新出现的网络架构SDN被发明出来。SDN的目标是分离控制平面和数据平面~\cite{Committee:2012un}。SDN采用可编程网络，并利用虚拟化技术，这与其他网络体系结构不同。同时，SDN还可以共享网络基础设施，使网络功能实现软件化。
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=360pt, height=180pt]{./figures/ISPA/OffloadingSDN.eps}
+  \vspace{-1em}
+  \caption{The application of offloading for the mobile via SDN}
+  \vspace{-1em}
+  \label{fig_OffloadingSDN}
+\end{figure}
+
+图~\ref{fig_OffloadingSDN}显示了通过SDN卸载货物的应用程序，SDN通常部署在数据中心。Lantz等人~\cite{Lantz:2010:NLR:1868447.1868466}为笔记本电脑中的SDN构建一个快速原型。SDN还可用于中间件的有效政策执行~\cite{Qazi:2013:SMP:2486001.2486022}。在APIs的支持下，SDN可以部署和管理统一的~\cite{Ferguson:2013:PNA:2486001.2486003}。为了广泛提供SDN，研究人员将重点放在SDN [10]的安全性和可扩展性上。2014年，SDN扩展到互联网，并创造了软件定义的互联网交换节点概念~\cite{Gupta:2014:SSD:2619239.2626300}。现在，SDN用于在数据来自物联网~\cite{Morabito:2017:FBS:3094405.3094413}的情况下管理服务功能链。
+
+尽管SDN为管理网络提供了一种更方便、更灵活的解决方案，但仍存在一些缺点，特别是TCAM的限制。TCAM是SDN交换机中昂贵且耗电的芯片，用于存储多路径路由规则。TCAM的容量被命名为规则空间，它代表了可以放在流表~\cite{Dasgupta:2012:DMD:2400771.2401550}中的转发规则的数量。随着网络规模的扩大，TCAM花费大量的精力和金钱来增加SDN交换机中的规则空间。因此，规则空间限制成为现有SDN交换机的限制。通常，SDN交换机传递的最大链路数在10000到15000 之间~\cite{Katta:2014es}。
+
+随着代码卸载的趋势，现有SDN在移动网络场景中面临新的挑战。有必要考虑规则空间、带宽、卸载率、能耗和成本之间的关系。然而，SDN交换机的容量从未被视为受限资源。本文旨在提出一种新的链路调度算法来平衡SDN中的带宽和规则空间。最终目标是帮助用户最大限度地降低能耗，确保服务质量。据我们所知，这是第一次同时研究移动卸载决策和SDN中的约束条件。我们的主要贡献如下。
+
+1）我们建立了一个网络模型来制定SDN中的限制和移动卸载中的能耗。
+
+2）为了解决求解迭代学习算法的计算复杂性，我们提出了一种两阶段算法，通过大量基于仿真的研究验证了该算法的正确性和有效性。
+
+\section{System Model and Problem Statement}
+
+图~\ref{fig_scenario}显示了我们的模型所指向的整个场景。整个模型由三部分组成: 1）用户的手机，2）选择用户到云的链接的SDN加速器，3）云计算资源池。为了模拟通过SDN进行移动卸载的场景，我们在以下假设下设计了我们的系统: 
+1）每个用户的任务是独立的；
+2）所有交换机之间的链路都是稳定的；
+3）SDN管理所有网络连接。
+
+\begin{figure}[!h]
+  \vspace{-2em}
+  \centering
+  \includegraphics[width=280pt]{./figures/ISPA/scenario}
+  \vspace{-1em}
+  \caption{Offloading for mobile users}
+  \label{fig_scenario}
+\end{figure}
+
+如图~\ref{fig_scenario}所示，每个用户通过固定AP访问网络资源。用户和云服务器之间的所有链接都由SDN分配。SDN的主要职责是为所有用户安排链路，以提高他们的QoS。同时，SDN的工作对用户是透明的。为了满足更多用户，我们可以租用云计算资源，如虚拟专用服务器（VPS）、Docker等。你想要的资源越多，你就需要付出越多。
+
+在这项工作中，我们使用集合$U$来代表所有用户。 对于每个用户$u$来说，属于集合$U$ ( $ u \in U $)。 在云中，有许多服务器可以为用户提供各种服务。让$s$表示数据中心中的服务器。这些服务器的集合被记录为$S$ ( $ s \in S $ )。 考虑到SDN支持的链接，$l$代表一个链接，$ L ( l \in L ) $代表所有链接。 然后让$B$表示带宽。 为了抽象云中的资源，可以假设计算资源的计算能力为$\mu$。 然后，$\mu_s$表示云中服务器$s$的计算能力，$\mu_u$表示用户$u$的本地设备的计算能力。 用户$u$请求服务的频率记录为$ \lambda_u $。
+
+\begin{figure}[!h]
+  \centering
+  \vspace{-1em}
+  \includegraphics[width=300pt]{./figures/ISPA/Delay}
+  \vspace{-1em}
+  \caption{Timestamps taken in each step}
+  \vspace{-1em}
+  \label{fig_timestaps}
+\end{figure}
+
+图~\ref{fig_timestaps}用于理解每个步骤中的时延。在图中，${T}_{us}$是从用户$u$到服务器$s$的时延。 $\Tsu$是从服务器$s$到用户$u$的延迟。 $\Tuscloud$是用户$u$在服务器$s$中的执行时间。 $\Tusresponse$是将任务从用户$u$卸载到服务器$s$的总时间。鉴于假设条件（2），用户和服务器之间的时间成本是恒定的。 同时，SDN网络没有为用户指定AP，因为用户更喜欢最稳定的网络服务。 由于用户和接入点之间的等待时间可以被视为常数，因此不需要将等待时间分成两部分。 然而，当用户发起任务时，SDN网络可以帮助用户选择不同的链接进行上传和下载。 因此，$\Tus$和$\Tsu$适合用作用户和服务器之间延迟的参数。
+
+\vspace{-1.5em}
+\begin{equation}
+\label{formula_cloudtime}
+% \begin{aligned}
+\Tusresponse = \Tus + \Tsu + \Tuscloud,\ \forall \ u \in U, s \in S
+% \end{aligned}
+\end{equation}
+
+在此模型中，云服务的响应时间$\Tusresponse$可以通过这些延迟的总和来理算，如式~\eqref{formula_cloudtime} 。按照假设条件（1），每个任务都可以在本地或云中执行。 因此，我们需要一个二进制变量来指示一个任务是在云中执行还是在本地执行。 对于用户$u$，让$\xus$表示卸载到服务器$s$或是在本地执行的任务的卸载决策。 基于上述系统模型，我们提出了一个排队模型来描述本文研究的问题。 符号$\aus$、$\xus$和$\aus$之间的关系为式~\eqref{formula_xus}，$\xu$的定义为式~\eqref{formula_xu}。
+
+\begin{equation}
+  \label{formula_xus}
+  \begin{gathered}
+  \frac{\aus}{A} \leq \xus \leq A \cdot \aus \quad (A \to \infty) \\
+  \quad \forall \ u \in U, s \in S, \ 0\leq \aus \leq 1
+  \end{gathered}
+\end{equation}
+
+\vspace{-0.5em}
+\begin{equation}
+\label{formula_xu}
+\begin{gathered}
+\frac{1 - \sum\limits_{s \in S}{\aus}}{A} \leq \xu \leq A \cdot (1 - \sum_{s \in S}{\aus}) \quad (A \to \infty) \\
+\forall\ u \in U, s \in S, \ 0\leq \sum_{s \in S}{\aus} \leq 1
+\end{gathered}
+\end{equation}
+
+根据排队论原理~\cite{Queueing:systems}，在本地执行的服务的时间$T_{u\_local}$和在云中执行的服务的时间$T_{s\_cloud}$的平均执行时间可以用 $M/M/1$ 模型通过式~\eqref{formula_Tulacal}和式~\eqref{formula_Tscloud}来测量。
+
+\vspace{-0.5em}
+\begin{equation}
+\label{formula_Tulacal}
+\Tulocal = \frac{\xu}{\uu - (1 - \sum\limits_{s \in S} \aus) \cdot \lambdau}, \quad \forall \ u \in U
+\end{equation}
+
+
+\begin{equation}
+\label{formula_Tscloud}
+\Tscloud = \frac{\xus}{\us - \sum\limits_{u \in U} \aus \cdot \lambdau}, \quad \forall \ s \in S
+\end{equation}
+
+使用公式~\eqref{formula_cloudtime}、\eqref{formula_Tulacal}和\eqref{formula_Tscloud}，可以计算用户和云服务器之间的响应时间，以预测卸载决策。通过调整卸载决策和网络路径，可以影响用户的响应时间和能源成本。这项工作的目标是最大限度地降低用户的能源成本。
+
+\section{Problem Formulation}
+
+为了用数学方法更好地描述这个模型，我们在表~\ref{table_notations_ispa}中定义了这些符号。 这些符号的细节将在后面解释。
+
+\begin{table}[!h]
+  \caption{Notations used in system model}
+  \vspace{-1em}
+  \label{table_notations_ispa}
+  \centering
+  \begin{tabular}{c|p{6cm}}
+  \hline
+  \textbf{Notation} & \textbf{Description}\\
+  \hline
+  $\lus$ & The specific link from user $u$ to server $s$ ($\lus \in L$)\\\hline
+  $L_{us}$ & The link set from user $u$ to server $s$ ($\lus \in L_{us}$)\\\hline
+  $\xusl$ & The uplink decision of link $usl$\\\hline
+  $\yusl$ & The downlink decision of link $usl$\\\hline
+  $\Tlus$ & The latency of the link $usl$\\\hline
+  $\Busl$ & The bandwidth of the link $usl$\\\hline
+  $\Bu$ & The requirement of uplink bandwidth for user $u$\\\hline
+  $\Bd$ & The requirement of downlink bandwidth for user $u$\\\hline
+  $\xrl$ & Whether the link $usl$ passes through the switch $r$\\\hline
+  $\eu$ & The energy cost of execution locally for user $u$\\\hline
+  $\es$ & The energy cost of execution on cloud server $s$\\\hline
+  \end{tabular}
+\end{table}
+
+\subsection{Constraints}
+
+如上所述，SDN负责为用户选择最佳链接。用$\lus$表示用户$u$和服务器$s$的链路，用$L_{us}\ (usl \in L_{us})$ 表示可以连接用户$u$和服务器$s$的链路集合。由于上行链路和下行链路可能是不同的链路，我们使用二进制变量$\xusl$和$\yusl$来表示是否使用$\lus$作为上行链路和下行链路。$\xusl$和$\yusl$的值与公式~(\ref{formula_xusl})中的$\xus$相关。$\xusl$和$\yusl$的值应该满足公式~(\ref{formula_xusl1})。
+
+\begin{equation}
+\label{formula_xusl}
+\begin{aligned}
+0 \leq \xusl \leq \xus, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
+0 \leq \yusl \leq \xus, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\label{formula_xusl1}
+\begin{aligned}
+&\sum_{usl\in L_{us}}\xusl = 1, \quad \forall \ u\in U, s\in S\\
+&\sum_{usl\in L_{us}}\yusl = 1, \quad \forall \ u\in U, s\in S\\
+\end{aligned}
+\end{equation}
+
+然后，我们使用$\Tlus$来表示链路$\lus$的延迟。借助$\xusl$和$\yusl$，可以通过式~\eqref{formula_Tus}计算$\Tus$和$\Tsu$的数值。
+
+\begin{equation}
+\label{formula_Tus}
+\begin{aligned}
+&\Tus = \xusl \cdot T_{usl}, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
+&\Tsu = \yusl \cdot T_{usl}, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
+\end{aligned}
+\end{equation}
+
+\textbf{QoS Constraints:}
+当用户请求服务时，该过程可以理解为用户提供输入并等待相应的输出。尽管任务可以在本地或云中执行，但是用户总是希望他们能够尽快得到反馈，对于任务在哪里执行，用户并不关心。所以，任务在调度时应尽可能让用户的等待时间减少。因此，平均服务时间是一个非常重要的服务质量指标。通过以上工作，我们可以利用式~\ref{formula_Tusresponse}精确地计算平均服务时间。
+
+\begin{equation}
+\label{formula_Tusresponse}
+\begin{gathered}
+\Tusresponse = \xusl T_{usl} + \frac{\xus}{\us-\sum\limits_{u \in U}\aus \cdot \lambdau} + \yusl T_{usl}\\
+\forall \ usl\in L_{us}, u\in U, s\in S\\
+\end{gathered}
+\end{equation}
+
+遵循代码卸载的原则，任务被分配给执行时间最短的执行环境。因此，用户$u$的平均执行时间必须满足式~\eqref{formula_tscloudconstr}所示的限制条件。
+
+\begin{equation}
+\label{formula_tscloudconstr}
+\begin{gathered}
+% \frac{\xu}{\uu - (1 - \sum\limits_{s \in S} \aus) \cdot \lambdau} \leq T_{QoS},\\
+\xusl T_{usl} + \frac{\xus}{\us-\sum\limits_{u \in U}\aus \cdot \lambdau} + \yusl T_{usl} \leq T_{QoS}\\
+\us-\sum\limits_{u \in U}\aus \cdot \lambdau > 0\\
+\forall \ usl\in L_{us}, u\in U, s\in S\\
+\end{gathered}
+\end{equation}
+
+此时，任务在本地执行的响应时间应满足式~\eqref{formula_tulocalconstr}所示的限制条件。
+
+\begin{equation}
+\label{formula_tulocalconstr}
+\begin{gathered}
+\frac{\xu}{\uu - (1 - \sum\limits_{s \in S} \aus) \cdot \lambdau} \leq T_{QoS}\\
+\uu - (1 - \sum\limits_{s \in S}\aus) \cdot \lambdau > 0\\
+% \xusl \Tl + \frac{\xus}{\us-\sum\limits_{u \in U}\aus \cdot \lambdau} + \yusl \Tl\\
+\forall \ u\in U, s\in S\\
+\end{gathered}
+\end{equation}
+
+\textbf{Bandwidth Constraints:}
+与传统网络一样，SDN中的每个链路都有自己的最大带宽。我们假设用户$u$通过链路$\lus$与服务器$s$连接。因此，链路$\lus$的带宽必须满足所有用户的需求。假设$\lus$的最大带宽是$\Busl$，并且上行链路和下行链路的带宽需求分别是$\Bu$和$\Bd$。那么约束条件可以描述为式~\eqref{formula_Bandwidth}。
+
+\begin{equation}
+\label{formula_Bandwidth}
+\begin{gathered}
+\sum\limits_{u \in U} \sum\limits_{s\in S}\lambdau\aus(\xusl \cdot \Bu + \yusl \cdot \Bd) \leq \Busl\\
+\forall \ usl\in L_{us}, u\in U, s\in S\\
+\end{gathered}
+\end{equation}
+
+\textbf{Rule Space Constraints:}
+除了带宽限制之外，SDN中的交换机的可用规则容量也有一定的上限。规则空间表示交换机上允许的最大连接数。因此，SDN交换机提供的最大连接数是有限的。我们用$r$来表示SDN交换机。$R (r \in R)$表示交换机的集合。然后将$C_r$表示为交换机$r$的规则空间。然而，交换机$r$只能承载部分链接。在此二进制变量$\xrl$表示链路$\lus$是否通过交换机$r$，其定义如式~\eqref{formula_xrl}所示。
+
+\begin{equation}
+\label{formula_xrl}
+\begin{gathered}
+\begin{aligned}
+\xrl = \left\{\begin{aligned}
+& 0,\quad if\ usl \text{ does not pass through }r\\
+& 1,\quad if\ usl \text{ passes through }r\\
+\end{aligned}
+\right.
+\end{aligned}
+\\\forall \ u \in U, s \in S, usl\in L_{us}\\
+\end{gathered}
+\end{equation}
+
+因此，规则空间的约束条件可以利用$\xrl$来计算，其表达式如式~\eqref{formula_linkconstr}。
+
+\begin{equation}
+\label{formula_linkconstr}
+\begin{gathered}
+\sum\limits_{u \in U}\sum\limits_{s \in S}\sum\limits_{l \in L}(\xusl + \yusl) \cdot \xrl \leq C_r\\
+\forall\ u \in U, s \in S, usl\in L_{us}, r\in R\\
+\end{gathered}
+\end{equation}
+
+\subsection{ILP Formulation}
+如前文所述，本章建立模型的目标是最小化用户的成本。我们将本地执行的成本定义为$\eu$，将云服务器中的执行成本定义为$\es$，因为任务可以在本地或远程执行。总能源成本$E$可通过式~\eqref{formula_Energy}计算。
+
+\begin{equation}
+\label{formula_Energy}
+\begin{gathered}
+E = \sum\limits_{u\in U}(\lambdau(1-\sum\limits_{s\in S}\aus)\eu + \lambdau\sum\limits_{s\in S}\aus\es)\\
+\forall\ u \in U, s \in S\\
+\end{gathered}
+\end{equation}
+
+整理上述讨论中的所有约束条件，可以将『能耗』转化为最大-最小公平问题，其描述如式~\eqref{formula_energy}所示。
+
+\begin{equation}
+\label{formula_energy}
+\begin{aligned}
+\text{min }&{:}\ E\\
+\text{s.t. }&{:}\ \text{(6)-(7), (10)-(12), (14)}
+\end{aligned}
+\end{equation}
+
+\section{A Two-Phase Algorithm}
+
+为了使这项工作高效，该算法主要负责两个阶段的工作。首先，该算法确定$\sum_{s \in S}\aus$和$\sum_{u \in U}\aus$，然后创建一组首选链接。其次，该算法为用户$u$和服务器$s$分配最合适的链接，并调整$\aus$。
+
+\textbf{Phase 1 (Algorithm 1)}:
+在式~\eqref{formula_Energy}，$\lambdau$，$\es$，和$\eu$是常数。变量$\aus$是确定$E$值的唯一变量。为了降低总能耗，必须在$\es$和$\eu$之间调整系数。因此，当$\es$大于$\eu$时，$\sum_{s \in S}{\aus}$ 中必须取最大值，否则取最小值。为了优化上述模型的解决方案，最好的方法是找出$\sum_{s \in S}\aus$的取值范围。
+
+\begin{algorithm}[h]
+\setstretch{\algostretch}
+\KwIn{$\lambdau$ : 『解释说明』}
+\KwIn{$\uu$ : 『解释说明』}
+\KwIn{$\us$: 『解释说明』}
+\KwIn{$\eu$: 『解释说明』}
+\KwIn{$\es$ : 『解释说明』}
+\KwData{『输入数据』}
+% \KwData{$Occ[1:T]$: 每个程序当前的NCP大小，初始为0，随着缓存路的分配增加，最终为每个程序在整个缓存上的NCP}
+\If {$\eu \leq \es$}{
+  \For{$u \in U$}{
+    $\sum_{s \in S}\aus = max(0, 1 - \frac{\uu}{\lambdau})$
+  }
+}\Else{
+  \For{$s \in S$}{
+    $\sum_{u \in U}\aus = min(1, \frac{\us}{\lambdau})$
+  }
+}
+\For{$u \in U$}{
+  \For{$s \in S$}{
+    build $L_{us}$, a set with all links from $u$ to $s$\\
+    sort $L_{us}$ ascending order by latency
+  }
+}
+$\as = \sum_{s \in S}\aus, \  \au = \sum_{u \in U}\aus$\\
+\KwOut{$\as, \au, L_{us}$}
+\caption{Determine $\aus$ and create a set of links}
+\label{algo_aus}
+\end{algorithm}
+
+利用约束条件\eqref{formula_tscloudconstr}和\eqref{formula_tulocalconstr}，我们可以得到$\sum_{s \in S}\aus$的范围和$\sum_{u \in U}\aus$的范围。
+
+\begin{equation*}
+\begin{gathered}
+\sum_{s \in S}\aus \in [max(0, 1- \frac{\uu}{\lambdau}), 1], \quad \forall\ u \in U, s \in S\\
+\sum_{u \in U}\aus \in [0, \frac{\us}{\lambdau}], \quad \forall\ u \in U, s \in S
+\end{gathered}
+\end{equation*}
+
+在确定$\sum_{s \in S}\aus$和$\sum_{u \in U}\aus$的范围后，可以根据约束条件找出一组从用户$u$到服务器$s$的链接。在这组链路中，存储了关于延迟、带宽和每个链路中交换机的信息。这些信息能够作为『算法二中』的输入，帮助用户$u$选择连接服务器$s$的最佳链路。
+
+\textbf{Phase 2 (Algorithm 2)}:
+在『算法一』中，可以得到$\sum_{s \in S}\aus$的最优解。因此，链路调度算法负责找出所有$\aus$，这使得『总和』逼近最佳值。由于规则空间、带宽、延迟和QoS的限制，我们将贪婪算法和动态规划算法相结合来达到目标。
+
+\begin{algorithm}[h]
+\setstretch{\algostretch}
+\KwIn{$\as$ : from Algorithm 1}
+\KwIn{$\au$ : from Algorithm 1}
+\KwIn{$\L_{us}$: from Algorithm 1}
+\KwIn{$R$: 『解释说明』}
+\KwIn{$rule\ space$ of $r (r \in R)$: 『解释说明』}
+\KwData{『输入数据』}
+% \KwData{$Occ[1:T]$: 每个程序当前的NCP大小，初始为0，随着缓存路的分配增加，最终为每个程序在整个缓存上的NCP}
+all weights initialized as $0$
+all $\aus$ initialized as $0$
+$U$ in ascending order of $\lambdau$
+$S$ in ascending order of $\us$
+\For{$u \in U$}{
+  \If {$T_{u\_local} < T_{Qos}$}{
+    $\aus = 0, s \in S$
+  }
+  \Else{
+    \For {$s \in S$}{
+      \If {$1 \leq \frac{\lambdau}{\us}$ \textbf{and} $T_{s\_cloud} < T_{QoS}$}{
+        \For {$l \in L_{us}$}{
+          \If{$l.weight$ is not exceed $10\%$}{
+            $\aus = 1$\\
+            $\xusl[u,s,l] = \yusl[u,s,l] =  1$\\
+            \textbf{next} $u$
+          }
+        }
+      }
+      \If {$T_{s\_cloud} < T_{QoS}$ \textbf{and} $\au < 1$}{
+        \For {$l \in L_{us}$}{
+          \If{$l.weight$ is not exceed $10\%$}{
+            $\aus = \frac{\lambdau}{\us}$\\
+            $\xusl[u,s,l] = \yusl[u,s,l] =  1$
+          }
+        }
+      }
+    }
+  }
+}
+\KwOut{$\xusl$}
+\caption{Choose the appropriate link for user $u \in U$}
+\label{algo_findminpaths}
+\end{algorithm}
+
+首先，我们按$\lambdau$的升序对用户进行排序，并按$\us$的升序对服务器进行排序。 这里的策略是优先从速度较慢的手机上卸载任务。 一般来说，云服务器的成本和性能是正相关的。 因此，云服务器的最佳选择是能耗最小且能满足QoS的服务器。 然后，可以在第一阶段使用分类链接集（$L_{us}$），并遵循贪婪算法来选择用户$u$和服务器$s$之间最快的链接。 但是，最快的链路不一定是最好的。『原因』。 因此，我们使用动态规划算法来挑选最合适的链接。 在这一步中，我们尝试收集关于规则空间使用和带宽使用的统计数据作为权重。
+
+链路调度算法旨在使带宽使用率和链路使用率同时增长。 在规则空间和带宽限制下保障用户的QoS而不产生额外开销是链路选择的重要依据。 因此，本文的链路调度策略为每个链路设定权重，并且使链路的权重尽可能相近。 所以，两种资源的占用率的权重比例相同。 其中，所有链路的最大权重差值不能超过10\%。 当某个链接的权重比其他链接的权重高出 10\%时，该链接会从可选择链接中屏蔽。 这个策略是为了防止高 QoS 链接被快速占满。 一旦高质量的链路和服务器被占用完全，其余用户必须降低卸载比率以确保QoS，这将导致能耗成本的增加。
+
+\section{Performance Evaluation}
+
+为了评估依据权重的链路调度算法（LSW）的性能，本文给出了与传统的带权重的链路调度算法（SPF）以及Gurobi~\footnote{https://www.gurobi.com}的最优解进行性能比较。在实验中，使用了两种不同的SDN网络拓扑结构。 第一个是一个小型网络，用于验证『算法』的可行性。 第二个网络拓扑是一个有100个交换机的网络，用来比较传统的SPF方法和我们的LSW算法。
+
+\subsection{Verification of Feasibility}
+
+第一个小型网络的拓扑结构如图~\ref{fig_smallNetwork}所示。在此图中，定义了每条链路的延迟和带宽。每个交换机的规则空间定义为100，100，80，80，80，100，100。 在网络中，节点$0$和节点$1$是接入点，节点$5$和节点$6$连接到不同的服务器。连接到节点$6$的服务器比连接到节点$5$的服务器快10\%。
+
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\linewidth}
+    \includegraphics[width=180pt]{./figures/ISPA/NetworkX_spring_L}
+    \label{fig_smallNetworkL}
+    \caption{Weight of latency (s)}
+  \end{subfigure} %
+  \begin{subfigure}[b]{0.45\linewidth}    
+    \includegraphics[width=180pt]{./figures/ISPA/NetworkX_spring_B}
+    \label{fig_smallNetworkB}    
+    \caption{Weight of bandwidth (MB)}
+  \end{subfigure} 
+  \caption{The total energy consumption via different methods}
+  \label{fig_smallNetwork}
+\end{figure}
+
+链路调度算法LSW的目标是最小化总能耗$E$。因此，我们比较了三种方法计算出的不同的$E$值。如图~\ref{fig_smallE}所示，不同的链路调度策略会影响卸载场景中的总能耗。当用户数量较少时，链路调度算法不会对能耗产生太大影响。随着用户数量的增加，能源成本之间的差距急剧扩大。当网络中有100个用户时，LSW方法的总能耗比最优解（Gurobi计算得出）高12.6 \%，比SPF方法的最优解高36.4\%。同时，100名用户使SDN网络基本上处于满负荷状态。因此，当SDN网络的负载接近满负荷时，LSW方法此时存在局限性。从这个图中，当SDN网络负载不满时，LSW方法和最优解之间的差异可以减少到小于10\%。
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=200pt]{./figures/ISPA/small_E}
+\vspace{-1em}
+\caption{The total energy consumption via different methods}
+\vspace{-0.5em}
+\label{fig_smallE}
+\end{figure}
+
+在图~\ref{fig_smallAu}中，任务卸载的比率随着用户数量的增加而增加。 通过前文的分析，可以得知卸载决策会影响能耗。然而，链路调度的策略会影响任务卸载的决策。在该图中，从侧面反映出更好的链路调度方法可以使得任务卸载到云端的平均比率更高。尤其是当QoS和SDN贷款受到限制时，没有足够的链路来来传输被卸载的任务。
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=200pt]{./figures/ISPA/small_Au}
+\vspace{-1em}
+\caption{The average ratio of offloading via different methods}
+\vspace{-1.5em}
+\label{fig_smallAu}
+\end{figure}
+
+图~\ref{fig_smallrule}显示了每个交换机中规则空间的使用情况。对于最优解（Gurobi），不同用户总数和规则空间占用率并没有直接关系。这与SPF方法相同。 在LSW算法的设计中，我们有意保持每条链路使用率的平衡性。因此，当SDN网络中的开销变得更大时，仍然留有高质量的链路预留给新用户使用。 在SPF方法中，我们可以知道规则空间在交换机中的使用可能会发生剧烈变化。这意味着为了满足更多的用户，链路调度的次数会有很大的变化。这也表明SDN网络中的交换机可能会频繁地改变其状态，这将导致额外的能耗成本。
+
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.32\linewidth}
+    \includegraphics[width=160pt]{./figures/ISPA/small_rule_grb.pdf}
+    \label{fig_smallNetworkRG}
+    \caption{Rule usage via Gurobi}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\linewidth}
+    \includegraphics[width=160pt]{./figures/ISPA/small_rule_lsw.pdf}
+    \label{fig_smallNetworkRL}
+    \caption{Rule usage via LSW}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\linewidth}
+    \includegraphics[width=160pt]{./figures/ISPA/small_rule_spf.pdf}
+    \label{fig_smallNetworkRS}
+    \caption{Rule usage via SPF}
+  \end{subfigure}
+  \caption{The rule usages in switches via different methods}
+  \label{fig_smallrule}
+\end{figure}
+
+\subsection{性能测试}
+
+为了比较LSW算法和SPF算法，本文设计了一个拥有100个交换机的SDN网络。网络中有10个接入点和40台服务器，用户数量从200到3000浮动。 这个网络中每个交换机的规则空间是1000。 在这个SDN网络中，有30\%的链路不能满足QoS，由此来模拟网络拓扑中的不稳定因素。
+
+图~\ref{fig_large}(a)显示了这两种方法的总能耗。通过LSW算法，总能耗和用户数量之间的关系几乎是线性的。然而，当有3000个用户时，SPF算法得到的结果比LSW算法多31.9\%。图~\ref{fig_large}(b)显示了两种方法中卸载决策的比率。当用户从800增加到1500时，这一数字急剧下降。原因是一些链路不能满足QoS。这两种算法都受到这些链路的影响，但是LSW算法的抗干扰能力更好。图~\ref{fig_large}显示了这两种方法中使用的链接数。在同样的情况下，LSW方法中的链路数比SPF算法中的链路数少10\%。 这意味着LSW方法可以使用更少的链路来帮助降低总体能源成本。
+
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.32\linewidth}
+    \includegraphics[width=160pt]{./figures/ISPA/large_E}
+    \label{fig_largeE}
+    \caption{能量总开销}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\linewidth}
+    \includegraphics[width=160pt]{./figures/ISPA/large_Au}
+    \label{fig_largeAu}
+    \caption{平均任务卸载率}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.32\linewidth}
+    \includegraphics[width=160pt]{./figures/ISPA/large_link}
+    \label{fig_largeL}
+    \caption{网络中链路使用数量}
+  \end{subfigure}
+  \caption{The performances via different methods}
+  \label{fig_large}
+\end{figure}
+
+\section{本章小结}
+
+本文建立了一个SDN网络公式模型，以了解SDN中总能量成本和限制之间的关系。为了最小化总能耗，我们将这个问题表述为线性规划问题。在对模型进行研究之后，我们提出了一种链路调度算法，根据每个链路的权重来选择最合适的链路。权重由交换机中规则空间的使用和链路中带宽的使用组成。通过大量实验，我们证明了算法的有效性。通过对比实验，该算法比SPF算法显示出显著的优势，极大地提高了最优解的性能。
+
+
