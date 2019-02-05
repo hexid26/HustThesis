@@ -15,12 +15,19 @@
 借助模拟测试和评估，验证了本文分析方法的正确性，时间分配算法的可行性。
 评估结果表明，本文分析方法的结果和模拟数据的平均误差小于 9.6\%。
 
+首先基于随机移动模型建立群智感知任务分发和时间的关系，并依据传染病模型对群智感知任务分发的过程建立数学模型。
+接着分析群智感知任务的持续时间和边缘节点的移动模型对群智感知任务分发过程以及数据回收过程的影响，同样也建立数学模型。
+然后，提出群智感知任务的感知质量。
+通过理论分析，总结了提高感知质量的途径和方法。
+接着提出优化感知质量的资源调度算法。
+最后结合仿真模拟验证算法对群智感知任务感知质量的优化效果。
+
 \section{研究背景}
 
 % 通过将传统云服务推向最终用户附近的边缘计算已经成为一种广泛关注的服务提供范例。 通过探索网络边缘的边缘节点（例如，蜂窝网络中的基站）的资源，人们普遍认为边缘计算可以显着提升服务质量，这要归功于其广泛部署，地理分布， 和用户接近[1]。 边缘计算的巨大潜力吸引了学术界和工业界的很多兴趣。 许多开创性的研究人员已经讨论了如何在不同的应用领域应用边缘计算[1]  -  [3]。
 
 在传统的云计算模型中，大量的用户数据被收集并发送至云端服务器，由云端的计算资源对海量数据进行处理。
-边缘计算模型和云计算模型相背而驰，通过探索网络边缘中的边缘节点（例如蜂窝网络中的基站）的可利用资源，将云端服务器的数据处理逻辑部署到网络的边缘侧，使计算、数据处理资源更加贴近数据生产源。
+边缘计算模型和云计算模型相背而驰，通过探索网络边缘中的边缘节点（例如蜂窝网络中的基站）的可利用资源，将云端服务迁移到位于网络边缘侧的边缘服务器上，使计算、数据处理资源更加贴近数据生产源。
 由于边缘网络中边缘设备繁多、地域分布广、且靠近用户，研究者们普遍认为边缘计算可以显著提升网络应用的服务质量~\cite{DBLP:conf/sigcomm/BonomiMZA12}。
 近年来，学术界和工业界都在不断挖掘边缘计算的巨大潜力，研究者们都致力于将边缘计算应用到不同领域的开创性工作中~\cite{DBLP:journals/access/MarjanovicAZ18,DBLP:journals/iotj/ChiangZ16}。
 
@@ -39,9 +46,9 @@
 \begin{figure}[!b]
   \centering
   \vspace{-1em}
-  \includegraphics[width=240pt]{./figures/MCS_Scenario.pdf}
+  \includegraphics[width=240pt]{./figures/Sec_UIC/群智感知应用场景.pdf}
   \vspace{-0.5em}
-  \caption{群智感知应用典型场景}
+  \caption{群智感知应用场景}
   % \vspace{-4em}
   \label{Figure_UIC_MCS}
 \end{figure}
@@ -95,9 +102,9 @@
 \begin{figure}[!b]
   \centering
   \vspace{-1em}
-  \includegraphics[width=240pt]{./figures/延时模型.pdf}
+  \includegraphics[width=240pt]{./figures/Sec_UIC/群智感知应用的时间分布.pdf}
   \vspace{-0.5em}
-  \caption{『群智感知的时间』}
+  \caption{群智感知应用的时间分布}
   % \vspace{-4em}
   \label{Figure_MCS_Delay}
 \end{figure}
@@ -122,20 +129,20 @@ $T_{total\_time}$ 则为三者之和。
 
 \begin{figure}[!h]
   \centering
+  % \vspace{-1em}
+  \includegraphics[width=270pt]{./figures/Sec_UIC/任务分发过程.pdf}
   \vspace{-1em}
-  \includegraphics[width=200pt]{./figures/PropagationProcedure.eps}
-  \vspace{-1em}
-  \caption{The task dissemination phase}
+  \caption{任务分发过程}
   % \vspace{-0.5em}
   \label{Figure_PropagationProcedure}
 \end{figure}
 
 \begin{figure}[!h]
   \centering
-  % \vspace{-1em}
-  \includegraphics[width=200pt]{./figures/CollectionProcedure.eps}
   \vspace{-1em}
-  \caption{The data collection phase}
+  \includegraphics[width=300pt]{./figures/Sec_UIC/数据收集过程.pdf}
+  \vspace{-1em}
+  \caption{数据收集过程}
   \vspace{-1.5em}
   \label{Figure_FeedbacksCollection}
 \end{figure}
@@ -319,9 +326,9 @@ $P_{nDirect}(t)$ 指的是数据包以蜂窝网络通信未送达的概率，计
 \begin{figure}[!h]
   \centering
   % \vspace{-1.5em}
-  \includegraphics[width=200pt]{./figures/CoverageofArea.eps}
+  \includegraphics[width=200pt]{./figures/Sec_UIC/群智感知的空间分布.pdf}
   \vspace{-0.5em}
-  \caption{Spatial granularity in MCS}
+  \caption{群智感知的空间分布}
   \vspace{-0.5em}
   \label{Figure_CoverageofArea}
 \end{figure}
