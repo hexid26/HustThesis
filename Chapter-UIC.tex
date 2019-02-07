@@ -466,6 +466,19 @@ let $index = 0;\ maximum = 0;\ best\_t = 0$\\
 
 \subsection{On the Accuracy of our Stochastic Analysis}
 
+\begin{figure}[!b]
+  \centering
+  % \vspace{-2em}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Propagation/F3-1.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Propagation/F3-2.pdf}}\\
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Propagation/F3-3.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Propagation/F3-4.pdf}}
+  \vspace{-1em}
+  \caption{任务分发过程分析结果和模拟结果对比}
+  % \vspace{-0.5em}
+  \label{Figure_PropagationTest}
+\end{figure}
+
 首先通过使用不同的参数 $N, N_f, \lambda_n$, and $\lambda_f$ 来验证本文对任务分发过程的分析。
 图~\ref{Figure_PropagationTest}反应了不同参数取值对群智感知效率的影响。
 图中横坐标为时间轴，纵坐标为群智感知应用收到的『感知数据的数量』，其结果可通过式~\eqref{Formula_Coverage_of_Task}计算得到。
@@ -474,19 +487,6 @@ let $index = 0;\ maximum = 0;\ best\_t = 0$\\
 对图像进行观察可以发现，群智感知应用执行初期，『』增长率偏低，这是因为任务只能通过边缘服务节点分发。
 在获得任务的移动设备增多之后，区域内的任务分发源也越来越多，因此能够执行感知任务的移动设备数量呈指数级上涨。
 当任务覆盖率接近饱和时，『』增长速度逐渐降低，获得任务的移动设备数量逐步趋近于目标区域内的移动设备总数。
-
-\begin{figure}[!h]
-  \centering
-  % \vspace{-2em}
-  {\includegraphics[width=160pt]{./figures/Propagation/F3-1.pdf}}
-  {\includegraphics[width=160pt]{./figures/Propagation/F3-2.pdf}}\\
-  {\includegraphics[width=160pt]{./figures/Propagation/F3-3.pdf}}
-  {\includegraphics[width=160pt]{./figures/Propagation/F3-4.pdf}}
-  \vspace{-1em}
-  \caption{The accuracy of the analysis for the number of effective MCS participants}
-  % \vspace{-0.5em}
-  \label{Figure_PropagationTest}
-\end{figure}
 
 % 同样的方法被用来验证我们对数据收集阶段的分析的准确性。首先，我们假设每个EMP都有一个包，由发送到雾节点的所有传感数据组成。这一过程类似于传统的流行病传播途径。然而，有多个雾节点作为目的节点，在传统流行病路由中只有一个目的节点。我们认为，一旦任何fog节点接收到数据包，该数据包就会被成功传递。我们计算在时间t接收到的数据包数量。性能评估结果如图7所示，其中分析结果通过求解等式获得。( 5 )。我们再次注意到，我们对数据收集的分析也非常准确，因为结果都接近分析结果。在5000组随机种子的模拟中，平均误差为9.6 %。与我们的一般情况一致，接收到的数据包数量随着时间的推移而增加。首先，接收的数据包数量缓慢增加，然后快速增加，最后收敛。
 
@@ -503,16 +503,29 @@ let $index = 0;\ maximum = 0;\ best\_t = 0$\\
 \begin{figure}[!h]
   \centering
   % \vspace{-1em}
-  {\includegraphics[width=160pt]{./figures/Collection/R1-0.pdf}}
-  {\includegraphics[width=160pt]{./figures/Collection/R1-1.pdf}}\\
-  {\includegraphics[width=160pt]{./figures/Collection/R1-2.pdf}}
-  {\includegraphics[width=160pt]{./figures/Collection/R1-3.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Collection/R1-0.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Collection/R1-1.pdf}}\\
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Collection/R1-2.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/Collection/R1-3.pdf}}
   \vspace{-1em}
-  \caption{The accuracy of the analysis for the number of received packets}
+  \caption{数据收集过程分析结果和模拟结果对比}
   \label{Figure_CollectionTest}
   \end{figure}
 
 % 在对我们的雾计算中的两个主要阶段进行验证后，我们用D2D通信授权MCS，接下来我们考虑两个阶段，并调查我们的总体随机分析是如何进行的。在本实验中，我们设置总时隙数Ttotaltimeas 100s，并在不同的网络设置中从0到100改变时间分配。结果报告在图8中，其中通过求解等式获得分析结果。( 12 )。直观地说，在任何oft值下，分析结果总是接近模拟结果。这表明我们对这两个阶段的总体分析也是准确的。此外，在图8中观察到的一个有趣现象是，接收到的分组数量首先随着时间分配的分配增加而增加，然后随着达到最大值而减少。最初，随着分配给任务分发阶段的时间越来越多，越来越多的移动节点可以有效地参与MCS过程。因此，接收到的数据包数量会增加。达到最大值后，进一步增加将减少分配给数据收集阶段的时间。虽然MCS参与者更有效，但是在截止日期之前，传感数据几乎没有时间被传送到雾节点。因此，性能甚至会下降。这意味着存在一个最佳时间分配，可以最大限度地提高感知质量，找到这样一个最佳设置非常重要。幸运的是，我们提出的算法1能够处理这个问题
+
+\begin{figure}[!b]
+  \centering
+  % \vspace{-1.5em}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/0.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/1.pdf}}\\
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/2.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/3.pdf}}
+  \vspace{-1em}
+  \caption{不同时间配额下的分析结果和模拟结果}
+  % \vspace{-2em}
+  \label{Figure_EntireTest}
+\end{figure}
 
 最后，对边缘计算下的群智感知应用全过程进行分析验证。
 结合任务分发和数据收集两个重要阶段，验证本文中时间划分的合理性。
@@ -530,19 +543,6 @@ let $index = 0;\ maximum = 0;\ best\_t = 0$\\
 这意味着存在一个最佳时间分配，可以最大限度地提高感知质量，找到这样一个最佳设置非常重要。
 幸运的是，我们提出的算法1能够处理这个问题。
 
-\begin{figure}[!h]
-  \centering
-  % \vspace{-1.5em}
-  {\includegraphics[width=160pt]{./figures/RcvsSim/0.pdf}}
-  {\includegraphics[width=160pt]{./figures/RcvsSim/1.pdf}}\\
-  {\includegraphics[width=160pt]{./figures/RcvsSim/2.pdf}}
-  {\includegraphics[width=160pt]{./figures/RcvsSim/3.pdf}}
-  \vspace{-1em}
-  \caption{The accuracy of the analysis for the different time allocations}
-  % \vspace{-2em}
-  \label{Figure_EntireTest}
-\end{figure}
-
 为了验证时间配额划分算法的准确性，测试中使用参数 $N=6000, N_f=4, \lambda_n = 0.000027, \lambda_f=0.00018$ 定义的模拟场景。
 群智感知应用的生命周期 $T_{total\_time}$ 设置为 100 秒。
 任务分发和数据收集的最佳时间分配，接收到的数据包数量应该是最大的。
@@ -556,12 +556,12 @@ let $index = 0;\ maximum = 0;\ best\_t = 0$\\
 \begin{figure}[!h]
   \centering
   % \vspace{-1em}
-  {\includegraphics[width=160pt]{./figures/BestT/0.pdf}}
-  {\includegraphics[width=160pt]{./figures/BestT/1.pdf}}\\
-  {\includegraphics[width=160pt]{./figures/BestT/2.pdf}}
-  {\includegraphics[width=160pt]{./figures/BestT/3.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/0.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/2.pdf}}
+  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/3.pdf}}
   \vspace{-1em}
-  \caption{The results of the analysis and simulation for the best time allocation}
+  \caption{不同时间配额的对感知质量的影响}
   % \vspace{-1em}
   \label{Figure_BestT}
 \end{figure}
@@ -583,10 +583,10 @@ let $index = 0;\ maximum = 0;\ best\_t = 0$\\
 \begin{figure}[!h]
   \centering
 	% \vspace{-1.5em}
-	{\includegraphics[width=160pt]{./figures/SingleVar/1n.pdf}}
-	{\includegraphics[width=160pt]{./figures/SingleVar/1ln.pdf}}\\
-	{\includegraphics[width=160pt]{./figures/SingleVar/1nf.pdf}}
-	{\includegraphics[width=160pt]{./figures/SingleVar/1lf.pdf}}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1n.pdf}}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1ln.pdf}}\\
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1nf.pdf}}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1lf.pdf}}
 	\vspace{-1em}
 	\caption{The number of packets received under different deployment settings}
 	% \vspace{-1.5em}
