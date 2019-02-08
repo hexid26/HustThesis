@@ -13,4 +13,4 @@ legacy/
 *.toc
 *.log
 *.pdf
-__latexindent_temp.tex
+*_temp.tex
