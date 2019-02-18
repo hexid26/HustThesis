@@ -1,5 +1,5 @@
 {
-  "latex-workshop.latex.autoBuild.onSave.enabled": true,
+  "latex-workshop.latex.autoBuild.onSave.enabled": false,
   "latex-workshop.latex.recipes": [
     {
       "name": "lualatex-quick-compile",

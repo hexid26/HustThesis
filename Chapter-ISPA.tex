@@ -1,8 +1,13 @@
-\chapter{边缘网络中基于任务卸载的链路调度机制}
+\chapter{基于任务卸载的链路调度机制}
 
-在软件定义网络( SDN )中，规则空间是由三进制内容可寻址存储器( TCAM )引起的不可避免的限制。当负载变得更受欢迎时，负载数量的急剧增加会影响链路调度和客户的服务质量( QoS )。因此，SDN中的链路调度必须考虑规则空间、带宽和QoS的约束。为了优化移动计算中的能耗，我们构建了一个模型来理解负载决策、延迟和能耗之间的关系。我们实现了一个两阶段算法，通过使用交换机中的规则空间和链路中的带宽来调度链路。通过对比评估，验证了算法的可行性。当SDN网络中规则空间的使用不充分时，与最佳解决方案相比，该算法可以将超过90 \%的能量效率存档。
+在移动群智感知中，由于移动设备的处理能力存在个体差异，计算能力较弱的移动设备会将部分数据处理任务卸载至边缘服务器上，以减少因本地数据处理导致的时延。
+当使用软件定义网络(SDN)管理网络资源时，SDN 路由器可管理的链路数量因三进制内容可寻址存储器(TCAM)的容量而受到不可避免的限制。
+面对无处不在的移动设备，SDN 必须考虑规则空间、带宽和任务卸载之间的约束。
+因此，本章构建了 ILP（Integer Linear Programming）模型来理解负载决策、传输延迟和以及因感知任务所消耗的能耗之间的关系。
+并提出二阶段决策算法，根据 SDN 交换机中的规则空间容量和链路带宽来调度移动设备和边缘服务器的通信链路，并保障任务卸载所带来的能耗收益。
+通过对比评估，验证了算法的可行性。并在 SDN 路由器规则空间不溢出的情况下，达到最佳调度方案90\%的节能效益。
 
-\section{研究背景}
+\section{引言}
 
 随着移动网络技术的发展，人们在日常生活中越来越离不开移动设备，如手机、平板电脑、笔记本电脑。手机可以帮助人们完成许多任务，比如导航、购物、拍照、分享等等。移动计算和云计算技术的进步~\cite{Lee:2013fj, Linthicum:2017vv}允许移动设备更容易、更灵活地访问云中的各种资源。如今，用户可以使用各种移动设备将个人数据存储到云存储服务中，例如Dropbox、OneDrive或Simple Storage Service（S3）。大多数云服务的目标是为客户有效地完成复杂的任务，并降低成本。为了灵活地从更多的云服务器中受益，一个名为“卸载”~\cite{Kumar:2013dq}的解决方案通过将任务从本地设备迁移到云服务器来提供移动设备来增强能力。通过将计算交付给云，移动设备可以完成各种任务，如GPS导航、环境感知、监控、增强现实等。此外，能耗显著降低，因此移动设备的待机时间大大提高。因此，卸载在移动网络环境中被广泛使用。
 
@@ -25,7 +30,7 @@
 
 1）我们建立了一个网络模型来制定SDN中的限制和移动卸载中的能耗。
 
-2）为了解决求解迭代学习算法的计算复杂性，我们提出了一种两阶段算法，通过大量基于仿真的研究验证了该算法的正确性和有效性。
+2）为了解决迭代求解算法的计算复杂性，我们提出了一种两阶段算法，通过大量基于仿真的研究验证了该算法的正确性和有效性。
 
 \section{System Model and Problem Statement}
 
@@ -402,18 +407,18 @@ $S$ in ascending order of $\us$
 
 \begin{figure}[!h]
   \centering
-  \begin{subfigure}[b]{0.32\linewidth}
-    \includegraphics[width=160pt]{./figures/Sec_ISPA/small_rule_grb.pdf}
+  \begin{subfigure}[h]{0.99\linewidth}
+    \includegraphics[width=380pt]{./figures/Sec_ISPA/small_rule_grb.pdf}
     \label{fig_smallNetworkRG}
     \caption{Rule usage via Gurobi}
   \end{subfigure}
-  \begin{subfigure}[b]{0.32\linewidth}
-    \includegraphics[width=160pt]{./figures/Sec_ISPA/small_rule_lsw.pdf}
+  \begin{subfigure}[h]{0.99\linewidth}
+    \includegraphics[width=380pt]{./figures/Sec_ISPA/small_rule_lsw.pdf}
     \label{fig_smallNetworkRL}
     \caption{Rule usage via LSW}
   \end{subfigure}
-  \begin{subfigure}[b]{0.32\linewidth}
-    \includegraphics[width=160pt]{./figures/Sec_ISPA/small_rule_spf.pdf}
+  \begin{subfigure}[h]{0.99\linewidth}
+    \includegraphics[width=380pt]{./figures/Sec_ISPA/small_rule_spf.pdf}
     \label{fig_smallNetworkRS}
     \caption{Rule usage via SPF}
   \end{subfigure}
@@ -448,7 +453,7 @@ $S$ in ascending order of $\us$
   \label{fig_large}
 \end{figure}
 
-\section{本章小结}
+\section{本章总结}
 
 本文建立了一个SDN网络公式模型，以了解SDN中总能量成本和限制之间的关系。为了最小化总能耗，我们将这个问题表述为线性规划问题。在对模型进行研究之后，我们提出了一种链路调度算法，根据每个链路的权重来选择最合适的链路。权重由交换机中规则空间的使用和链路中带宽的使用组成。通过大量实验，我们证明了算法的有效性。通过对比实验，该算法比SPF算法显示出显著的优势，极大地提高了最优解的性能。
 
