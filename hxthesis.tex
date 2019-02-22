@@ -40,7 +40,7 @@
 
 \stuno{D201177565}
 \schoolcode{10487}
-\title{面向群智感知的\\边缘计算资源调度机制研究}{EN Title}
+\title{面向群智感知的\\边缘计算资源调度机制研究}{Resources Scheduling Mechanisms in Edge Computing for Mobile Crowdsensing}
 \author{侯海翔}{Haixiang Hou}
 \major{计算机系统结构}{Computer Architecture}
 \supervisor{金海\hspace{1em}教授}{Prof. Hai Jin}
@@ -96,7 +96,7 @@
 ，提出了基于感知质量的任务调度机制，以提高感知任务在多任务传播源、多数据接收源场景下的执行效率。
 % 由于D2D通信的引入，感知任务的部署和移动设备的运动状态密切相关。
 目前的分析方法，无法准确描述移动群智感知应用的完整执行过程。
-基于此现状，利用随机过程分析将感知执行过程转化为数学语言，并使用偏微分方程组定义了感知任务的执行过程。
+基于此现状，利用随机过程分析将感知执行过程转化为数学语言，并使用常微分方程组定义了感知任务的执行过程。
 借助数学分析，该机制找出了移动设备在机会式通信网络中影响感知任务传播速度和感知数据收集速度的主要因素。
 通过二阶段决策算法，制定感知任务的分发策略和感知任务执行时间划分方法，在感知任务生命周期内提高感知质量。
 
@@ -130,12 +130,23 @@
 
 }
 
-\zhkeywords{边缘计算，移动群智感知、边缘服务、端到端通信}
+\zhkeywords{边缘计算，移动群智感知，端到端通信}
 
 \enabstract{
-English abstract.
+Abstract
+Mobile crowdsensing distributes sensing tasks to ubiquitous mobile devices by crowd, through collecting sensing data from various integrated sensors inside of devices. Edge computing, as a complementary distributed computing model to cloud computing model, provides new opportunities for mobile crowdsensing underlying support, due to its wide coverage, abundant devices, and heterogeneous networks. On the other hand, mobile devices utilize D2D (Device-to-Device) communication to reduce the cost of data interaction in the sensing process. Therefore, how to combine edge computing and D2D communication to achieve wide coverage and low latency mobile crowdsensing is remained to be solved. 
+
+Mobile crowd sensing application contains three crucial processes: sensing, communication, and data processing. In the sensing process, mobile crowdsensing task initiator generally employ edge servers, D2D communication and so on to accomplish sensing task dissemination and sensing data collection. One of the most important works of enhancing the quality of sensing is figuring out how to use edge servers and D2D communication to improve the efficiency of sensing task and enlarge the sensing coverage. And in the communication process, data interaction in mobile crowd sensing mainly adopts D2D communication supplemented by cellular communication, in order to decrease the communication overhead and the occupation of backbone network resource. Faced with massive amounts of sensing data transmission, it’s also an important research to work out how to use SDN (Software-Defined Networking) reasonable schedule network resource and plan transmission path to improve the efficiency of sensing task and reduce the cost. In the data processing process, edge computing model is widely used in mobile crowd sensing, processing massive sensing data by edge servers. We propose several resource schedule and optimization technologies to enhance the quality of sensing, and to solve problems above individually. 
+
+First, in the sensing process, we propose tasks schedule technology based on quality of sensing, to enhance the efficiency of sensing tasks in multiple source and receivers. However, the existing analytical methods couldn’t describe the complete execution process of mobile crowdsensing precisely. Thus we convert the sensing process into mathematics using stochastic analysis, and define the sensing process using ODEs (Ordinary Differential Equations). This technology finds out the major factors of influence sensing tasks propagate speed and sensing data collect speed in mobile devices in D2D communication networks through math analysis. 
+
+Second, in the communication process, we propose a network resource scheduling mechanism based on task offloading, and use SDN to optimize the communication efficiency of mobile devices in edge networks. For mobile devices with limited capabilities, the original sensing data can be directly handed over to the edge server for processing. However, the volume of raw sensing data, such as video and image, is huge, which easily leads the network congestion. Based on this situation, we build an integer linear programming model ( ILP ) between offload decision, energy consumption, and network resource which is established. Through the study and analysis of the model, we archieve the load balance of links in the edge network and maximize the benefits of computing task offloading.
+
+Third, in the data processing, we proposes an edge service scheduling mechanism based on the urban social network to solve the deployment problem of edge service  for mobile crowdsensing in cities. Under this scenario, edge services are usually deployed with the help of the social network characteristics of urban residents to improve the sensing quality of mobile crowdsensing. Based on this situation, the mechanism builds a mixed integer linear programming model ( MILP ) with passenger trajectory, bus lines, and edge service deployment decisions by using the existing bus network and passenger flow characteristics in public transportation. Through the analysis of this model, the deployment cost of edge services in urban mobile crowdsensing applications is reduced.
+
+In summary, focus on the three main processes of mobile crowdsensing, we use edge resource scheduling optimization technologies to reduce the time of data transmission and data processing, and reasonably reduce the energy consumption and service cost, and ensuring the sensing quality. At the same time, the deep combination with D2D communication also makes mobile crowdsensing more suitable for IoT scenarios.
 }
-\enkeywords{Edge computing, Mobile crowdsensing}
+\enkeywords{Edge computing, Mobile crowdsensing, D2D Communication}
 
 \begin{document}
 
@@ -148,9 +159,7 @@ English abstract.
 \mainmatter
 \input{Macro_Define}
 
-\input{第一章资料}
-
-% \input{Chapter-Introduction}
+\input{Chapter-Introduction}
 
 \input{Chapter-UIC}
 
@@ -162,7 +171,7 @@ English abstract.
 
 
 \begin{ack}
-感谢我的老师
+
 
 \end{ack}
 
