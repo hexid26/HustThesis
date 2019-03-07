@@ -8,9 +8,15 @@
 然后提出二阶段决策算法，根据 SDN 交换机中的流表容量和链路带宽来调度移动设备和边缘服务器的通信链路，并保障任务卸载所带来的能耗收益。
 通过对比评估，验证了算法的可行性。并在 SDN 路由器流表不溢出的情况下，达到最佳调度方案90\%的节能效益。
 
-\section{引言}
+\section{研究背景}
 
 % 这里要修改
+对于移动群智感知而言，大部分研究工作将重心放在志愿者激励~\cite{CNKI:JiaChaopeng, DBLP:journals/comsur/ZhangYSLTXM16, CNKI:WuMCSIncentive}和任务分发工作上~\cite{DBLP:conf/huc/LiuGWWYZ16, DBLP:conf/infocom/Xiao0HWL15, DBLP:conf/mass/LiLW15}，这些工作已经取得了良好的效果。
+因此，本章的研究重点围绕感知数据的收集工作展开。
+在群智感知数据收集过程中，需要移动设备对感知数据进行一定的处理工作再进项上传。
+对于普通的数值读取式传感器，这类传感数据体积小、处理容易，大部分的移动设备可以快速完成原始感知数据的处理工作。
+然而，对于视频、音频、图像、雷达信号等类别的传感数据，由于原始感知数据信息量巨大、且处理算法工作复杂度高，在没有专用芯片帮助下，移动设备无法对这类原始感知数据进行实时处理。
+为了解决这类原始感知数据的处理工作，在移动群智感知场景中常依靠计算卸载技术借助外部算力对这些感知数据进行处理。
 
 由于移动设备个体性能的差异，同一计算任务在不同移动设备上的运行时间和能耗开销也存在较大的区别。
 对于性能较弱的移动设备而言，为了加快部分应用的执行速度，可以使用计算任务卸载技术~\cite{Lee:2013fj, Linthicum:2017vv, Kumar:2013dq}，将本地难以高效执行的计算过程，迁移到计算能力充沛的云端服务器上，从而提高应用执行效率。
@@ -69,6 +75,15 @@
 然而收到地理分布的影响，不同基站之间的链接也有延时和带宽的差异。
 因此，感知设备在进行计算任务卸载的同时，不仅需要考虑主基站的性能负载，还需要考虑网络资源中带宽和延时的影响。
 
+\begin{figure}[!h]
+  % \vspace{-1em}
+  \centering
+  \includegraphics[width=440pt]{./figures/Sec_ISPA/scenario.pdf}
+  \vspace{-1em}
+  \caption{基于感知数据计算任务卸载的边缘计算场景}
+  \label{fig_scenario}
+\end{figure}
+
 根据图~\ref{fig_scenario} 所描述的场景，建立分析模型时需要考虑的对象分为三类：
 感知设备，2）由 SDN 支撑的子基站，3）可执行感知数据计算任务的主基站。
 为了让模型专注于研究计算任务调度和网络资环的协同调度关系，本章在场景建立时做出以下假设: 
@@ -79,21 +94,13 @@
 
 （3）所有网络连接均通过 SDN 管理。
 
-\begin{figure}[!h]
-  % \vspace{-1em}
-  \centering
-  \includegraphics[width=440pt]{./figures/Sec_ISPA/scenario.pdf}
-  \vspace{-1em}
-  \caption{基于感知数据计算任务卸载的边缘计算场景}
-  \label{fig_scenario}
-\end{figure}
 
-% 如图~\ref{fig_scenario} 所示，每个用户通过固定AP访问网络资源。用户和主基站之间的所有链接都由SDN分配。SDN的主要职责是为所有用户安排链路，以提高他们的QoS。同时，SDN的工作对用户是透明的。为了满足更多用户，我们可以租用云计算资源，如虚拟专用服务器（VPS）、Docker等。你想要的资源越多，你就需要付出越多。
+% 如图~\ref{fig_scenario} 所示，每个用户通过固定AP访问网络资源。用户和主基站之间的所有链接都由SDN分配。SDN的主要职责是为所有用户安排链路，以提高他们的QoS。同时，SDN的工作对用户是透明的。为了满足更多用户，可以租用云计算资源，如虚拟专用服务器（VPS）、Docker等。你想要的资源越多，你就需要付出越多。
 
-在该场景中，使用$u$来代表单一的感知设备，使用$U$代表所有感知设备构成的集合（ $ u \in U $）。
-在边缘网络中，可以执行计算任务的主基站用$s$表示，$S$ （ $ s \in S $）代表这类基站的集合。
-负责数据转发的子基站和 AP，使用$r$表示，并用$R$ （ $ r \in R $）代表这类基站的集合。
-考虑到 SDN 通过保存多路径转发规则管理链路，这里使用$l$表示感知设备到主基站的一条链路，$ L ( l \in L ) $代表所有感知设备与所有主基站能够建立的全部链接集合。
+在该场景中，使用$u$来代表单一的感知设备，使用$\boldsymbol{U}$代表所有感知设备构成的集合（ $ u \in \boldsymbol{U} $）。
+在边缘网络中，可以执行计算任务的主基站用$s$表示，$\boldsymbol{S}$ （ $ s \in \boldsymbol{S} $）代表这类基站的集合。
+负责数据转发的子基站和 AP，使用$r$表示，并用$\boldsymbol{R}$ （ $ r \in \boldsymbol{R} $）代表这类基站的集合。
+考虑到 SDN 通过保存多路径转发规则管理链路，这里使用$l$表示感知设备到主基站的一条链路，$ \boldsymbol{L} ( l \in \boldsymbol{L} ) $代表所有感知设备与所有主基站能够建立的全部链接集合。
 由于一个感知设备到一个主基站可能存在多条路径，可以利用$l$是否经过$r$来区分起始、终点相同的路径（在章节~\ref{Constraints} 中描述）。
 为了抽象各种设备的计算能力，将计算能力定义为$\mu$，用$\mu_s$表示云主基站$s$的计算能力，用$\mu_u$表示感知设备$u$的本地计算能力。
 
@@ -123,7 +130,7 @@ $\Tusresponse$是感知设备$u$将计算任务卸载到主基站$s$的总时间
 \begin{equation}
 \label{formula_cloudtime}
 % \begin{aligned}
-\Tusresponse = \Tus + \Tsu + \Tuscloud,\ \forall \ u \in U, s \in S
+\Tusresponse = \Tus + \Tsu + \Tuscloud,\ \forall \ u \in \boldsymbol{U}, s \in \boldsymbol{S}
 % \end{aligned}
 \end{equation}
 
@@ -132,7 +139,7 @@ $\Tusresponse$是感知设备$u$将计算任务卸载到主基站$s$的总时间
 为了用数学方法更好地描述这个模型，本节使用了表~\ref{table_notations_ispa} 中定义的数学符号。 这些符号的细节将在后面解释。
 
 \begin{table}[!h]
-  \caption{数学符号及定义}
+  \caption{数学符号及定义\textbf{『补完修订』}}
   \vspace{-1em}
   \label{table_notations_ispa}
   \centering
@@ -140,20 +147,27 @@ $\Tusresponse$是感知设备$u$将计算任务卸载到主基站$s$的总时间
   \hline
   \textbf{数学符号} & \textbf{定义}\\
   \hline
-  $\lus$ & 感知设备$u$ 到主基站 $s$ 的链路 ($\lus \in L$)\\\hline
-  $L_{us}$ & 感知设备$u$ 到主基站 $s$ 的链路集合 ($\lus \in L_{us}$)\\\hline
-  $\xusl$ & 感知设备$u$ 到主基站 $s$ 的上行链路\\\hline
-  $\yusl$ & 感知设备$u$ 到主基站 $s$ 的下行链路\\\hline
-  $\Tlus$ & 链路$usl$的传输时延\\\hline
-  $\Busl$ & 链路 $usl$的带宽资源\\\hline
-  $\Bu$ & 感知设备 $u$的上行链路带宽占用\\\hline
-  $\Bd$ & 感知设备 $u$的下行链路带宽占用\\\hline
-  $\xrl$ & 链路 $usl$ 是否经过子基站 $r$\\\hline
+  $\boldsymbol{U}$ & 由感知设备 $u$ 构成的集合\\\hline
+  $\boldsymbol{S}$ & 由主基站 $s$ 构成的集合\\\hline
+  $\boldsymbol{R}$ & 由 SDN 路由$r$ 构成的集合\\\hline
+  $\Lus$ & 感知设备$u$ 到主基站 $s$ 的链路 $\lus$ 构成的集合\\\hline
+  $\xlus$ & $\lus$ 是否作为感知设备$u$ 到主基站 $s$ 的上行链路\\\hline
+  $\ylus$ & $\lus$ 是否作为感知设备$u$ 到主基站 $s$ 的下行链路\\\hline
+  $\Tlus$ & 链路$\lus$的传输时延\\\hline
+  $\Blus$ & 链路 $\lus$的带宽资源\\\hline
+  $\xrl$ & 链路 $\lus$ 是否经过子基站 $r$\\\hline
+  $\Bu$ & 感知设备 $u$的上行链路带宽需求\\\hline
+  $\Bd$ & 感知设备 $u$的下行链路带宽需求\\\hline
   $\eu$ & 感知设备 $u$ 执行计算任务的能耗开销\\\hline
   $\es$ & 主基站 $s$ 执行计算任务的能耗开销\\\hline
   $\lambdau$ & 感知设备$u$上的计算任务到达率\\\hline
   $\mu_u$ & 感知设备$u$的计算任务处理速度\\\hline
   $\mu_s$ & 主基站$s$的计算任务处理速度\\\hline
+  $\xus$ & 感知设备$u$的计算任务是否卸载到主基站$s$\\\hline
+  $\aus$ & 感知设备$u$的计算任务卸载到主基站$s$的比例\\\hline
+  % $\Tus$ & \\\hline
+  % $\Tsu$ & \\\hline
+  $T_{QoS}$ & 群智感知应用中计算任务远端执行延时阈值 \\\hline
   \end{tabular}
 \end{table}
 
@@ -161,18 +175,19 @@ $\Tusresponse$是感知设备$u$将计算任务卸载到主基站$s$的总时间
 
 按照假设条件（1），感知数据的计算任务可以在感知设备或主基站上独立执行。
 因此，可以使用二进制变量来指示一个任务是在主基站上执行还是在感知设备中执行。
-对于感知设备$u$，用$\xus$表示计算任务卸载决策。
-$\xus = 1$时，计算任务在主基站执行，$\xus = 0$时，计算任务在本地执行。
-另一方面，由于计算任务可以进行划分同时分布在感知设备和主基站上，因此使用$\aus$（$\aus \in [0,1]$）来代表计算任务的卸载比例。
-当 $\aus = 1$时，感知设备$u$的计算任务全部在主基站$s$上执行，当$\aus = 0$时，感知设备$u$的计算任务全部在本地执行。
+对于感知设备 $u$，用 $\xus$ 表示计算任务卸载决策。
+$\xus = 1$ 时，计算任务在主基站执行，$\xus = 0$ 时，计算任务在本地执行。
+另一方面，由于计算任务可以进行划分同时分布在感知设备和主基站上，因此使用 $\aus$（$\aus \in [0,1]$）来代表计算任务的卸载比例。
+当 $\aus = 1$ 时，感知设备$u$的计算任务全部在主基站 $s$ 上执行，当 $\aus = 0$ 时，感知设备 $u$ 的计算任务全部在本地执行。
 
-基于上述定义，我们提出了一个排队模型来描述本文研究的问题。 符号$\aus$、$\xus$和$\aus$之间的关系为式~\eqref{formula_xus}，$\xu$的定义为式~\eqref{formula_xu}。
+基于上述定义， $\aus$ 和 $\xus$ 之间的关系可以用式~\eqref{formula_xus}来表达。
+而 $\xu$ 则可以通过式~\eqref{formula_xu}进行计算。
 
 \begin{equation}
   \label{formula_xus}
   \begin{gathered}
   \frac{\aus}{A} \leq \xus \leq A \cdot \aus \quad (A \to \infty) \\
-  \quad \forall \ u \in U, s \in S, \ 0\leq \aus \leq 1
+  \quad \forall \ u \in \boldsymbol{U}, s \in \boldsymbol{S}, \ 0\leq \aus \leq 1
   \end{gathered}
 \end{equation}
 
@@ -180,65 +195,64 @@ $\xus = 1$时，计算任务在主基站执行，$\xus = 0$时，计算任务在
 \begin{equation}
 \label{formula_xu}
 \begin{gathered}
-\frac{1 - \sum\limits_{s \in S}{\aus}}{A} \leq \xu \leq A \cdot (1 - \sum_{s \in S}{\aus}) \quad (A \to \infty) \\
-\forall\ u \in U, s \in S, \ 0\leq \sum_{s \in S}{\aus} \leq 1
+\frac{1 - \sum\limits_{s \in \boldsymbol{S}}{\aus}}{A} \leq \xu \leq A \cdot (1 - \sum_{s \in \boldsymbol{S}}{\aus}) \quad (A \to \infty) \\
+\forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}, \ 0\leq \sum_{s \in \boldsymbol{S}}{\aus} \leq 1
 \end{gathered}
 \end{equation}
 
-根据排队论原理~\cite{Queueing:systems}，在本地执行计算任务的平均时间$T_{u\_local}$，和在主基站中执行计算任务的平均时间$T_{s\_server}$，可以用 $M/M/1$ 模型计算得出。
-$T_{u\_local}$ 和 $T_{s\_server}$ 分别如
-式~\eqref{formula_Tulacal} 和式~\eqref{formula_Tscloud} 所示。
-式中，$\lambdau$为感知设备$u$上的计算任务到达率。
+根据排队论原理~\cite{Queueing:systems}，在本地执行计算任务的平均时间$T_{u\_local}$，和在主基站中执行计算任务的平均时间$T_{s\_server}$，可以借助 $M/M/1$ 模型计算得出。
+$T_{u\_local}$ 和 $T_{s\_server}$ 的计算方法分别如式~\eqref{formula_Tulacal} 和式~\eqref{formula_Tscloud} 所示。
+其中，$\lambdau$ 为感知设备 $u$ 上的计算任务平均到达率。
 
 % \vspace{-0.5em}
 \begin{equation}
 \label{formula_Tulacal}
-\Tulocal = \frac{\xu}{\uu - (1 - \sum\limits_{s \in S} \aus) \cdot \lambdau}, \quad \forall \ u \in U
+\Tulocal = \frac{\xu}{\uu - (1 - \sum\limits_{s \in \boldsymbol{S}} \aus) \cdot \lambdau}, \quad \forall \ u \in \boldsymbol{U}
 \end{equation}
 
 
 \begin{equation}
 \label{formula_Tscloud}
-\Tscloud = \frac{\xus}{\us - \sum\limits_{u \in U} \aus \cdot \lambdau}, \quad \forall \ s \in S
+\Tscloud = \frac{\xus}{\us - \sum\limits_{u \in \boldsymbol{U}} \aus \cdot \lambdau}, \quad \forall \ s \in \boldsymbol{S}
 \end{equation}
 
-使用式~\eqref{formula_cloudtime}、式~\eqref{formula_Tulacal} 和式~\eqref{formula_Tscloud}，可以计算感知设备和主基站之间的响应时间，以预测卸载决策。
+利用式~\eqref{formula_cloudtime}、式~\eqref{formula_Tulacal} 和式~\eqref{formula_Tscloud}，可以计算感知设备 $u$ 和主基站 $s$ 之间的响应时间 $\Tusresponse$，以预测卸载决策。
 而计算任务的卸载决策和通信链路的调度，同时会影响计算任务的处理时延以及感知设备和主基站上的能耗开销。
-为了尽可能减小感知设备的能耗和计算任务处理时延，该模型中提出了相关约束条件。
+为了尽可能减小感知设备的能耗和计算任务处理时延，在该模型中提出了相关约束条件。
 
 \subsection{约束条件}
 \label{Constraints}
 
 由于感知设备$u$和主基站$s$通信所使用的上行链路和下行链路可能不同，
 为了在模型中精确表述感知设备$u$和主基站$s$之间使用的通信链路，
-这里使用二进制变量$\xusl$和$\yusl$来表示是否使用$\lus$作为上行链路或下行链路。
-由于$\xusl$和$\yusl$的值与计算任务卸载决策$\xus$相关，
-因此，$\xusl$、$\yusl$和 $\xus$的值应该满足式~\eqref{formula_xusl1}。
+这里使用二进制变量$\xlus$和$\ylus$来表示是否使用$\lus$作为上行链路或下行链路。
+由于$\xlus$和$\ylus$的值与计算任务卸载决策$\xus$相关，
+因此，$\xlus$、$\ylus$和 $\xus$的值应该满足式~\eqref{formula_xusl1}。
 
 
 \begin{equation}
 \label{formula_xusl}
 \begin{aligned}
-0 \leq \xusl \leq \xus, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
-0 \leq \yusl \leq \xus, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
+0 \leq \xlus \leq \xus, \quad \forall \ \lus \in \Lus, u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
+0 \leq \ylus \leq \xus, \quad \forall \ \lus \in \Lus, u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
 \end{aligned}
 \end{equation}
 
 \begin{equation}
 \label{formula_xusl1}
 \begin{aligned}
-&\sum_{usl\in L_{us}}\xusl = 1, \quad \forall \ u\in U, s\in S\\
-&\sum_{usl\in L_{us}}\yusl = 1, \quad \forall \ u\in U, s\in S\\
+&\sum_{\lus \in \Lus}\xlus = 1, \quad \forall \ u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
+&\sum_{\lus \in \Lus}\ylus = 1, \quad \forall \ u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
 \end{aligned}
 \end{equation}
 
-待链路选定后，可以利用$\Tlus$来表示链路$\lus$的延迟。借助$\xusl$和$\yusl$，可以通过式~\eqref{formula_Tus} 计算感知设备$u$和主基站$s$之间上行链路延时$\Tus$和下行链路延时$\Tsu$的数值。
+待链路选定后，可以利用$\Tlus$来表示链路$\lus$的延迟。借助$\xlus$和$\ylus$，可以通过式~\eqref{formula_Tus} 计算感知设备$u$和主基站$s$之间上行链路延时$\Tus$和下行链路延时$\Tsu$的数值。
 
 \begin{equation}
 \label{formula_Tus}
 \begin{aligned}
-&\Tus = \xusl \cdot T_{usl}, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
-&\Tsu = \yusl \cdot T_{usl}, \quad \forall \ usl\in L_{us}, u\in U, s\in S\\
+&\Tus = \xlus \cdot \Tlus, \quad \forall \ \lus \in \Lus, u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
+&\Tsu = \ylus \cdot \Tlus, \quad \forall \ \lus \in \Lus, u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
 \end{aligned}
 \end{equation}
 
@@ -247,15 +261,15 @@ $T_{u\_local}$ 和 $T_{s\_server}$ 分别如
 对于感知设备而言，使用计算卸载的目的就是加速感知数据的处理以调高群智感知的效率。
 由于群质感知的生命周期有限，计算任务在调度决策的时候，要尽可能减少计算任务在主基站上的执行时间。
 所以计算任务的平均执行时间成为计算任务调度决策的重要参考指标。
-在该模型中，可以利用式~\ref{formula_Tusresponse} 精确获得感知设备$u$的计算任务在主基站$s$上的平均执行时间。
+在该模型中，可以利用式~\eqref{formula_Tusresponse} 精确获得感知设备$u$的计算任务在主基站$s$上的平均执行时间 $\Tusresponse$。
 
-% 尽管任务可以在本地或云中执行，但是用户总是希望他们能够尽快得到反馈，对于任务在哪里执行，用户并不关心。所以，任务在调度时应尽可能让用户的等待时间减少。因此，平均服务时间是一个非常重要的服务质量指标。通过以上工作，我们可以利用式~\ref{formula_Tusresponse} 精确地计算平均服务时间。
+% 尽管任务可以在本地或云中执行，但是用户总是希望他们能够尽快得到反馈，对于任务在哪里执行，用户并不关心。所以，任务在调度时应尽可能让用户的等待时间减少。因此，平均服务时间是一个非常重要的服务质量指标。通过以上工作，可以利用式~\eqref{formula_Tusresponse} 精确地计算平均服务时间。
 
 \begin{equation}
 \label{formula_Tusresponse}
 \begin{gathered}
-\Tusresponse = \xusl T_{usl} + \frac{\xus}{\us-\sum\limits_{u \in U}\aus \cdot \lambdau} + \yusl T_{usl}\\
-\forall \ usl\in L_{us}, u\in U, s\in S\\
+\Tusresponse = \xlus \Tlus + \frac{\xus}{\us-\sum\limits_{u \in \boldsymbol{U}}\aus \cdot \lambdau} + \ylus \Tlus\\
+\forall \lus \in \Lus, u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
 \end{gathered}
 \end{equation}
 
@@ -266,10 +280,10 @@ $T_{u\_local}$ 和 $T_{s\_server}$ 分别如
 \begin{equation}
 \label{formula_tscloudconstr}
 \begin{gathered}
-% \frac{\xu}{\uu - (1 - \sum\limits_{s \in S} \aus) \cdot \lambdau} \leq T_{QoS},\\
-\xusl T_{usl} + \frac{\xus}{\us-\sum\limits_{u \in U}\aus \cdot \lambdau} + \yusl T_{usl} \leq T_{QoS}\\
-\us-\sum\limits_{u \in U}\aus \cdot \lambdau > 0\\
-\forall \ usl\in L_{us}, u\in U, s\in S\\
+% \frac{\xu}{\uu - (1 - \sum\limits_{s \in \boldsymbol{S}} \aus) \cdot \lambdau} \leq T_{QoS},\\
+\xlus \Tlus + \frac{\xus}{\us-\sum\limits_{u \in \boldsymbol{U}}\aus \cdot \lambdau} + \ylus \Tlus \leq T_{QoS}\\
+\us-\sum\limits_{u \in \boldsymbol{U}}\aus \cdot \lambdau \leq 0\\
+\forall \lus \in \Lus, u\in \boldsymbol{U}, s \in \boldsymbol{S}\\
 \end{gathered}
 \end{equation}
 
@@ -278,25 +292,25 @@ $T_{u\_local}$ 和 $T_{s\_server}$ 分别如
 \begin{equation}
 \label{formula_tulocalconstr}
 \begin{gathered}
-\frac{\xu}{\uu - (1 - \sum\limits_{s \in S} \aus) \cdot \lambdau} \leq T_{QoS}\\
-\uu - (1 - \sum\limits_{s \in S}\aus) \cdot \lambdau > 0\\
-% \xusl \Tl + \frac{\xus}{\us-\sum\limits_{u \in U}\aus \cdot \lambdau} + \yusl \Tl\\
-\forall \ u\in U, s\in S\\
+\frac{\xu}{\uu - (1 - \sum\limits_{s \in \boldsymbol{S}} \aus) \cdot \lambdau} \leq T_{QoS}\\
+\uu - (1 - \sum\limits_{s \in \boldsymbol{S}}\aus) \cdot \lambdau > 0\\
+% \xlus \Tl + \frac{\xus}{\us-\sum\limits_{u \in \boldsymbol{U}}\aus \cdot \lambdau} + \ylus \Tl\\
+\forall \ u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
 \end{gathered}
 \end{equation}
 
 \textbf{带宽资源约束:}
 与传统网络一样，SDN中的每条链路都有自己的最大带宽限制。
-我们假设感知设备$u$通过链路$\lus$与主基站$s$连接。
+假设感知设备$u$通过链路$\lus$与主基站$s$连接。
 由于感知设备数据众多，中间链路存在严重的复用现象。
 因此，链路$\lus$的带宽必须满足所有感知设备的通信需求。
-假设链路$\lus$的最大带宽是$\Busl$，并且上行链路和下行链路的带宽需求分别为$\Bu$和$\Bd$。那么约束条件可以描述为式~\eqref{formula_Bandwidth}。
+假设链路$\lus$的最大带宽是$\Blus$，并且上行链路和下行链路的带宽需求分别为$\Bu$和$\Bd$。那么约束条件可以描述为式~\eqref{formula_Bandwidth}。
 
 \begin{equation}
 \label{formula_Bandwidth}
 \begin{gathered}
-\sum\limits_{u \in U} \sum\limits_{s\in S}\lambdau\aus(\xusl \cdot \Bu + \yusl \cdot \Bd) \leq \Busl\\
-\forall \ usl\in L_{us}, u\in U, s\in S\\
+\sum\limits_{u \in \boldsymbol{U}} \sum\limits_{s\in \boldsymbol{S}}\lambdau\aus(\xlus \cdot \Bu + \ylus \cdot \Bd) \leq \Blus\\
+\forall \lus\in \Lus, u\in \boldsymbol{U}, s\in \boldsymbol{S}\\
 \end{gathered}
 \end{equation}
 
@@ -310,12 +324,12 @@ $T_{u\_local}$ 和 $T_{s\_server}$ 分别如
 \begin{gathered}
 \begin{aligned}
 \xrl = \left\{\begin{aligned}
-& 0,\quad if\ usl \text{ does not pass through }r\\
-& 1,\quad if\ usl \text{ passes through }r\\
+& 0,\quad  \lus \text{ 不经过 SDN 路由器 }\, r\\
+& 1,\quad  \lus \text{ 经过 SDN 路由器 }\, r\\
 \end{aligned}
 \right.
 \end{aligned}
-\\\forall \ u \in U, s \in S, usl\in L_{us}\\
+\\\forall \ u \in \boldsymbol{U}, s \in \boldsymbol{S}, \lus \in \Lus\\
 \end{gathered}
 \end{equation}
 
@@ -324,8 +338,8 @@ $T_{u\_local}$ 和 $T_{s\_server}$ 分别如
 \begin{equation}
 \label{formula_linkconstr}
 \begin{gathered}
-\sum\limits_{u \in U}\sum\limits_{s \in S}\sum\limits_{l \in L}(\xusl + \yusl) \cdot \xrl \leq C_r\\
-\forall\ u \in U, s \in S, usl\in L_{us}, r\in R\\
+\sum\limits_{u \in \boldsymbol{U}}\sum\limits_{s \in \boldsymbol{S}}\sum\limits_{\lus \in Lus}(\xlus + \ylus) \cdot \xrl \leq C_r\\
+\forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}, \lus \in \Lus, r\in R\\
 \end{gathered}
 \end{equation}
 
@@ -337,8 +351,8 @@ $T_{u\_local}$ 和 $T_{s\_server}$ 分别如
 \begin{equation}
 \label{formula_Energy}
 \begin{gathered}
-E = \sum\limits_{u\in U}(\lambdau(1-\sum\limits_{s\in S}\aus)\eu + \lambdau\sum\limits_{s\in S}\aus\es)\\
-\forall\ u \in U, s \in S\\
+E = \sum\limits_{u\in \boldsymbol{U}}(\lambdau(1-\sum\limits_{s\in \boldsymbol{S}}\aus)\eu + \lambdau\sum\limits_{s\in \boldsymbol{S}}\aus\es)\\
+\forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}\\
 \end{gathered}
 \end{equation}
 
@@ -347,8 +361,10 @@ E = \sum\limits_{u\in U}(\lambdau(1-\sum\limits_{s\in S}\aus)\eu + \lambdau\sum\
 \begin{equation}
 \label{formula_energy}
 \begin{aligned}
-\text{min }&{:}\ E\\
-\text{s.t. }&{:}\ \text{(6)-(7), (10)-(12), (14)}
+\text{取最小值\:}&{:}\ E\\
+% \text{限制条件\:}&{:}\ \text{(6)-(7), (10)-(12), (14)}\\
+\text{限制条件\:}&{:}\ 式~\eqref{formula_xusl}, 式~\eqref{formula_xusl1}, 式~\eqref{formula_tscloudconstr},\\
+&\ \ 式~\eqref{formula_tulocalconstr}, 式~\eqref{formula_Bandwidth}, 式~\eqref{formula_linkconstr}
 \end{aligned}
 \end{equation}
 
@@ -359,7 +375,7 @@ E = \sum\limits_{u\in U}(\lambdau(1-\sum\limits_{s\in S}\aus)\eu + \lambdau\sum\
 同时，随着网络规模的扩大，求解时间也成指数级趋势上升。
 为此，本节提出一种二阶段网络资源调度算法，优化求解过程，寻找协同调度的次优调度方法。
 
-该算法主要负责两个阶段的工作。首先，该算法确定$\sum_{s \in S}\aus$和$\sum_{u \in U}\aus$，创建针对感知设备$u$和主基站$s$的不同组合，每种组合创建首选链接集合。
+该算法主要负责两个阶段的工作。首先，该算法确定$\sum_{s \in \boldsymbol{S}}\aus$和$\sum_{u \in \boldsymbol{U}}\aus$，创建针对感知设备$u$和主基站$s$的不同组合，每种组合创建首选链接集合。
 然后，该算法为针对模型中的约束条件，为感知设备$u$和服务器$s$分配最合适的链路，并调整$\aus$，减少感知设备的能源开销。
 
 \begin{algorithm}[!b]
@@ -372,22 +388,22 @@ E = \sum\limits_{u\in U}(\lambdau(1-\sum\limits_{s\in S}\aus)\eu + \lambdau\sum\
 \KwData{网络结构、每条链路的带宽、延时数据}
 % \KwData{$Occ[1:T]$: 每个程序当前的NCP大小，初始为0，随着缓存路的分配增加，最终为每个程序在整个缓存上的NCP}
 \If {$\eu \leq \es$}{
-  \For{$u \in U$}{
-    $\sum_{s \in S}\aus = max(0, 1 - \frac{\uu}{\lambdau})$
+  \For{$u \in \boldsymbol{U}$}{
+    $\sum_{s \in \boldsymbol{S}}\aus = max(0, 1 - \frac{\uu}{\lambdau})$
   }
 }\Else{
-  \For{$s \in S$}{
-    $\sum_{u \in U}\aus = min(1, \frac{\us}{\lambdau})$
+  \For{$s \in \boldsymbol{S}$}{
+    $\sum_{u \in \boldsymbol{U}}\aus = min(1, \frac{\us}{\lambdau})$
   }
 }
-\For{$u \in U$}{
-  \For{$s \in S$}{
-    为感知设备$u$ 和主基站 $s$ 创建可用链路集合$L_{us}$\\
-    对链路集合$L_{us}$ 中的 链路按延时升序排序
+\For{$u \in \boldsymbol{U}$}{
+  \For{$s \in \boldsymbol{S}$}{
+    为感知设备$u$ 和主基站 $s$ 创建可用链路集合$\Lus$\\
+    对链路集合$\Lus$ 中的 链路按延时升序排序
   }
 }
-$\as = \sum_{s \in S}\aus, \  \au = \sum_{u \in U}\aus$\\
-\KwOut{$\aus, \au, L_{us}$}
+$\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus$\\
+\KwOut{$\aus, \au, \Lus$}
 \caption{创建感知设备$u$ 和主基站 $s$ 的可选链路集，并根据计算任务的平均执行延时约束决定卸载比例 $\aus$}
 \label{algo_aus}
 \end{algorithm}
@@ -396,28 +412,28 @@ $\as = \sum_{s \in S}\aus, \  \au = \sum_{u \in U}\aus$\\
 在式~\eqref{formula_Energy}，$\lambdau$、$\es$ 和 $\eu$ 是常数。
 变量 $\aus$ 是确定感知设备总能耗 $E$ 值的唯一变量。
 为了降低总能耗开销，必须在 $\es$ 和 $\eu$ 之间调整系数。
-因此，当 $\es > \eu$ 时，$\aus$ 应当使 $\sum_{s \in S}{\aus}$ 取最大值，当 $\es \leq \eu$ 时，$\aus$ 应当使 $\sum_{s \in S}{\aus}$ 取最小值。
-因此，该算法第一阶段的工作是找出$\sum_{s \in S}\aus$的取值范围。
+因此，当 $\es > \eu$ 时，$\aus$ 应当使 $\sum_{s \in \boldsymbol{S}}{\aus}$ 取最大值，当 $\es \leq \eu$ 时，$\aus$ 应当使 $\sum_{s \in \boldsymbol{S}}{\aus}$ 取最小值。
+因此，该算法第一阶段的工作是找出$\sum_{s \in \boldsymbol{S}}\aus$的取值范围。
 
-利用约束条件~\eqref{formula_tscloudconstr} 和~\eqref{formula_tulocalconstr}，可以得到$\sum_{s \in S}\aus$的范围和$\sum_{u \in U}\aus$的范围：
+利用约束条件~\eqref{formula_tscloudconstr} 和~\eqref{formula_tulocalconstr}，可以得到$\sum_{s \in \boldsymbol{S}}\aus$的范围和$\sum_{u \in \boldsymbol{U}}\aus$的范围：
 
 \vspace{-1em}
 
 \begin{equation*}
 \begin{gathered}
-\sum_{s \in S}\aus \in [max(0, 1- \frac{\uu}{\lambdau}), 1], \quad \forall\ u \in U, s \in S\\
-\sum_{u \in U}\aus \in [0, \frac{\us}{\lambdau}], \quad \forall\ u \in U, s \in S
+\sum_{s \in \boldsymbol{S}}\aus \in [max(0, 1- \frac{\uu}{\lambdau}), 1], \quad \forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}\\
+\sum_{u \in \boldsymbol{U}}\aus \in [0, \frac{\us}{\lambdau}], \quad \forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}
 % \vspace{-1em}
 \end{gathered}
 \end{equation*}
 
-在确定$\sum_{s \in S}\aus$和$\sum_{u \in U}\aus$的范围后，可以根据约束条件式~\eqref{formula_tulocalconstr} 找出一组从感知设备$u$到主基站$s$的链接集合。
+在确定$\sum_{s \in \boldsymbol{S}}\aus$和$\sum_{u \in \boldsymbol{U}}\aus$的范围后，可以根据约束条件式~\eqref{formula_tulocalconstr} 找出一组从感知设备$u$到主基站$s$的链接集合。
 这些信息能够作为算法2的输入，帮助感知设备$u$选择连接主基站$s$的最佳链路。
 
 
 
 \textbf{第二阶段 （算法~\ref{algo_findminpaths}）}:
-在算法1中，可以得到$\sum_{s \in S}\aus$的最优解。
+在算法1中，可以得到$\sum_{s \in \boldsymbol{S}}\aus$的最优解。
 在此阶段中，本算法负责找出所有$\aus$，使得感知设备$u$ 对不同主基站$s$的卸载比例总和逼近最佳值。
 同时，由于流表容量、带宽以及延迟的限制，利用贪心算法和动态规划算法相结合来达到目标。
 
@@ -425,7 +441,7 @@ $\as = \sum_{s \in S}\aus, \  \au = \sum_{u \in U}\aus$\\
 \setstretch{\algostretch}
 \KwIn{$\as$ : 算法1的输出}
 \KwIn{$\au$ : 算法1的输出}
-\KwIn{$\L_{us}$: 算法1的输出}
+\KwIn{$\Lus$: 算法1的输出}
 \KwIn{$T_{QoS}$: 群智感知应用对感知数据处理时延要求的阈值}
 \KwData{ SDN 路由器集合$R$以及每个路由器$r$的流表容量 $C_r$}
 % \KwData{$Occ[1:T]$: 每个程序当前的NCP大小，初始为0，随着缓存路的分配增加，最终为每个程序在整个缓存上的NCP}
@@ -433,41 +449,41 @@ all weights initialized as $0$
 all $\aus$ initialized as $0$
 $U$ in ascending order of $\lambdau$
 $S$ in ascending order of $\us$
-\For{$u \in U$}{
+\For{$u \in \boldsymbol{U}$}{
   \If {$T_{u\_local} < T_{Qos}$}{
-    $\aus = 0, s \in S$
+    $\aus = 0, s \in \boldsymbol{S}$
   }
   \Else{
-    \For {$s \in S$}{
+    \For {$s \in \boldsymbol{S}$}{
       \If {$1 \leq \frac{\lambdau}{\us}$ \textbf{and} $T_{s\_cloud} < T_{QoS}$}{
-        \For {$l \in L_{us}$}{
+        \For {$l \in \Lus$}{
           \If{$l.weight$ is not exceed $10\%$}{
             $\aus = 1$\\
-            $\xusl[u,s,l] = \yusl[u,s,l] =  1$\\
+            $\xlus[u,s,l] = \ylus[u,s,l] =  1$\\
             \textbf{next} $u$
           }
         }
       }
       \If {$T_{s\_cloud} < T_{QoS}$ \textbf{and} $\au < 1$}{
-        \For {$l \in L_{us}$}{
+        \For {$l \in \Lus$}{
           \If{$l.weight$ is not exceed $10\%$}{
             $\aus = \frac{\lambdau}{\us}$\\
-            $\xusl[u,s,l] = \yusl[u,s,l] =  1$
+            $\xlus[u,s,l] = \ylus[u,s,l] =  1$
           }
         }
       }
     }
   }
 }
-\KwOut{$\xusl$}
-\caption{Choose the appropriate link for user $u \in U$}
+\KwOut{$\xlus$}
+\caption{Choose the appropriate link for user $u \in \boldsymbol{U}$}
 \label{algo_findminpaths}
 \end{algorithm}
 
 首先，按$\lambdau$的升序对感知设备进行排序，再按$\us$升序对主基站进行排序。 这里的策略是优先从计算任务到达速度较慢的感知设备上卸载任务。
 一般来说，主基站的能耗成本和其计算性能是正相关的。
 因此，主基站的最佳选择策略是在满足平均计算时延的前提条件下，优先使用能耗最小的主基站。
-然后，根据第一阶段得出的链接结合$L_{us}$，遵循贪心算法来选择感知设备$u$和主基站$s$之间最快的链接。 
+然后，根据第一阶段得出的链接结合$\Lus$，遵循贪心算法来选择感知设备$u$和主基站$s$之间最快的链接。 
 由于带宽资源也存在约束条件，所以最快的链路不一定是最佳选择。
 因此，再利用动态规划的思量来平衡边缘网络中各链路的带宽占用。
 在这一步中，使用流表容量的使用率和链路带宽占用率作为链路选择的权值。
@@ -529,7 +545,7 @@ $S$ in ascending order of $\us$
   \label{fig_smallE}
 \end{figure}
 
-% 链路调度算法LSW的目标是最小化总能耗$E$。因此，我们比较了三种方法计算出的不同的$E$值。如图~\ref{fig_smallE} 所示，不同的链路调度策略会影响卸载场景中的总能耗。当用户数量较少时，链路调度算法不会对能耗产生太大影响。随着用户数量的增加，能源成本之间的差距急剧扩大。当网络中有100个用户时，LSW方法的总能耗比最优解（Gurobi计算得出）高12.6 \%，比SPF方法的最优解高36.4\%。同时，100名用户使SDN网络基本上处于满负荷状态。因此，当SDN网络的负载接近满负荷时，LSW方法此时存在局限性。从这个图中，当SDN网络负载不满时，LSW方法和最优解之间的差异可以减少到小于10\%。
+% 链路调度算法LSW的目标是最小化总能耗$E$。因此，比较了三种方法计算出的不同的$E$值。如图~\ref{fig_smallE} 所示，不同的链路调度策略会影响卸载场景中的总能耗。当用户数量较少时，链路调度算法不会对能耗产生太大影响。随着用户数量的增加，能源成本之间的差距急剧扩大。当网络中有100个用户时，LSW方法的总能耗比最优解（Gurobi计算得出）高12.6 \%，比SPF方法的最优解高36.4\%。同时，100名用户使SDN网络基本上处于满负荷状态。因此，当SDN网络的负载接近满负荷时，LSW方法此时存在局限性。从这个图中，当SDN网络负载不满时，LSW方法和最优解之间的差异可以减少到小于10\%。
 
 \begin{figure}[!h]
   \centering
@@ -642,7 +658,7 @@ $S$ in ascending order of $\us$
   \label{fig_largeL}
 \end{figure}
 
-\section{本章总结}
+\section{本章小结}
 
 本章在 SDN 管理的边缘网络，针对群智感知中感知数据计算任务卸载决策，围绕网络资源限制和感知设备的能耗，建立了量化分析模型。
 为了深入理解网络资源限制和感知设备的能耗之间的关系，将该模型表述为 ILP 模型，以减少感知设备执行感知数据计算任务的总能耗。
@@ -651,6 +667,6 @@ $S$ in ascending order of $\us$
 通过对比试验，证明了算法的有效性。
 在和 SPF 算法的对比实验中，显示出 LSW 调度算法的显著优势。
 
-% 建立了一个SDN网络公式模型，以了解SDN中总能量成本和限制之间的关系。为了最小化总能耗，我们将这个问题表述为线性规划问题。在对模型进行研究之后，我们提出了一种链路调度算法，根据每个链路的权重来选择最合适的链路。权重由交换机中规则空间的使用和链路中带宽的使用组成。通过大量实验，我们证明了算法的有效性。通过对比实验，该算法比SPF算法显示出显著的优势，极大地提高了最优解的性能。
+% 建立了一个SDN网络公式模型，以了解SDN中总能量成本和限制之间的关系。为了最小化总能耗，将这个问题表述为线性规划问题。在对模型进行研究之后，提出了一种链路调度算法，根据每个链路的权重来选择最合适的链路。权重由交换机中规则空间的使用和链路中带宽的使用组成。通过大量实验，证明了算法的有效性。通过对比实验，该算法比SPF算法显示出显著的优势，极大地提高了最优解的性能。
 
 
