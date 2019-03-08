@@ -13,8 +13,8 @@
 % 利用边缘服务器分发感知任务，可以大大提高感知任务的空间覆盖率。
 利用 D2D 通信发送感知任务收集感知数据，不仅能减少主干网络的流量负载，还能减少感知数据的传输时延。
 % 尽管大量的研究工作利用模拟或系统实验证明了边缘计算和D2D通信对移动群智感知的积极作用，但是这些研究工作并没有考虑移动设备自身的运动特征对移动群智感知造成的影响。
-考虑移动设备运动状态对 D2D 通信造成的影响，以及边缘服务部署和群智感知应用执行效率之间的联系，本章将移动群智感知的场景进行参数量化，针对移动群智感知的执行过程建立分析模型。
-然后利用随机过程分析方法，讨论了移动群智感知执行过程中各参数对感知质量的影响机理以及优化途径。
+考虑移动设备运动状态对 D2D 通信造成的影响，以及边缘服务部署和群智感知应用执行效率之间的联系，本章将移动群智感知的场景进行参数量化，针对移动群智感知的执行过程建立随机过程分析模型。
+然后对模型进行分析，讨论了移动群智感知执行过程中各参数对感知质量的影响机理。
 最后根据分析结果，提出了面向感知质量优化的边缘资源调度方法。
 
 \section{研究背景}
@@ -91,6 +91,7 @@
 
 % 本章中，重点研究了与论文[22]中描述的MCS过程。 在第一个任务分发阶段，任务分发者将MCS任务分发到移动设备。 此后，在第二数据收集阶段，已经接收到任务的移动设备进行感测并将感测数据报告回数据收集器。 进一步使雾计算参与上述程序。 在本节中，首先介绍一些预备，然后定义随机过程分析的系统模型。
 
+\textbf{『把 MCS 应用再说清楚一点。』}
 本章采用了和文献~\cite{DBLP:journals/tpds/ZhaoMTL15}相似的移动群智感知应用范式，主要研究对象为移动群智感知应用中的两个重要过程：任务分发过程和数据收集过程。
 其中，任务分发过程是指已部署任务分发服务的基站将任务分发至边缘网络中的移动设备，数据收集过程是指已经接受到任务的移动设备将感知数据反馈给已部署数据收集服务的基站。
 考虑到移动群智感知参与者本身具备移动性，本章也将移动设备的运动特征纳入考虑范围。
@@ -131,7 +132,10 @@ $T_{total\_time}$ 是前三者之和。
 
 图~\ref{Figure_PropagationProcedure} 展示了边缘网络中感知任务的分发方法。
 首先，部署有任务分发服务的基站利用蜂窝网络以固定的速率将任务部署到可通信的移动设备上。
-已经被部署感知任务的移动节点，在感知任务生命周期内，利用 D2D 通信将感知任务分发给其相邻且未收到感知任务的移动设备。
+因此在感知任务分发的前期，主要依赖蜂窝网络传播分发感知任务。
+同时，已经收到感知任务的移动设备在其运动过程中，可能会遇见其它还未收到感知任务的移动设备。
+在这种情况下，相遇的移动设备之间可以利用 D2D 通信进行感知任务的分发。
+随着移动设备的不断相遇，收到感知任务的移动设备数量会不断扩大，极大提高感知任务的分发效率。
 由于 D2D 通信需要两个移动设备的距离满足一定条件，因此使用 D2D 通信传播感知任务会受到移动设备运动状态的影响。
 
 \begin{figure}[!h]
@@ -204,7 +208,7 @@ $w$ 表示移动设备的运动模型对应的常量系数，例如随机路径�
 % 由于基站和移动设备使用蜂窝网络进行数据通信，所以 $\lambda_f$ 和移动设备的运动轨迹没有直接联系。
 % 所以，$\lambda_f$ 也可以理解为基站和移动设备因群智感知发生通信的概率。
 
-\section{随机过程分析模型及优化}
+\section{随机过程分析模型及感知质量优化}
 % 在本节中，给出了任务传播阶段，数据收集阶段的随机过程分析，以及在给定参数（如N，N f，λn，λ）的覆盖度量中可实现的感知质量的推导。 F 。 为方便读者，表I总结了本文中使用的主要符号。
 本小节主要阐述任务分发过程和数据收集过程的理论分析方法。
 表 ~\ref{table_notations_UIC} 给出了本章中使用的符号定义。
@@ -231,10 +235,10 @@ $w$ 表示移动设备的运动模型对应的常量系数，例如随机路径�
   $P_{nD2D}(t)$ & 感知数据使用 D2D 通信未送达的概率\\\hline
   $P_{nDirect}(t)$ & 感知数据使用蜂窝网络未送达的概率\\\hline
   $S(t)$ & 感知数据在网络中的拷贝数量\\\hline
-  $\boldsymbol{G}$ & 将目标区域划分为网格 $g(i)$ 的集合（$g(i) \in \boldsymbol{G}$）\\\hline
-  $L_{ij}(t)$ & $t$ 时刻移动设备$j$是否在网格 $g(i)$中\\\hline
-  $C_{ij}(t)$ & 设备 $j$ 在 $g(i)$ 中的停留时间\\\hline
-  $C(t)$ & $t$ 时刻，移动群质感是的区域覆盖质量\\\hline
+  % $\boldsymbol{G}$ & 将目标区域划分为网格 $g(i)$ 的集合（$g(i) \in \boldsymbol{G}$）\\\hline
+  % $L_{ij}(t)$ & $t$ 时刻移动设备$j$是否在网格 $g(i)$中\\\hline
+  % $C_{ij}(t)$ & 设备 $j$ 在 $g(i)$ 中的停留时间\\\hline
+  % $C(t)$ & $t$ 时刻，移动群质感是的区域覆盖质量\\\hline
   $D(t)$ & 任务分发时间为 $t$ 时，感知数据的收集总量\\\hline
 \end{tabular}
   % \vspace{-1em}
@@ -356,7 +360,7 @@ I(t) = \frac{N (e^{(\lambda_n N + \lambda_f N_f) t} - 1)}{e^{(\lambda_n N + \lam
 \begin{equation}
   \label{Formula_ProbaNA}
   \begin{aligned}
-  P_{nD2D}(t) = (\frac{N-S(t)}{N})^{\lambda_f N_f t}, \forall \ \lambda_f N_f \in [0,1)
+  P_{nDirect}(t) = (\frac{N-S(t)}{N})^{\lambda_f N_f t}, \forall \ \lambda_f N_f \in [0,1)
   \end{aligned}
 \end{equation}
 
@@ -371,152 +375,159 @@ I(t) = \frac{N (e^{(\lambda_n N + \lambda_f N_f) t} - 1)}{e^{(\lambda_n N + \lam
   \end{aligned}
 \end{equation}
 
-\subsection{感知覆盖范围分析}
-
-% 在MCS应用程序中，任务需要覆盖广泛的领域。该区域的覆盖范围意味着感应地图的感应质量。例如，十字路口的交通状况可以通过附近所有道路上的车辆数量来确定。为了准确计算覆盖率，将网络区域切割成一组网格单元= fg1G2；G3；: : : : :；gmg，如图5所示。这些单元的大小意味着空间上的感知粒度，这由MCS应用程序用户决定。假设地图中有移动参与者，letLij(t )表示网格中的移动参与者是否在某个时间( I )，即..
-在移动群智感知应用中，往往需要感知数据的产生位置能够广泛的地域范围。
-传感数据所覆盖的地域范围越广，则移动群智感知服务的普适性越强。
-例如，一个十字路口的交通状况需要通过附近所有道路上的车辆数量来预测。
-为了计算移动群智感知应用的覆盖率，将群智感知应用的目标区域 $\boldsymbol{G}$ 切割成一组网格单元，如图~\ref{Figure_CoverageofArea} 所示，$\boldsymbol{G} = \{g_1,g_2,g_3,\ldots,g_m\}$。
-网格单元的大小意味着地域空间上的感知密度，该参数由移动群智感知应用的开发者所决定。
-
-\begin{figure}[!h]
-  \centering
-  % \vspace{-1.5em}
-  \includegraphics[width=200pt]{./figures/Sec_UIC/移动群智感知的空间分布.pdf}
-  \vspace{-0.5em}
-  \caption{移动群智感知的空间分布}
-  \vspace{-0.5em}
-  \label{Figure_CoverageofArea}
-\end{figure}
-
-在分析感知覆盖时，用二进制变量 $L_{ij}(t)$ 表示时刻 $t$ 时，移动设备 $j$ 是否在网格$g(i)$中。
-其定义如式~\eqref{Formula_LocationIJ} 。
+将式~\eqref{Formula_ProbaNP}、式~\eqref{Formula_ProbaNA} 和式~\eqref{Formula_St} 带入式~\eqref{Formula_ProbaRcvT}，可以得到 $P_{rcv}(t)$ 的最终计算方法，如式~\eqref{Formula_ProbaRcvTF}。
+式中，$t$ 代表感知任务分发的执行时间，$t'$ 代表感知数据收集的执行时间。
 
 \begin{equation}
-  \label{Formula_LocationIJ}
-  L_{ij}(t) = \left \{
-  \begin{aligned}
-  & 1,\ \text{$t$时刻时，移动设备 $j$ 位于网格 $g(i)$ 中}\\
-  & 0,\ \text{$t$时刻时，移动设备 $j$ 不在网格 $g(i)$ 中}
-  \end{aligned}
-  \right.
-\end{equation}
-
-利用 $L_{ij}(t)$，移动设备 $j$ 在网格 $g(i)$ 中的总停留时间 $C_{ij}$ 可以用式~\eqref{Formula_UserTrace} 表示。
-
-\begin{equation}
-  \label{Formula_UserTrace}
-  C_{ij}(t) = \int_{0}^{t}L_{ij}(\varepsilon )d\varepsilon , \forall \ i \in [0,m], j \in [0,N]
-\end{equation}
-
-因此，在 $t$ 时刻，移动群智感知服务的感知质量 $C(t)$ 可以利用来式~\eqref{Formula_UserCoverageGrip} 来计算。
-
-\begin{equation}
-  \label{Formula_UserCoverageGrip}
+  \label{Formula_ProbaRcvTF}
   \begin{gathered}
-  C(t) = \sum^{m}_{i=0}\sum^{N}_{j=0} g_i \times C_{ij}(t), \forall \ t>0
+    P_{rcv}(t, t') = 1 -  (\frac{N}{N + N_f})^{\frac{N e^{\lambda_n N t}}{e^{\lambda_n N t} + N -1} - 1} \times (\frac{N-\frac{N e^{\lambda_n N t'}}{e^{\lambda_n N t'} + N -1}}{N})^{\lambda_f N_f t'}, \\
+    \forall \  t > 0, t' >0
   \end{gathered}
 \end{equation}
+
+% \subsection{感知覆盖范围分析}
+
+% 在移动群智感知应用中，往往需要感知数据的产生位置能够广泛的地域范围。
+% 传感数据所覆盖的地域范围越广，则移动群智感知服务的普适性越强。
+% 例如，一个十字路口的交通状况需要通过附近所有道路上的车辆数量来预测。
+% 为了计算移动群智感知应用的覆盖率，将群智感知应用的目标区域 $\boldsymbol{G}$ 切割成一组网格单元，如图~\ref{Figure_CoverageofArea} 所示，$\boldsymbol{G} = \{g_1,g_2,g_3,\ldots,g_m\}$。
+% 网格单元的大小意味着地域空间上的感知密度，该参数由移动群智感知应用的开发者所决定。
+
+% \begin{figure}[!h]
+%   \centering
+%   % \vspace{-1.5em}
+%   \includegraphics[width=200pt]{./figures/Sec_UIC/移动群智感知的空间分布.pdf}
+%   \vspace{-0.5em}
+%   \caption{移动群智感知的空间分布}
+%   \vspace{-0.5em}
+%   \label{Figure_CoverageofArea}
+% \end{figure}
+
+% 在分析感知覆盖时，用二进制变量 $L_{ij}(t)$ 表示时刻 $t$ 时，移动设备 $j$ 是否在网格$g(i)$中。
+% 其定义如式~\eqref{Formula_LocationIJ} 。
+
+% \begin{equation}
+%   \label{Formula_LocationIJ}
+%   L_{ij}(t) = \left \{
+%   \begin{aligned}
+%   & 1,\ \text{$t$时刻时移动设备 $j$ 位于网格 $g(i)$ 中}\\
+%   & 0,\ \text{$t$时刻时移动设备 $j$ 不在网格 $g(i)$ 中}
+%   \end{aligned}
+%   \right.
+% \end{equation}
+
+% 利用 $L_{ij}(t)$，移动设备 $j$ 在网格 $g(i)$ 中的总停留时间 $C_{ij}$ 可以用式~\eqref{Formula_UserTrace} 表示。
+
+% \vspace{-1.5em}
+% \begin{equation}
+%   \label{Formula_UserTrace}
+%   C_{ij}(t) = \int_{0}^{t}L_{ij}(\varepsilon )d\varepsilon , \forall \ i \in [0,m], j \in [0,N]
+% \end{equation}
+
+% 因此，在 $t$ 时刻，移动群智感知服务的感知质量 $C(t)$ 可以利用来式~\eqref{Formula_UserCoverageGrip} 来计算。
+
+% \vspace{-1.5em}
+% \begin{equation}
+%   \label{Formula_UserCoverageGrip}
+%   \begin{gathered}
+%   C(t) = \sum^{m}_{i=0}\sum^{N}_{j=0} g_i \times C_{ij}(t), \forall \ t>0
+%   \end{gathered}
+% \end{equation}
 
 \subsection{优化目标}
 
+对于群智感知应用的发起者而言，在其生命周期内收集到的感知数据总量是衡量感知质量的重要指标之一。
+通过前文对群智感知执行过程的分析，可以得到群智感知应用部署率和执行时间之间的关系 $C_T(t)$，以及感知数据的收集概率 $P_{rcv}(t)$。
+令图~\ref{Figure_MCS_Delay} 中的 $T_{total\_time}$ 表示群智感知应用的生命周期，并令 $t$ 表示感知任务分发的执行时间，则 $T_{total\_time} - t$ 代表感知数据收集的执行时间。
+为了方便度量单个移动设备收到感知任务并成功反馈感知数据的总时长，在此假设每个移动设备收到感知任务收到感知任务之后只会产生一组感知数据。
+因此在感知应用中产生的感知数据总数量为 $N \times C_T(t)$，这些数据传回基站的概率为 $P_{rcv}(t)$。
+用 $D(t)$ 表示群智感知应用在生命周期内收集到的感知数据总量，其计算方法如式~\eqref{Formula_DataAmount}。
 
-
-\subsection{基于感知任务生命周期的感知执行调度算法}
-
-% 在本节中，在最后一节中介绍了一个基于随机过程分析的应用用例。尽管具有D2D通信的MCSwith应该是延迟容忍的，但是一些应用也受到截止时间的限制，因为感测数据和截止时间变得非常宝贵。由于MCS过程有两个阶段，因此研究如何在这两个阶段分配时间以最大限度地提高平均水平具有重要意义。根据上面的分析，假设任务分发阶段持续，即分配给任务分发的时间，可以得出deadlineTtotaltimeas接收到的数据包总数
-基于上一小节的模型，本节利用随机过程分析的方法对边缘计算下的移动群智感知应用进行理论分析。
-由于移动群智感知应用对感知数据的时效性非常敏感，不具备时效性的感知数据可能会导致错误的计算结果。
-因此在使用机会式D2D通信交换感知数据时，必须考虑移动群智感知应用的截止时间限制。
-前文已经阐述移动群智感知应用中，足够多的参与设备和大量的反馈数据才能保证移动群智感知的时效性。
-所以在固定生命周期内，合理分配这两个过程的时间配额才能最大程度的提高移动群智感知应用的感知质量。
-
-通过前文的分析，当任务分发过程的时间配额为 $t$ 时，在周期 $T_{total\_time}$ 中移动群智感知应用可以收集到的感知数据总数 $D(t)$ 可以利用式~\eqref{Formula_DataAmount} 计算。
-该式中，实际参与移动群智感知应用的移动设备数量为 $N\times C_T(t)$。
-$T_{total\_time}-t$ 是数据收集阶段的时间配额，在该时间段类可以收到的『数据比例为 $C_F(T_{total\_time}-t)$』。
-
+\vspace{-2.5em}
 \begin{equation}
   \label{Formula_DataAmount}
   \begin{gathered}
-  D(t) = N \cdot C_T(t) \cdot C_F(T_{total\_time}-t),\forall \ t \in [0, T_{total\_time}]
+    \begin{aligned}
+      D(t) = &N \cdot C_T(t) \cdot P_{rcv}(T_{total\_time}-t)\\
+      = &N \times \frac{e^{(\lambda_n N + \lambda_f N_f) t} - 1}{e^{(\lambda_n N + \lambda_f N_f) t} + \frac{\lambda_n N}{\lambda_f N_f}} \\
+      &\times (1 -  (\frac{N}{N + N_f})^{\frac{N e^{\lambda_n N t}}{e^{\lambda_n N t} + N -1} - 1} \times (\frac{N-\frac{N e^{\lambda_n N (T_{total\_time} - t)}}{e^{\lambda_n N (T_{total\_time} - t)} + N -1}}{N})^{\lambda_f N_f (T_{total\_time} - t)}),
+    \end{aligned}\\
+    \forall \ t \in [0, T_{total\_time}]
   \end{gathered}
 \end{equation}
 
-% 根据等式。( 12 )这一价值对可实现的覆盖范围有着明显的深刻影响。很容易推导出0 ) =和Ttotaltime ) = 0。SinceCT(t)0is在光子递增函数oft中，andCF(Ttotaltimet)0is在单调递减函数oft中，必须存在一个可以最大化( t )的值，表示最高的感知质量，即覆盖范围。为了找出最佳的时间分配，通过枚举时间分配，通过数值计算设计了一种算法。算法1描述了算法。
-在式~\eqref{Formula_DataAmount} 中，$t$ 是唯一的自变量。
-因此，不同阶段的时间配额会直接影响到移动群智感知应用的感知质量。
-当 $t=0$ 或 $t=t_{total\_time}$ 时，$D(t)$ 恒为零。
-且当 $0 \leq t \leq t_{total\_time}$ 时，$C_T(t)\geq 0$ 且 $C_T(t)$ 为单调递增函数；$C_F(T_{total\_time}-t) \geq 0$ 且 $C_F(T_{total\_time}-t)$ 为单调递减函数。
-因此，当$0 \leq t \leq t_{total\_time}$时，$D(t) \geq 0$ 且对于 $t$ 必定存在一个值使得 $D(t)$ 取到最大值，即移动群智感知应用的感知质量达到最优。
-为了找到最佳的时间划分，本文设计了一个枚举算法来找出 $t$ 的最优解。
-该算法伪代码如算法~\ref{algo_findbestt} 所示。
+在该式中，移动设备数量 $N$、基站数量 $N_f$、移动设备之间的相遇率 $\lambda_n$、以及移动设备和基站之间的通信概率 $\lambda_f$ 可以看做场景参数，而感知任务分发的时间 $t$ 则是式中唯一的自变量。
+当 $t = 0$ 和 $t = T_{total\_time}$ 时，分别表示感知任务的分发时间为 0 和感知数据数据的收集时间为 0，在这两种情况下，$D(t)$ 的计算结果为0，意味着没有收到任何感知数据。
+因此，需要找到群智感知在实行过程中合适的时间配额划分，让 $D(t)$ 取值最大是本章的优化目的。
+由于 $t = 0$ 和 $t = T_{total\_time}$ 时，$D(t)$ 恒等于 $0$，而通过观察 $D(t)$ 的函数式，可以发现 $D(t)$ 在 $ t \in [0, T_{total\_time}] $ 时是连续函数。
+因此，一定存在一个 $t$ 的取值，使 $D(t)$ 最大。
 
-% \vspace{-0.5em}
-% \begin{algorithm}[h]
-% \caption{Find out the best allocation $t$ to maximize $D(t)$}
-% \footnotesize
-% \label{algo_findbestt}
-% \textbf{Requires:\\}
-% \text{\quad \quad input $[N, N_f, \lambda_n, \lambda_f]$ and the total time $T_{total\_time}$\\}
-% \begin{algorithmic}[1]
-%   \State \text{let $t = T_{total\_time}/N\_slots$}
-%   \State \text{let $t\_list = [t, 2t, 3t, 4t,\ldots,N\_slots \times t]$}
-%   \State \text{let $res\_list = [0] \times N\_slots$}
-%   \State \text{let $index = 0;\ maximum = 0;\ best\_t = 0$}
-%   \For{$item \in t\_list$}
-%     \State \text{$res\_list[index] = D(item)$ \quad (Formula~\ref{Formula_DataAmount})}
-%     \If {$D(item) > maximum$}
-%       \State $maximum = D(item)$
-%       \State $best\_t = t\_list(index)$
-%     \EndIf
-%     \State \text{$index$ ++}
-%   \EndFor
-%   \State \text{return $maximum, best\_t$}
-% \end{algorithmic}
-% \end{algorithm}
-% \vspace{-0.5em}
+\subsection{基于感知任务生命周期的感知任务执行划分算法}
+\label{UIC:algo}
 
-\begin{algorithm}[h]
-\setstretch{\algostretch}
-\KwIn{$N$ : 移动设备的总数量}
-\KwIn{$N_f$ : 边缘服务器的数量}
-\KwIn{$\lambda_n$: 移动设备之间的相遇率}
-\KwIn{$\lambda_f$: 边缘服务器和移动设备之间的相遇率}
-\KwIn{$T_{total\_time}$ : 移动群智感知服务的生命周期}
-% \KwData{『输入数据』}
-% \KwData{$Occ[1:T]$: 每个程序当前的NCP大小，初始为0，随着缓存路的分配增加，最终为每个程序在整个缓存上的NCP}
-let $t = T_{total\_time}/N\_slots$\\
-let $t\_list = [t, 2t, 3t, 4t,\ldots,N\_slots \times t]$\\
-let $res\_list = [0] \times N\_slots$\\
-let $index = 0;\ maximum = 0;\ best\_t = 0$\\
-\For{$item \in t\_list$}{
-  $res\_list[index] = D(item)$ \quad (式~\eqref{Formula_DataAmount})\\
-  \If {$D(item) > maximum$}{
-    $maximum = D(item)$\\
-    $best\_t = t\_list(index)$
+% 在本节中，在最后一节中介绍了一个基于随机过程分析的应用用例。尽管具有D2D通信的MCSwith应该是延迟容忍的，但是一些应用也受到截止时间的限制，因为感测数据和截止时间变得非常宝贵。由于MCS过程有两个阶段，因此研究如何在这两个阶段分配时间以最大限度地提高平均水平具有重要意义。根据上面的分析，假设任务分发阶段持续，即分配给任务分发的时间，可以得出deadlineTtotaltimeas接收到的数据包总数
+
+前文已经阐述移动群智感知应用中，足够多的参与设备和大量的反馈数据才能保证移动群智感知应用的感知质量。
+在上一小节中已经提到，当移动群智感知的目标场景已经确定时，感知任务分发时长和感知数据收集时长，都会影响感知应用在其生命周期内能收集的感知数据总量，进而影响感知质量。
+所以在有限的生命周期内，需要合理分配感知任务分发过程和感知数据收集过程的时间配额，以提高移动群智感知应用的感知质量。
+当任务分发过程的时间配额为 $t$ 时，在生命周期 $T_{total\_time}$ 中群智感知应用可以收集到的感知数据总数可以利用式~\eqref{Formula_DataAmount} 计算。
+因此，必须基于式~\eqref{Formula_DataAmount} 给出合理的群智感知执行时间划分，令 $D(t)$ 最大。
+
+
+\begin{algorithm}[!b]
+  \setstretch{\algostretch}
+  \KwIn{$N$ 移动设备的总数量}
+  \KwIn{$N_f$ 基站的数量}
+  \KwIn{$\lambda_n$ 移动设备之间的相遇率}
+  \KwIn{$\lambda_f$  基站和移动设备之间的通信概率}
+  \KwIn{$T_{total\_time}$  移动群智感知服务的生命周期}
+  % \KwData{『输入数据』}
+  % \KwData{$Occ[1:T]$: 每个程序当前的NCP大小，初始为0，随着缓存路的分配增加，最终为每个程序在整个缓存上的NCP}
+  令 $\Delta t = T_{total\_time}/N_{slots}$\\
+  % 令 $t = \Delta t, 2 \Delta t, 3 \Delta t, 4 \Delta t,\ldots,N_{slots} \Delta t$\\
+  定义数组 $res[N_{slots}]$ \\
+  令 $index = 0;\ max_D = 0;\ t_{best} = 0$\\
+  \For{$index \in [0, N_{slots}]$}{
+    $res[index] = D(index \times \Delta t)$ \quad (式~\eqref{Formula_DataAmount})\\
+    \If {$D(index \times \Delta t) > max_D$}{
+      $max_D = D(index \times \Delta t)$ \quad 替换 $D(t)$ 的最大值\\
+      $t_{best} = index \times \Delta t$ \quad 替换令 $D(t)$ 取最大值的 $t_{best}$
+    }
+    % $index$ ++
   }
-  $index$ ++
-}
-% return $maximum, best\_t$\\
-\KwOut{$maximum, best\_t$ : $D(t)$ 的最大值，和对应 $t$ 的值}
-\caption{找出让 $D(t)$ 最大的时间配额划分 $t$}
-\label{algo_findbestt}
+  % return $maximum, t_{best}$\\
+  \KwOut{$max_D （$D(t)$ 的最大值）, t_{best}$ （对应 $t$ 的值）}
+  \caption{利用枚举找出令 $D(t)$ 最大的 $t$ 值}
+  \label{algo_findbestt}
 \end{algorithm}
 
-% 在算法1中，总时间TotalTimes被分成intoNslotsslots。然后，枚举时隙时间时隙，以找到能够最大化( t )的最佳分配。这种算法的时间复杂性是isO ( Nslots )。
-在算法~\ref{algo_findbestt} 中，移动群智感知应用的生命周期被切分成 $N\_slots$ 份。
-通过对不同的时间配额进行枚举计算，求出让 $D(t)$ 取值最大的时间划分。
-该算法的时间复杂度为 $O(N\_slots)$。
+由于 $D(t)$ 的导数计算过于复杂，无法通过导数推导来求得 $D(t)$ 取最大值时 $t$ 的解析解。
+另一方面， $D(t)$ 可以视为单调递增函数与单调递减函数的乘积，其单调性可能存在多个拐点，导致无法直接确定 $D(t)$ 取最大值时 $t$ 的取值范围。
+因此，这里使用枚举算法来找出 $t$ 的最优解。
+% 由于 $D(t)$ 的表达式中，仅存在 $t$ 一个参数确定的函数式，
+
+% 因此，不同阶段的时间配额会直接影响到移动群智感知应用的感知质量。
+% 当 $t=0$ 或 $t=t_{total\_time}$ 时，$D(t)$ 恒为零。
+% 且当 $0 \leq t \leq t_{total\_time}$ 时，$C_T(t)\geq 0$ 且 $C_T(t)$ 为单调递增函数；$C_F(T_{total\_time}-t) \geq 0$ 且 $C_F(T_{total\_time}-t)$ 为单调递减函数。
+% 因此，当$0 \leq t \leq t_{total\_time}$时，$D(t) \geq 0$ 且对于 $t$ 必定存在一个值使得 $D(t)$ 取到最大值，即移动群智感知应用的感知质量达到最优。
+% 为了找到最佳的时间划分，本文设计了一个枚举算法来找出 $t$ 的最优解。
+该算法伪代码如算法~\ref{algo_findbestt} 所示。
+在该算法中，将移动群智感知应用中的生命周期分成 $N_{slots}$ 份。
+以 $\Delta t = T_{total\_time} / N_{slots}$ 为步进，对移动群智感知应用中的感知任务分发时间 $t$ 进行枚举（ $t = \Delta t, 2 \Delta t, 3 \Delta t, \ldots , N_{slots} \Delta t$ ）。
+根据 $t$ 的 $N_{slots}$ 种取值，求出对应的 $D(t)$。
+最后，找出 $D(t)$ 的最大值以及其所对应的 $t$。
+该算法的时间复杂度为 $O(N_{slots})$。
+
 
 \section{实验结果及分析}
 
 % 为了验证分析的正确性和准确性，在本节中报告了基于模拟的结果。 此外，的算法在寻找最优时间分配方面的效率得到了证明。
 为了验证本章分析方法的可行性，本节将随机过程分析模型的分析结果与 ONE 模拟器~\cite{DBLP:conf/simutools/OK09}对移动群智感知应用的仿真结果进行对比。
-然后在仿真实验中，验证了感知应用执行时间划分算法的有效性和效率。
-最后，根据随机过程分析模型的分析结果，提出了面向群智感知质量优化的边缘资源调度策略。
+通过对比理论分析结果和模拟结果，验证随机过程分析方法的正确性以及感知应用执行时间划分算法的效果。
+最后，根据理论分析结果和模拟结果，提出了面向群智感知质量优化的边缘资源调度策略。
 
-\subsection{模拟器设置}
+\subsection{ONE 模拟器设置}
 % 进行跟踪驱动模拟，以广泛评估对雾计算中MCS应用的基于ODE的分析。遵循ONE模拟器[ 24 ]的原理，捕获雾环境中的网络行为，并获得参数，如N；国家森林机构；andf. n通过追踪数据包路径和所有移动设备的状态，可以获得有效MCS参与者的数量、雾节点接收到的数据包数量，以及在一定时间内达到的覆盖率。在的随机过程分析中，这些信息可以由场景参数sN导出；国家森林机构；andf. n将分析结果和仿真结果进行比较，能够验证分析的正确性和准确性。为了彻底验证随机过程分析的准确性，首先验证对每个阶段的分析，然后对整体分析进行比较。
 ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator https://akeranen.github.io/the-one/} 是一个开源的机会式通信网络环境模拟器。
 利用该模型器，可以构建具有如下特征的机会式通信网络：
@@ -538,19 +549,23 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
   \hline
   $N$ & 移动设备的数量\\\hline
   $N_f$ & 基站的数量\\\hline
-  $\lambda_n$ & 移动设备之间的相遇概率\\\hline
-  $\lambda_f$ & 基站和移动设备的相遇概率\\\hline
-  $I(t)$ & $t$ 时刻已经收到任务的移动设备的数量\\\hline
-  $I'(t)$ & $t$ 时刻 $I(t)$ 的增量\\\hline
-  $P_{rcv}(t)$ & $t$ 时刻基站收到感知数据的概率\\\hline
+  $\boldsymbol{L}[N]$ & 移动设备的位置\\\hline
+  $\boldsymbol{V}$ & 移动设备的轨迹和速度\\\hline
+  $\boldsymbol{L}[N_f]$ & 基站的位置\\\hline
+  $f_{task}$ & 基站发送感知任务的频率\\\hline
+  $A$ & 目标区域的面积\\\hline
+  $d$ & D2D 通信的覆盖半径\\\hline
+  % $\lambda_n$ & 移动设备之间的相遇概率\\\hline
+  % $\lambda_f$ & 基站和移动设备的通信概率\\\hline
+  % $I(t)$ & $t$ 时刻已经收到任务的移动设备的数量\\\hline
+  % $I'(t)$ & $t$ 时刻 $I(t)$ 的增量\\\hline
+  % $P_{rcv}(t)$ & $t$ 时刻基站收到感知数据的概率\\\hline
   \end{tabular}
   \vspace{-1em}
 \end{table}
 
 % 在测试过程中，本章使用 ONE 模拟器对边缘计算模型下的移动群智感知应用进行模拟仿真。
 在 ONE 模拟器中，可以设置的主要场景参数如表~\ref{table_notations_ONE} 所示。
-\textbf{『ONE 模拟器参数解释，并和相遇率的计算挂钩』}
-
 模拟参数设置完成之后，ONE 模拟器会根据自定义的群智感知应用逻辑和数据转发路由算法，模拟移动设备的移动过程、设备之间的通信过程。
 仿真完成后，模拟网路中的所有操作会以日志的方式进行保存。
 通过对日志文件的分析，可以还原网络中的数据包流向，进而得到群智感知应用执行过程中，感知任务的部署数量、感知数据的收集数量、以及感知数据的覆盖范围。
@@ -560,128 +575,125 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 % 对仿真过程产生的日志信息进行处理，可以获得参与感知任务的移动设备数量以及每个数据包所经过的具体路径。
 % 结合模拟器中移动设备的运动轨迹以及日志的时间戳进一步分析，还可以获得边缘服务器在任意时刻收到的感知数据数量以及已收集的感知数据所覆盖的地域范围。
 
-利用本文中的随机过程分析模型，可以利用参数 $N$、$N_f$、$\lambda_n$和$\lambda_f$推导出同样的信息。
+利用模拟器中设置的$\boldsymbol{V}$、$A$ 和 $d$ 参数，可以利用式~\eqref{Formula_EncounterRate} 计算出模拟场景下移动设备之间的相遇率。
+而基站发送感知任务的频率，可以转化为基站和移动设备的通信概率 $\lambda_f$。
+结合 $N$ 和 $N_f$ 作为已知参数，带入式~\eqref{Formula_DataAmount} 中计算感知数据收集总量。
 将模拟仿真和随机过程分析得到的结果进行对比，可以验证本文中模型的正确性。
-在对比过程中，先分别验证任务分发过程和数据收集过程的覆盖率，再针对移动群智感知全过程，验证其范围覆盖和感知质量。
+在对比过程中，先分别验证任务分发过程和数据收集过程的覆盖率，再针对移动群智感知全过程，验证感知质量。
+最后分析边缘网络中各场景参数对感知质量的影响并提出调度策略。
 
 % 首先通过使用不同的参数asN来验证对任务传播阶段的分析；国家森林机构；andf,which n定义在表一中。结果在图6中报告，包括模拟结果和通过求解等式获得的分析结果。( 4 )。从这个图中，可以观察到获得了高精度，因为分析结果都非常接近于模拟结果。在5000组实验中，在任务传播阶段，平均误差为5.7 %。还注意到，有效的MCS参与者( EMP )的数量随着时间的增加而增加。最初，增长率低的原因是雾节点，很少有“受感染”的移动设备能够使其他“易受感染”的移动设备生效。后来，有效的MCS参与者的数量急剧增加，因为已经有很多有效的MCS参与者。然而，这种增长最终会收敛，因为大多数移动电话已经被“感染”。这种现象符合的常识。
 
-\subsection{随机过程分析模型精确度测试}
+\subsection{随机过程分析模型准确度测试}
 
-首先通过使用不同的参数 $N, N_f, \lambda_n$, 和 $\lambda_f$ 来验证本文对任务分发过程的分析。
+首先通过使用不同的场景参数 $N$（移动设备数量）、$N_f$（基站数量）、$\lambda_n$（移动设备之间的相遇率）和 $\lambda_f$（移动设备和基站的通信概率）来验证本章对任务分发过程的分析。
 图~\ref{Figure_PropagationTest} 反应了不同参数取值对移动群智感知效率的影响。
-图中横坐标为时间轴，纵坐标为移动群智感知应用收到的感知数据的数量，其结果可通过式~\eqref{Formula_Coverage_of_Task} 计算得到。
-通过曲线对比仿真结果和模拟结果，两者的趋势是非常接近的。
+图中正下方的数值分别为场景参数 $N$、$N_f$、$\lambda_n$ 和 $\lambda_f$ 的取值。
+图中横坐标为时间轴，纵坐标为目标区域内收到感知任务的移动设备数量，其结果可通过式~\eqref{Formula_Coverage_of_Task} 计算得到。
+通过曲线对比分析结果和模拟结果，两者的变化趋势是非常相近的。
 在5000组不同参数的实验对比中，任务分发数量的平均误差为 5.7\%。
-对图像进行观察可以发现，移动群智感知应用执行初期，感知服务部署速度偏低，这是因为任务只能通过边缘服务器分发。
-在获得任务的移动设备增多之后，区域内的任务分发源也越来越多，因此能够执行感知任务的移动设备数量呈指数级上涨。
-当任务覆盖率接近饱和时，感知服务部署速度逐渐降低，获得任务的移动设备数量逐步趋近于目标区域内的移动设备总数。
+对图像进行观察可以发现，移动群智感知应用执行初期，感知服务部署速度偏低，这是因为大部分感知任务只能通过基站分发。
+在获得感知任务的移动设备增多之后，设备之间的 D2D 通信让区域内的任务分发源也越来越多，因此能够执行感知任务的移动设备数量呈指数趋势上升。
+当感知任务的覆盖接近饱和时，未接受感知任务的移动设备数量较少，因此感知任务的部署速度逐渐降低，获得感知任务的移动设备总数逐步趋近于目标区域内的移动设备总数。
 
 \begin{figure}[!h]
   \centering
   % \vspace{-2em}
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Propagation/F3-1.pdf}}
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Propagation/F3-2.pdf}}\\
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Propagation/F3-3.pdf}}
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Propagation/F3-4.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-1.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-2.pdf}}\\
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-3.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-4.pdf}}
   \vspace{-0.5em}
   \caption{任务分发过程中分析结果和模拟结果对比}
   \vspace{-0.5em}
   \label{Figure_PropagationTest}
 \end{figure}
 
-
-
-
-
-% 同样的方法被用来验证对数据收集阶段的分析的准确性。首先，假设每个EMP都有一个包，由发送到雾节点的所有传感数据组成。这一过程类似于传统的流行病传播途径。然而，有多个雾节点作为目的节点，在传统流行病路由中只有一个目的节点。认为，一旦任何fog节点接收到数据包，该数据包就会被成功传递。计算在时间t接收到的数据包数量。性能评估结果如图7所示，其中分析结果通过求解等式获得。( 5 )。再次注意到，对数据收集的分析也非常准确，因为结果都接近分析结果。在5000组随机种子的模拟中，平均误差为9.6 %。与的一般情况一致，接收到的数据包数量随着时间的推移而增加。首先，接收的数据包数量缓慢增加，然后快速增加，最后收敛。
-
-
-
 然后，用同样的方法来验证本文对数据收集过程的分析。
-假设每个获得感知任务的移动设备收集一份感知数据，用一个网络包将结果反馈给边缘服务器。
-由于在目标区域内，部署有多个边缘服务器。
-当数据包抵达任何一个边缘服务器时，都可以认为数据反馈成功。
-利用式~\eqref{Formula_ProbaRcvT}，可以计算被成功接收的数据包数量。
+假设在数据收集过程开始时（$t=0$），区域内的所有移动设备都已经收到感知任务且采集到一份感知数据。
+随着时间的推移，移动设备需要借助蜂窝网络和 D2D 通信将感知数据发送给 $N_f$ 个基站中的任意之一。
+其中，移动设备和基站的蜂窝通信依然遵循通信概率 $\lambda_f$。
+因此，可以利用式~\eqref{Formula_ProbaRcvTF} 计算被成功接收数据包的理论数量。
+在 ONE 模拟器中，也可以利用日志信息获得每个基站收集到的感知数据数量。
 图~\ref{Figure_CollectionTest} 展示了模拟试验和理论分析的对比结果。
 图中，两者的变化趋势依然保持一致。
 在5000组不同参数的实验对比中，数据收集理论分析的平均误差为 9.6\%。
 且变化趋势和实际情况相符。
+同时，通过对比图~\ref{Figure_PropagationTest} 和图~\ref{Figure_CollectionTest} ，可以发现感知数据收集的末期并感知任务分发末期具有明显的逼近趋势，并且在部分数据收集时期有突发的感知数据增幅。
+造成这种现象的原因是因为某一移动设备在和基站通信之前经由 D2D 通信得到了其它移动设备的感知数据。
 
-\begin{figure}[!t]
+\begin{figure}[!h]
   \centering
   % \vspace{-0.5em}
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Collection/R1-0.pdf}}
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Collection/R1-1.pdf}}\\
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Collection/R1-2.pdf}}
-  {\includegraphics[width=200pt]{./figures/Sec_UIC/Collection/R1-3.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-0.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-1.pdf}}\\
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-2.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-3.pdf}}
   \vspace{-0.5em}
   \caption{数据收集过程中分析结果和模拟结果对比}
-  \vspace{-1em}
+  \vspace{-0.5em}
   \label{Figure_CollectionTest}
 \end{figure}
 
-% 在对的雾计算中的两个主要阶段进行验证后，用D2D通信授权MCS，接下来考虑两个阶段，并调查的总体随机过程分析是如何进行的。在本实验中，设置总时隙数Ttotaltimeas 100s，并在不同的网络设置中从0到100改变时间分配。结果报告在图8中，其中通过求解等式获得分析结果。( 12 )。直观地说，在任何oft值下，分析结果总是接近模拟结果。这表明对这两个阶段的总体分析也是准确的。此外，在图8中观察到的一个有趣现象是，接收到的分组数量首先随着时间分配的分配增加而增加，然后随着达到最大值而减少。最初，随着分配给任务分发阶段的时间越来越多，越来越多的移动设备可以有效地参与MCS过程。因此，接收到的数据包数量会增加。达到最大值后，进一步增加将减少分配给数据收集阶段的时间。虽然MCS参与者更有效，但是在截止日期之前，传感数据几乎没有时间被传送到雾节点。因此，性能甚至会下降。这意味着存在一个最佳时间分配，可以最大限度地提高感知质量，找到这样一个最佳设置非常重要。幸运的是，提出的算法1能够处理这个问题
+最后，结合群智感知任务分发和感知任务收集，对边缘网络中群智感知应用执行过程进行模拟和分析。
+在 ONE 中，设置不同的参数以模拟不同场景下的群智感知应用执行状态。
+通过设置不同的任务分发执行时间 $t$，观察在预设生命周期 $T_{total\_time}$ 内基站可以收到的感知数据数量。
+同时，利用式~\ref{Formula_DataAmount} 可以通过理论分析计算出感知数据的收集总量。
+该实验使用了四组不同的场景参数来观察不同的感知应用执行时间划分对最终感知数据收集总量的影响。
+在所有的对比实验中，移动群智感知应用的生命周期 $T_{total\_time}$ 被设置为100秒。
+令感知任务分发的执行时长为 $t$，则从 $t$ 时刻开始，所有移动设备和基站不再继续分发感知任务，而是开始收集感知数据。
+模拟结果和分析结果的对比如图~\ref{Figure_EntireTest} 所示。
+横坐标 $t$ 表示感知应用执行过程的时间划分，即感知任务分发过程所占用的时间。
+由于感知数据可以直接从传感器读取，时间占用极少，
+因此 $T_{total\_time} - t$  表示了感知数据收集的时长。
+图示结果直观的反映出本文的理论分析方法和模拟实验结果非常吻合，在不同时间配额划分方案下，分析结果总是接近模拟结果。
+这也验证了本章对任务分发和数据收集两个阶段的分析也是准确无误的。
+此外，在图中还能观察到，接收到的感知数据总量首先随着任务分发的时间配额的增加而增加，在达到最大值之后，可收集的感知数据总量开始变少。
+由于在固定生命周期内，需要同时兼顾感知任务的分发和感知数据的收集，因此，当感知应用执行时间的划分不合理时，会导致感知数据的收集总量减少，降低感知服务质量。
+这也意味着存在一个最佳时间分配，可以最大限度地提高感知质量。
 
 \begin{figure}[!h]
   \centering
-  % \vspace{-1.5em}
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/0.pdf}}
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/1.pdf}}\\
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/2.pdf}}
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/RcvsSim/3.pdf}}
-  \vspace{-1em}
+  % \vspace{-1em}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/0.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/1.pdf}}\\
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/2.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/3.pdf}}
+  \vspace{-0.5em}
   \caption{不同时间配额下的分析结果和模拟结果}
-  % \vspace{-2em}
+  \vspace{-1em}
   \label{Figure_EntireTest}
 \end{figure}
 
-最后，对边缘计算下的移动群智感知应用全过程进行分析验证。
-结合任务分发和数据收集两个重要阶段，验证本文中时间划分的合理性。
-在本次实验中，移动群智感知应用的生命周期$T_{total\_time}$被设置为100秒。
-针对场景定义参数$N, N_f, \lambda_n$, and $\lambda_f$设计了四种不同的场景，分析移动群智感知应用可以收到的数据量和时间的关系。
-测试结果如图~\ref{Figure_EntireTest} 所示，理论测试值通过式~\eqref{Formula_DataAmount} 计算得出。
-图示结果直观的反映出本文的理论分析犯法和模拟实验结果非常吻合，在任何时间分配方案下，分析结果总是接近模拟结果。
-这也验证了本文对任务分发和数据收集两个阶段的分析也是准确无误的。
-此外，在图中还能观察到的一个有趣现象：接收到的感知数据总量首先随着任务分发的时间配额的增加而增加，然后随着达到最大值而减少。
-最初，随着分配给任务分发阶段的时间越来越多，越来越多的移动设备可以有效地参与MCS过程。
-因此，接收到的数据包数量会增加。
-达到最大值后，进一步的增加将减少分配给数据收集阶段的时间配额。
-而在固定的声明周期内，不仅需要任务顺利发送到移动设备，也需要感知数据能准确的传送回边缘服务器。
-因此，当数据收集时间减少时，移动群智感知应用的感知质量会随之下降。
-这意味着存在一个最佳时间分配，可以最大限度地提高感知质量，找到这样一个最佳设置非常重要。
-幸运的是，提出的算法1能够处理这个问题。
+为了验证时间配额划分算法的准确性，测试中使用参数 $N=6000$、 $N_f=4$、 $\lambda_n = 0.000027$、 $\lambda_f=0.00018$ 定义的模拟场景。
+移动群智感知应用的生命周期 $T_{total\_time}$ 设置为 100 秒。
+在目标区域内，一共有 $N$ 个移动设备，由于每个移动设备生成一组感知数据，因此可以利用收集到的感知数据总数与 $N$ 的比值来表示感知数据的收集比例，这一比例也反映出感知应用的执行效率。
+图~\ref{Figure_BestT} 展示了任务分发过程的时间配额分别为25秒、50秒、75秒以及 59.5 秒时移动群智感知应用的执行效率。
+其中，59.5 秒是利用感知任务执行划分算法找出的最佳任务分发时间配额。
+在不同时间配额之前的时间段内，由于只执行了感知任务的分发，没有对感知数据进行收集工作，所以收集到的感知数据数量为 $0$。
+通过图中四种时间划分的结果对比可以发现，当任务分发时间分配过少时（25秒、50秒），只有少量的移动设备收到感知任务，所以收集到的感知数据也较少。
+当任务分发时间分配过多时（70秒），所有的感知数据无法及时被发送至基站，导致在生命周期内无法收集齐所有的感知数据。
+当时间划分为 59.5 秒时，感知任务分发过程和感知数据收集过程达到平衡，此时可以收集到最多的感知数据。
+在算法执行中，$N\_slots$ （章节~\ref{UIC:algo}）被设置为 $10^7$，算法执行时间不超过 2500 毫秒。
 
+% \vspace{-1.5em}
 \begin{figure}[!h]
   \centering
-  % \vspace{-1em}
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/0.pdf}}
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/2.pdf}}
-  {\includegraphics[width=210pt]{./figures/Sec_UIC/BestT/3.pdf}}
-  \vspace{-1em}
+  \vspace{-1.5em}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}}
+  \vspace{-0.5em}
   \caption{不同时间划分的对感知质量的影响}
-  % \vspace{-1em}
+  \vspace{-1em}
   \label{Figure_BestT}
 \end{figure}
-
-为了验证时间配额划分算法的准确性，测试中使用参数 $N=6000, N_f=4, \lambda_n = 0.000027, \lambda_f=0.00018$ 定义的模拟场景。
-移动群智感知应用的生命周期 $T_{total\_time}$ 设置为 100 秒。
-任务分发和数据收集的最佳时间分配，接收到的数据包数量应该是最大的。
-假设每个移动群智感知参与者需要必须返回一个数据包，则应该收集的数据包总数和群智感应参与者的数量应当相同，即为 $N$。
-因此可以使用被收集的数据包总数与移动群智感知参与者数量的比例来表示移动群智感知应用的效率。
-图~\ref{Figure_BestT} 展示了任务分发过程的时间配额分别为25秒、50秒、75秒以及58.6秒时的移动群智感知应用执行效率。
-其中，58.6秒是利用时间配额划分算法找出的最佳任务分发时间配额。
-对比实验结果可以看出，最佳分配的结果比其他分配方法导致的执行效率要高出20\%以上。
-在算法实验中，$N\_slots$ 被设置为 $10^7$，算法执行时间不超过 2500 毫秒。
-
 
 
 \subsection{边缘服务部署对感知质量的影响}
 
-% 在每组实验中改变一个设置，并显示最终接收到的数据包数量。不同valuesofN,Nf,nandfare的比较都在图10中报道。注意到，可实现的传感质量显示为任一参数的递增函数，正如模拟结果和分析结果所表明的，它们总是彼此接近。这进一步广泛地验证了分析的正确性和准确性，因为它在任何设置下都能接近模拟结果。在每组测试中，只有一个场景参数作为变量。移动设备的数量N、相遇概率λ n和相遇概率λ f每一步增加10 %的基数。雾节点的数量每增加一步就增加一倍。通过比较，可以发现MCS应用中影响因素的优先级排序(降序)如下: N、λ n、N f和λ f。
-
-\begin{figure}[!h]
+\begin{figure}[!b]
   \centering
 	% \vspace{-1.5em}
 	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1n.pdf}}
@@ -694,32 +706,21 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 	\label{Figure_SingleValTest}
 \end{figure}
 
-该测试将时间配额划分算法应用到不同的网络场景下，获得在移动群智感知应用的生命周期内可以接受到的数据包总量。
-其中，基准移动群智感知的网络环境定义为 $N=5000, N_f=2, \lambda_n = 0.00003, \lambda_f=0.0004$。
-在每组实验中，四个环境变量值只改变其中一个，剩余三个环境变量保持不见。
-以此可观察出一种环境变量的变化对移动群智感知应用的感知质量的影响。
-也从侧面反映出边缘计算对移动群智感知应用的影响。
-测试结果如图~\ref{Figure_SingleValTest} 所示。
-通过仿真数据和理论数据的对比，验证了本文中模型的准确性。
-同时，测试结果也展示了不同类型的边缘网络环境变量对移动群智感知应用的感知质量的影响效果。
-测试中，边缘服务器的数量 $N_f$ 以倍数关系增长，移动设备的数量$N$、相遇率 $\lambda_n$ 和 $\lambda_f$ 均以 10\% 等比例增长。
-对比发现，在边缘计算支撑下的移动群智感知应用中，移动设备的数量$N$对感知效率的影响最大，其次是移动设备的相遇率 $\lambda_n$，然后是边缘服务器的数量 $N_f$，最后是边缘服务器和移动设备的相遇率 $\lambda_f$。
+在之前的测试中，以 $N$（移动设备数量）、$N_f$（基站数量）、$\lambda_n$（移动设备之间的相遇率）和 $\lambda_f$（移动设备和基站的通信概率）作为参数来描述边缘网络中的不同资源部署场景。
+通过之前的测试结果也反映出不同的场景参数对群智感知应用的执行效率也有不同的影响效果。
+基于此发现，本节单独讨论各参数对感知应用执行效率的影响，以说明边缘网络中不同资源对群智感知应用的作用。
+在该实验中，将 $N=5000$、$N_f=2$、$\lambda_n = 0.00003$、$\lambda_f=0.0004$ 作为基准场景，然后单独变化各参数的取值，来观察感知数据的接收总量变化。
+实验结果如图~\ref{Figure_SingleValTest} 所示。
+群智感知应用的生命周期依然设置为 100 秒。
+通过仿真数据和理论数据的对比，可以得知本章的理论分析模型和模拟过程基本吻合。
+在实验中，$N_f$ 以倍数关系增长，$N$、$\lambda_n$ 和$\lambda_f$ 均以 10\% 步进等比例增长。
+在对比中可以观察到，在边缘计算支撑下的移动群智感知应用中，
+移动设备的数量$N$对感知效率的影响最大，其次是移动设备的相遇率 $\lambda_n$。
+而基站数量 $N_f$ 和基站与移动设备的通信概率 $\lambda_f$ 的影响作用，都相对较小。
 
 \subsection{边缘服务部署策略分析}
 
-为了更直观比较不同边缘服务资源对移动群智感知质量的影响，在此将 $N=5000, N_f=2, \lambda_n = 0.00003, \lambda_f=0.0004$ 做为图~\ref{Figure_SingleVal} 的基准（同中 base 实现）测试场景。
-通过对四种不同参数进行变化，可以看出图中曲线变化趋势有着非常明显的不同。
-在这四幅图中，横坐标为时间，代表移动群智感知应用的生命周期。
-纵坐标代表单位时间内所受到感知数据数量。
-因此，改图可以直观的反映出移动群智感知应用在执行过程中，哪一阶段能够收获最多的感知数据。
-同时，图中曲线和 x 轴构成的图形的面积，也就是对应参数设置下感知数据收集的总数量。
-第一幅表述的是群智感知志愿者数量的变化对感知数据和感知效率的影响。
-相较于其他三幅图，可以发现群智感知志愿者数量的基数对感知结果以及感知效率都有着巨大的影响。
-这也从另一方面说明了大多数研究为何要关注于参与者的招募工作和激励工作。
-然而，对于边缘服务而言，可以发现边缘服务的数量虽然会对感知数据的总量和感知效率产生影响，但是与其多租用基站作为边缘服务节点，提高基站和移动设备的通信频率显然更加划算。
-当基站与激动设备的通信频率达到一定瓶颈时，此时再租用更多的基站作为边缘服务器，要更具有性价比。
-
-\begin{figure}[!h]
+\begin{figure}[!b]
   \centering
 	% \vspace{-1.5em}
 	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1n.pdf}}
@@ -731,6 +732,23 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 	% \vspace{-1.5em}
 	\label{Figure_SingleVal}
 \end{figure}
+
+为了更直观比较不同边缘服务资源对移动群智感知质量的影响，在此将 $N=5000$、$N_f=2$、$\lambda_n = 0.00003$、$\lambda_f=0.0004$ 做为图~\ref{Figure_SingleVal} 的基准测试场景（图中 base 实线）。
+同样，感知应用的生命周期依然为100秒。
+通过对四种不同参数进行变化，可以看出图中曲线变化趋势有着非常明显的不同。
+在这四幅图中，横坐标代表移动群智感知应用的执行时间。
+纵坐标代表当前时间点基站能收到感知数据数量。
+因此，该图可以直观的反映出群智感知应用在执行过程中，哪一阶段能够收获最多的感知数据。
+同时，图中曲线和横轴构成的图形的面积，也就是对应场景参数下感知数据收集的总数量。
+第一幅图表述的是群智感知中移动设备数量的变化对感知数据和感知效率的影响。
+相较于其他三幅图，可以发现群智感知志愿者数量的基数对感知结果以及感知效率都有着巨大的影响。
+这也从另一方面说明了大多数研究为何要关注于参与者的招募工作和激励工作。
+然而，对于边缘服务而言，可以发现基站的数量虽然会对感知数据的总量和感知效率产生影响，但是与其租用更多的基站作为边缘服务节点，提高基站和移动设备的通信频率显然更加划算。
+当基站与激动设备的通信频率达到一定瓶颈时，此时再租用更多的基站作为边缘服务器，要更具有性价比。
+另一方面，租用更多的基站，意味着蜂窝通信网络覆盖的范围更大，目标区域的变大，也使得能够参与群智感知的移动设备数量增多。
+是否需要增加基站来作为群智感知应用的边缘服务节点，还需要考虑移动设备的具体分布状态。
+
+
 
 % 图~\ref{Figure_SingleVal}
 
