@@ -208,13 +208,13 @@ $w$ 表示移动设备的运动模型对应的常量系数，例如随机路径�
 % 由于基站和移动设备使用蜂窝网络进行数据通信，所以 $\lambda_f$ 和移动设备的运动轨迹没有直接联系。
 % 所以，$\lambda_f$ 也可以理解为基站和移动设备因群智感知发生通信的概率。
 
-\section{随机过程分析模型及感知质量优化}
+\section{随机过程分析模型及感知质量优化算法}
 % 在本节中，给出了任务传播阶段，数据收集阶段的随机过程分析，以及在给定参数（如N，N f，λn，λ）的覆盖度量中可实现的感知质量的推导。 F 。 为方便读者，表I总结了本文中使用的主要符号。
 本小节主要阐述任务分发过程和数据收集过程的理论分析方法。
 表 ~\ref{table_notations_UIC} 给出了本章中使用的符号定义。
 
 \begin{table}[h]
-  \vspace{-0.5em}
+  % \vspace{-0.5em}
   \caption{数学符号及定义}
   \vspace{-0.5em}
   \centering
@@ -273,6 +273,7 @@ $w$ 表示移动设备的运动模型对应的常量系数，例如随机路径�
 式~\eqref{Formula_SIR_with_fog} 是一个典型的黎卡提（Riccati）常微分方程形式。
 因此，其求解过程可以转化为如式~\eqref{Formula_Riccati} 所示的通项公式求解。
 
+\vspace{-1em}
 \begin{equation}
   \label{Formula_Riccati}
   \left\{
@@ -364,7 +365,7 @@ I(t) = \frac{N (e^{(\lambda_n N + \lambda_f N_f) t} - 1)}{e^{(\lambda_n N + \lam
   \end{aligned}
 \end{equation}
 
-在上述两个公式中，$S(t)$ 代表感知数据因 D2D 传输产生的拷贝数量。
+在上述两式中，$S(t)$ 代表感知数据因 D2D 传输产生的拷贝数量。
 这一过程可以理解为单传播源的 SIR 模型。
 因此，其计算方法如式~\eqref{Formula_St}。
 
@@ -377,6 +378,7 @@ I(t) = \frac{N (e^{(\lambda_n N + \lambda_f N_f) t} - 1)}{e^{(\lambda_n N + \lam
 
 将式~\eqref{Formula_ProbaNP}、式~\eqref{Formula_ProbaNA} 和式~\eqref{Formula_St} 带入式~\eqref{Formula_ProbaRcvT}，可以得到 $P_{rcv}(t)$ 的最终计算方法，如式~\eqref{Formula_ProbaRcvTF}。
 式中，$t$ 代表感知任务分发的执行时间，$t'$ 代表感知数据收集的执行时间。
+因此移动群智感知应用的生命周期 $T_{total\_time}$ 为 $t$ 和 $t'$ 之和。
 
 \begin{equation}
   \label{Formula_ProbaRcvTF}
@@ -537,7 +539,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 4）利用地图信息和真实世界中移动设备的轨迹数据，模拟真实世界中的网络场景。
 
 \begin{table}[h]
-  \vspace{-0.5em}
+  % \vspace{-0.5em}
   \caption{ONE模拟器中的场景参数及其定义}
   \vspace{-0.5em}
   \centering
@@ -561,7 +563,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
   % $I'(t)$ & $t$ 时刻 $I(t)$ 的增量\\\hline
   % $P_{rcv}(t)$ & $t$ 时刻基站收到感知数据的概率\\\hline
   \end{tabular}
-  \vspace{-1em}
+  % \vspace{-1em}
 \end{table}
 
 % 在测试过程中，本章使用 ONE 模拟器对边缘计算模型下的移动群智感知应用进行模拟仿真。
@@ -578,7 +580,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 利用模拟器中设置的$\boldsymbol{V}$、$A$ 和 $d$ 参数，可以利用式~\eqref{Formula_EncounterRate} 计算出模拟场景下移动设备之间的相遇率。
 而基站发送感知任务的频率，可以转化为基站和移动设备的通信概率 $\lambda_f$。
 结合 $N$ 和 $N_f$ 作为已知参数，带入式~\eqref{Formula_DataAmount} 中计算感知数据收集总量。
-将模拟仿真和随机过程分析得到的结果进行对比，可以验证本文中模型的正确性。
+将模拟仿真和随机过程分析得到的结果进行对比，可以验证本章模型的正确性。
 在对比过程中，先分别验证任务分发过程和数据收集过程的覆盖率，再针对移动群智感知全过程，验证感知质量。
 最后分析边缘网络中各场景参数对感知质量的影响并提出调度策略。
 
@@ -609,7 +611,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
   \label{Figure_PropagationTest}
 \end{figure}
 
-然后，用同样的方法来验证本文对数据收集过程的分析。
+然后，用同样的方法来验证数据收集过程的分析。
 假设在数据收集过程开始时（$t=0$），区域内的所有移动设备都已经收到感知任务且采集到一份感知数据。
 随着时间的推移，移动设备需要借助蜂窝网络和 D2D 通信将感知数据发送给 $N_f$ 个基站中的任意之一。
 其中，移动设备和基站的蜂窝通信依然遵循通信概率 $\lambda_f$。
@@ -646,7 +648,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 横坐标 $t$ 表示感知应用执行过程的时间划分，即感知任务分发过程所占用的时间。
 由于感知数据可以直接从传感器读取，时间占用极少，
 因此 $T_{total\_time} - t$  表示了感知数据收集的时长。
-图示结果直观的反映出本文的理论分析方法和模拟实验结果非常吻合，在不同时间配额划分方案下，分析结果总是接近模拟结果。
+图示结果直观的反映出本章的理论分析方法和模拟实验结果非常吻合，在不同时间配额划分方案下，分析结果总是接近模拟结果。
 这也验证了本章对任务分发和数据收集两个阶段的分析也是准确无误的。
 此外，在图中还能观察到，接收到的感知数据总量首先随着任务分发的时间配额的增加而增加，在达到最大值之后，可收集的感知数据总量开始变少。
 由于在固定生命周期内，需要同时兼顾感知任务的分发和感知数据的收集，因此，当感知应用执行时间的划分不合理时，会导致感知数据的收集总量减少，降低感知服务质量。
@@ -719,6 +721,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 而基站数量 $N_f$ 和基站与移动设备的通信概率 $\lambda_f$ 的影响作用，都相对较小。
 
 \subsection{边缘服务部署策略分析}
+\label{ISPA:结论}
 
 \begin{figure}[!b]
   \centering
@@ -745,12 +748,9 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 这也从另一方面说明了大多数研究为何要关注于参与者的招募工作和激励工作。
 然而，对于边缘服务而言，可以发现基站的数量虽然会对感知数据的总量和感知效率产生影响，但是与其租用更多的基站作为边缘服务节点，提高基站和移动设备的通信频率显然更加划算。
 当基站与激动设备的通信频率达到一定瓶颈时，此时再租用更多的基站作为边缘服务器，要更具有性价比。
-另一方面，租用更多的基站，意味着蜂窝通信网络覆盖的范围更大，目标区域的变大，也使得能够参与群智感知的移动设备数量增多。
-是否需要增加基站来作为群智感知应用的边缘服务节点，还需要考虑移动设备的具体分布状态。
-
-
-
-% 图~\ref{Figure_SingleVal}
+另一方面，租用更多的基站，意味着蜂窝通信网络覆盖的范围更大。
+随着目标区域的扩大，可以增加参与群智感知的移动设备数量。
+但是是否需要增加基站来作为群智感知应用的边缘服务节点，还需要根据移动设备的具体分布状态进行调整。
 
 \section{本章小结}
 

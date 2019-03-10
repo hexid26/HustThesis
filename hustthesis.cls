@@ -380,7 +380,7 @@
     \def\tableautorefname{表}
     \def\appendixautorefname{附录}
     \expandafter\def\csname\appendixname autorefname\endcsname{\appendixname}
-    \def\chapterautorefname~#1\null{第\zhnumber{#1}章\null}
+    \def\chapterautorefname~#1\null{第~#1~章\null}
     \def\sectionautorefname~#1\null{#1~小节\null}
     \def\subsectionautorefname~#1\null{#1~小节\null}
     \def\subsubsectionautorefname~#1\null{#1~小节\null}
@@ -637,7 +637,7 @@
   }
   {
     \ifthenelse{\equal{\HUST@language}{chinese}}
-    {\zhnumber{\thechapter}}
+    {{\thechapter}}
     {Chapter~\thechapter}
   }
   {1em}
