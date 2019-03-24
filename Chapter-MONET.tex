@@ -5,7 +5,7 @@
 然而，城市中大量的移动设备通常跟随居民日常生活轨迹而移动，因此移动群智感知无法进行简单的区域划分来完成大面积覆盖的感知任务。
 因此，研究者通常基于人类社交网络对感知任务进行部署，但对于感知数据的收集，并无过多讨论。
 本章结合城市公交网络和城市居民的出行轨迹，利用 D2D 通信和边缘服务，设计了城市范围内低成本、高效率的感知数据收集模型。
-基于此混合整数线性规划（Mixed Integer Linear Programming，简称 MILP）模型，提出了使感知成本最小化的边缘服务部署算法。
+基于该混合整数线性规划（Mixed Integer Linear Programming，简称 MILP）模型，提出了使感知成本最小化的边缘服务部署算法。
 通过仿真测试，该算法得出部署成本与最优部署成本接近，收益远远高于基于乘客流量和交通站点连接度的部署方法。
 
 \section{研究背景}
@@ -13,7 +13,7 @@
 对于智慧城市应用，需要借助移动群智感知在全市范围内收集感知数据。
 在面向城市范围的移动群智感知研究中，大多数研究者更倾向于提高感知任务的部署效率。
 例如使用激励机制吸引用户主动参与感知任务~\cite{CNKI:JiaChaopeng, CNKI:WuMCSIncentive, jiyubianyuanjisuangongyecaiji}，或者利用用户的社交网络将感知任务快速分发给大量的移动设备~\cite{Cnki:Yu2018}。
-文献~\cite{DBLP:journals/tii/TangCHPWHY17}还创建一个多层级的分布式边缘网络体系结构来执行数据表示和特征提取，并研究了城市范围内实施群智感知的可行性。
+文献~\citen{DBLP:journals/tii/TangCHPWHY17}还创建一个多层级的分布式边缘网络体系结构来执行数据表示和特征提取，并研究了城市范围内实施群智感知的可行性。
 这些研究，从效率、能耗、成本等不同角度，对感知任务的部署提出了宝贵的优化意见。
 然而，对于感知数据的收集工作，这些研究默认移动设备使用无线网络或者蜂窝网络直接进行感知数据交付。
 此时，大量的移动设备直接将感知数据传回云端，不仅城域网会面对突发的网络负载，主干网也会因为海量的感知数据传输而发生阻塞。
@@ -25,7 +25,7 @@ Wang 等人~\cite{DBLP:journals/puc/WangLL17}在上述工作中虽然做出了�
 另一方面，利用边缘计算对群智感知的覆盖区域进行划分可以缓解这一问题，但是面对城市覆盖范围，需要部署的边缘服务数量过多也会导致成本的激增。
 在不少智慧城市研究中，利用居民流向，建立了城市中吸引用户的兴趣点（Points of Interest，简称 POI）。
 这些兴趣点在固定时间范围内，会产生大量的人流，因此居民的随身设备也会在此聚集、经过。
-文献~\cite{DBLP:journals/iotj/ZhanXZW18}基于 POI 部署边缘服务进行感知数据的收集，发现在人流量高峰期时，可以达到不错的感知数据收集率。
+文献~\citen{DBLP:journals/iotj/ZhanXZW18}基于 POI 部署边缘服务进行感知数据的收集，发现在人流量高峰期时，可以达到不错的感知数据收集率。
 利用不同种类的 POI，可以构建出不同种类的城市居民移动模型~\cite{CNKI:XiongOMCS}。
 不同的城市居民移动模型，对移动群智感知的感知质量，存在着较大的影响。
 例如基于游乐场、公园的移动模型，虽然 POI 上有很大的城市居民流量，但是对于单个居民而言，经过此类 POI 的规律并没有固定模式。
@@ -42,14 +42,13 @@ Wang 等人~\cite{DBLP:journals/puc/WangLL17}在上述工作中虽然做出了�
 采用这种做法，不仅可以减少蜂窝网络的使用，降低感知数据传输成本，还能避免主干网络资源的占用。
 % 『因此，部分研究者提倡将基于交通网络构建城市居民的道路移动模型，作为在城市感知中部署边缘服务的依据，把感知数据的采集和处理服务迁移到合适的边缘服务器上~\cite{DBLP:journals/iotj/ZhanXZW18}。』
 
-
 \begin{figure}[!h]
 \centering
-% \vspace{-1.5em}
-\includegraphics[width=210pt]{figures/Sec_MONET/CPS.eps}
+\vspace{-1em}
+\includegraphics[width=280pt]{figures/Sec_MONET/CPS.eps}
 \vspace{-0.5em}
-\caption{基于城市居民移动特征的城市感知\textbf{『需要重画』}}
-% \vspace{-1em}
+\caption{基于城市居民移动特征的城市感知应用场景}
+\vspace{-1.5em}
 \label{Figure_edge}
 \end{figure}
 
@@ -116,7 +115,7 @@ Wang 等人~\cite{DBLP:journals/puc/WangLL17}在上述工作中虽然做出了�
   \includegraphics[width=220pt]{figures/Sec_MONET/wuhan_bus.png}
   \vspace{-0.5em}
   \caption{武汉市交通网络}
-  % \vspace{-1em}
+  \vspace{-1em}
   \label{Figure_Wuhan_Buses}
 \end{figure}
 
@@ -345,7 +344,7 @@ C_c = \sum_{u\in \boldsymbol{V}}c_c(\lambda_u s - \sum_{v\in \boldsymbol{V}}(\su
 
 \begin{equation}
 \begin{aligned}
-求最小值: &\quad \sum_{v\in \boldsymbol{V}}x_v c_vT \ + \\&\quad \sum_{u\in \boldsymbol{V}}c_c(\lambda_u s -  \lambda_u s x_u - \sum_{x\in \boldsymbol{V}}\sum_{v\in \boldsymbol{V}}f^u_{xv} x_v ))T, \forall u \neq v\\
+求最小值: &\quad \sum_{v\in \boldsymbol{V}}x_v c_vT \ + \\&\quad \sum_{u\in \boldsymbol{V}}c_c(\lambda_u s -  \lambda_u s x_u - \sum_{x\in \boldsymbol{V}}\sum_{v\in \boldsymbol{V}}f^u_{xv} x_v )T, \forall u \neq v\\
 \text{限制条件:} &\quad  f^u_v \leq d^u_v s, \forall u, v\in \boldsymbol{V}, u\neq v\\
 % &\quad  f^u_v \geq d^u_v (1-x_v) s, \forall u, v\in V, u\neq v \\
 &\quad f^u_{vw} \leq \lambda^u_{vw} s, \forall u \in \boldsymbol{V}, v \in \boldsymbol{V}, w \in \boldsymbol{V}, u \neq v\\
@@ -378,7 +377,7 @@ C_c = \sum_{u\in \boldsymbol{V}}c_c(\lambda_u s - \sum_{v\in \boldsymbol{V}}(\su
 \For{$p \in P$}{
   \If {$p \not\in \boldsymbol{IP}$}{
     将路径 $p$ 加入集合$\boldsymbol{IP}$\\
-    计使用 1 次
+    记使用 1 次
   }
   \Else{
     在 $\boldsymbol{IP}$ 中找到 p 的使用次数\\
@@ -454,7 +453,7 @@ $min_s$ = $\boldsymbol{ChoiceSet}$元素个数和 $n \times c_c/c_v$ 中的最�
 
 \textbf{第二阶段 （算法~\ref{algo_choice}）}:
 在第一阶段算法中，集合 $\boldsymbol{ChoiceSet}$ 中记录的都为收益符合要求的站点。
-因此，算法~\ref{algo_choice}的最终目标就是在集合 $\boldsymbol{ChoiceSet}$ 中找出合适的站点组合，使感知数据的收集总成本最小。
+因此，算法~\ref{algo_choice} 的最终目标就是在集合 $\boldsymbol{ChoiceSet}$ 中找出合适的站点组合，使感知数据的收集总成本最小。
 在最坏的情况下，所有的感知数据均使用蜂窝网络上传，此时对应的数据收集成本为 $c_c \cdot n$。
 而引入边缘服务的宗旨，就是降低感知数据收集的成本开销。
 因此，边缘服务的部署数量不应超过 $n\times c_c / c_v$。
@@ -564,7 +563,7 @@ BSTP 主要用来模拟城市中的公共交通行为，其主要输入数据可
   \label{fig_5000}
 \end{figure}
 
-为了更直观的比较感知数据收集成本和两种网络收集感知数据的比例关系，图~\ref{fig_5000}、图~\ref{fig_10000} 和图~\ref{fig_50000} 分别展示了轻载、中载、重载三种情况下的数据收集成本以及 D2D 网络和蜂窝网络收集感知数据的数量比例。
+为了更直观的比较感知数据收集成本和 D2D 网络与蜂窝网络收集感知数据的比例关系，图~\ref{fig_5000}、图~\ref{fig_10000} 和图~\ref{fig_50000} 分别展示了轻载、中载、重载三种情况下的数据收集成本以及 D2D 网络和蜂窝网络收集感知数据的数量比例。
 在模拟测试中， $c_v = 500$ 且 $c_c = 1$，这意味着部署有边缘服务的站点必须接收500名乘客以上的感知数据，才能保证边缘服务的部署能够带来正收益。
 对于轻载状态（图~\ref{fig_5000}）而言，由于乘客的分布疏散，很少有站点的乘客流量达到500。
 再考虑到前置站点服务部署影响，所以能够保障边缘服务部署达到正收益的站点更加稀少，这也导致使用 D2D 收集的感知数据比例极低，4种部署方法的总成本也相对接近。
@@ -572,7 +571,7 @@ BSTP 主要用来模拟城市中的公共交通行为，其主要输入数据可
 
 当交通状态处于中载时（图~\ref{fig_10000}），此时交通网络中的乘客都处于运动状态，为 D2D 通信创造了更多的机会。
 虽然4种部署方法对于站点的选择以及边缘服务的部署数量都有不同的决策，但是相较于轻载状态而言，利用 D2D 收集的感知数据比例得到了显著的提升，至少有71.74\%的感知数据都经由 D2D 通信交付给边缘服务节点。
-而本章提出 2\-Phases 部署决策算法，总能本仅仅比最优解高出3\%，比 FoP 和 CoS 部署方案分别节省 13.3\% 和 14.1\%的总成本。
+而本章提出 2\-Phases 部署决策算法，总成本仅仅比最优解高出3\%，比 FoP 和 CoS 部署方案分别节省 13.3\% 和 14.1\%的总成本。
 
 \begin{figure}[!h]
   \centering

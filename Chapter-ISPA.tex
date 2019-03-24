@@ -1,4 +1,4 @@
-\chapter{基于感知数据计算卸载的边缘网络调度机制}
+\chapter{面向感知数据计算卸载的边缘网络调度机制}
 
 在移动群智感知中，由于移动设备的处理能力存在个体差异，计算能力较弱的移动设备可以将部分感知数据处理任务卸载至边缘服务器上，以减少因本地数据处理导致的时延。
 当使用软件定义网络（SDN）管理网络资源时，SDN 交换机的流表容量因三进制内容可寻址存储器（Ternary content addressable memory，简称 TCAM）的容量而受到不可避免的限制。
@@ -118,7 +118,7 @@
 对于交付给主基站 $s$ 处理的感知数据而言，令其网络上传时延为 $T_{us}$，将主基站 $s$ 处理这些原始感知数据的计算时延定义为 $T_{us\_server}$，而返回结果的网络传输时延定义为 $T_{su}$。
 因此，感知设备 $u$ 借助主基站 $s$ 处理感知数据的时延为 $T_{us}$、$T_{us\_server}$ 和 $T_{su}$ 三者之和。
 同理，感知设备 $u$ 借助主基站 $s'$ 处理感知数据的时延应当为 $T_{us'}$、$T_{us'\_server}$ 和 $T_{s'u}$ 三者之和。
-令 $\Tusresponse$ 表示感知设备 $u$ 借助任意主基站 $s$ （$s \in \boldsymbol{S}$）处理感知数据的总时延，则 $\Tusresponse$ 可以利用式~\ref{formula_cloudtime} 来计算。
+令 $\Tusresponse$ 表示感知设备 $u$ 借助任意主基站 $s$ （$s \in \boldsymbol{S}$）处理感知数据的总时延，则 $\Tusresponse$ 可以利用式~\eqref{formula_cloudtime} 来计算。
 
 \begin{figure}[!t]
   \centering
@@ -165,7 +165,7 @@
 % \end{equation}
 
 
-\section{基于感知数据计算卸载的边缘网络调度模型与算法}
+\section{面向感知数据计算卸载的边缘网络调度模型与算法}
 
 为了更好地使用数学语言描述面向任务卸载的边缘网络调度问题，本节使用了表~\ref{table_notations_ispa} 中定义的数学符号，其细节含义将在后文中解释。
 
@@ -262,7 +262,7 @@
 \end{equation}
 
 由于 $\Tscloud$ 是主基站 $s$ 处理计算任务的平均时延，在整体分析时，可以用 $\Tscloud$ 代替式~\eqref{formula_cloudtime} 中的 $T_{us\_server}$。
-因此，借助式~\ref{formula_cloudtime} 、式~\ref{formula_Tulacal} 和式~\ref{formula_Tscloud} 可以求解感知设备 $u$ 的感知数据处理时延 $\Tusresponse$。
+因此，借助式~\eqref{formula_cloudtime} 、式~\eqref{formula_Tulacal} 和式~\eqref{formula_Tscloud} 可以求解感知设备 $u$ 的感知数据处理时延 $\Tusresponse$。
 但是在 $\Tusresponse$ 的计算中，还涉及到链路的传输延时。
 基于之前的假设条件（2），基站之间的通信链路都处于稳定状态。
 这意味着在感知设备和主基站之间的通信链路不改变的情况下，每条链路的传输延时可视为定值。
@@ -270,7 +270,7 @@
 
 为了精准表示复杂网络中的任一连接感知设备 $u$ 和主基站 $s$ 的具体通信路径，这里使用该路径是否经过指定SDN 交换机的方法进行描述。
 令网络中的连接 $\lus$ 表示连接感知设备 $u$ 和主基站 $s$ 的一条链路，$\boldsymbol{R}$ 表示 SDN 交换机构成的集合。
-通过二进制变量$\xrl$表示链路$\lus$是否通过 SDN 交换机 $r$，其定义如式~\ref{formula_xrl} 。
+通过二进制变量$\xrl$表示链路$\lus$是否通过 SDN 交换机 $r$，其定义如式~\eqref{formula_xrl} 。
 对于任一指定的感知设备 $u$ 和主基站 $s$，可以利用 $\xrl$ 找出唯一的路径，从而获得 $\Tsu$ 和 $\Tus$ 的值，最终计算出感知设备 $u$ 将感知数据计算任务卸载至主基站 $s$ 的总时延。
 
 \begin{equation}
@@ -418,7 +418,7 @@
 
 通过上一小节建立的模型，可以获得感知设备 $u$ 所执行的感知数据计算任务量为 $\lambdau(1-\sum_{s\in \boldsymbol{S}}\aus)$，而主基站 $s$ 上所执行的感知数据计算任务量为 $\sum_{u\in \boldsymbol{U}}\aus\lambdau$。
 令感知设备 $u$ 本地执行计算任务的能耗成本为$\eu$，主基站 $s$ 中执行计算任务的能耗成本定义为$\es$。
-则感知数据的处理总能耗 $E$ 可以利用式~\ref{formula_Energy} 来计算。
+则感知数据的处理总能耗 $E$ 可以利用式~\eqref{formula_Energy} 来计算。
 而本章的最终优化目标，就是在上述约束条件下，令 $E$ 取最小值。
 
 \begin{equation}
