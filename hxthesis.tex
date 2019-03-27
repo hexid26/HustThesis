@@ -48,7 +48,7 @@
 
 \stuno{D201177565}
 \schoolcode{10487}
-\title{面向群智感知的\\边缘计算资源调度机制研究}{Resources Scheduling Mechanisms in Edge Computing for Mobile Crowdsensing}
+\title{面向群智感知的\\边缘计算资源调度机制研究}{Resources Scheduling Mechanisms \protect{\\} in Edge Computing for Mobile Crowdsensing}
 \author{侯海翔}{Haixiang Hou}
 \major{计算机系统结构}{Computer Architecture}
 \supervisor{金海\hspace{1em}教授}{Prof. Hai Jin}
@@ -62,9 +62,19 @@
 % 相较于传统的无线传感网络，移动群智感知的执行效率更高、适用范围更广、部署成本更低。
 % 早期阶段，移动群智感知常借助云计算技术处理大量的感知数据。
 % 如今，万物互联的时代已经来临，成倍增加的移动设备，不仅扩大了移动群智感知的覆盖范围，也让感知数据的体积上升到更大的数量级。
-边缘计算作为与云计算模型互补的分布式计算模型，其覆盖范围广、涵盖设备多、可耦合多种异构网络，这些特性为移动群智感知质量优化和效率优化提供了新的契机。
-另一方面，边缘网络中的移动设备利用端到端（Device-to-Device，简称D2D）通信，不仅可以在感知过程中实现成本更低的数据转发，还可以减少移动群智感知对主干网络资源的占用。
-如何结合边缘计算和 D2D 通信实现大范围、低延时、少成本的移动群智感知应用，已成为目前亟待解决的重要课题。
+边缘计算作为与云计算模型互补的分布式计算模型，具备覆盖范围广、涵盖设备多以及耦合多种异构网络，这些特性为移动群智感知质量优化和效率优化提供了新的契机。
+另一方面，边缘网络中的移动设备利用端到端（Device-to-Device，简称D2D）通信，不仅有助于降低感知过程中的数据转发成本，还可以减少移动群智感知对主干网络资源的占用。
+如何有机结合边缘计算和 D2D 通信实现大范围、低延时、少成本的移动群智感知应用，已成为目前亟待解决的重要课题。
+
+\textbf{现有研究的问题整理}
+
+为了扩大感知数据采集范围、提高收集效率、降低执行成本，可以合理使用边缘资源和 D2D 通信对移动群智感知应用的三个重要过程进行优化：即感知、数据处理和通信。
+在感知过程中，由于感知数据存在一定的时效性和地域分布特性，因此需要在指定时间范围内分发感知任务并收集相关数据，以保障感知数据的有效性。
+因此，如何借助边缘资源和 D2D 通信提高目标范围内的感知任务部署效率和感知数据收集效率是感知过程中的关键工作之一。
+在通信过程中，移动群智感知应用多以 D2D 通信为主、蜂窝通信为辅的网络结构进行数据交换，以减轻感知数据对主干网络资源的占用。
+另一方面，由于感知设备的计算能力参差不齐，性能不足的感知设备需要通过计算任务卸载技术借助外部算力对感知数据进行处理。
+面对大量的网络通信需求，如何利用高效便捷的网络资源管理技术，例如软件定义网络技术（Software-Defined Networking，简称SDN）来调度网络资源、合理规划感知数据传输路径、减少感知数据传输时延和处理时延，也是优化群智感知执行效率的关键工作之一。
+在数据处理过程中，移动群智感知多采用云端融合的思想，借助边缘服务处理大量的感知数据。
 
 移动群智感知应用包含三个重要过程：感知、通信和数据处理。
 在感知过程中，%由于移动设备并不具备感知任务的发现能力，
@@ -72,7 +82,6 @@
 因此，研究边缘服务、 D2D 通信对群智感知执行效率的影响机理，是合理制定群智感知应用优化策略、提高群智感知执行效率和感知质量的关键工作之一。
 % 如何利用边缘服务器和 D2D 通信提高感知任务的执行效率、扩大感知服务的覆盖范围，是提高感知质量的关键工作之一。
 在通信过程中，为了减少通信成本开销和主干网资源占用，移动群智感知中的数据交互多以 D2D 通信为主、蜂窝通信为辅。
-另一方面，由于感知设备的计算能力层次不齐，性能不足的感知设备需要通过计算卸载技术借助外部算力对感知数据进行处理。
 因此，移动群智感知需要大量的网络链接来传输离散分布的感知数据。
 如何借助高效、便捷的网络资源管理技术，例如软件定义网络技术（Software-Defined Networking，简称SDN）来调度网络资源、合理规划传输路径，也是提高感知任务执行效率，减少执行成本的关键研究工作。
 在数据处理过程中，移动群智感知多采用云端融合的思想，借助边缘服务处理大量的感知数据。
@@ -112,7 +121,7 @@
 通过对该模型的分析求解，降低了城市感知应用中的边缘服务部署成本。
 
 综上所述，围绕移动群智感知的三个主要过程，利用边缘计算资源调度优化机制可以减少数据传输、数据处理的时间，在保障感知质量的前提下合理降低能耗成本和服务成本。
-同时，与D2D通信的深度结合，也让移动群智感知在 5G 时代中的运用，打下坚实的基础。
+同时，与D2D通信的深度结合，为移动群智感知技术在 5G 时代中的运用，打下坚实的基础。
 
 
 % 感知任务的发起者通常借助任务分发服务将感知任务部署到相应的移动设备上。
@@ -127,7 +136,7 @@
 
 }
 
-\zhkeywords{边缘计算，移动群智感知，端到端通信}
+\zhkeywords{边缘计算，移动群智感知，端到端通信，资源调度}
 
 \enabstract{
 
@@ -161,10 +170,10 @@ Under this scenario, edge services are usually deployed with the help of the soc
 Based on this situation, the mechanism builds a ILP model with passenger trajectory, bus lines, and edge service deployment decisions by using the existing bus network and passenger flow characteristics in public transportation.
 Through the analysis of this model, the deployment cost of edge services in urban mobile crowdsensing applications is reduced.
 
-In summary, focus on the three main processes of mobile crowdsensing, we use edge resource scheduling optimization technologies to reduce the time of data transmission and data processing, and reasonably reduce the energy consumption and service cost, and ensuring the sensing quality. 
+In summary, focusing on the three main processes of mobile crowdsensing, we use edge resource scheduling optimization technologies to reduce the time of data transmission and data processing, and reasonably reduce the energy consumption and service cost, and ensuring the sensing quality. 
 At the same time, the deep combination with D2D communication also makes mobile crowdsensing more suitable for IoT scenarios.
 }
-\enkeywords{Edge computing, Mobile crowdsensing, D2D Communication}
+\enkeywords{Edge computing, Mobile crowdsensing, D2D Communication, Resource scheduling}
 
 \begin{document}
 
@@ -223,7 +232,7 @@ At the same time, the deep combination with D2D communication also makes mobile 
 在论文撰写工作中，曾老师布局谋篇的建议和字勘句酌的润色，为我论文的成功发表提供了坚实的基础。
 
 
-感谢实验室的吴淞、余辰、刘海昆、陆枫、肖江、顾琳等老师，感谢刘海昆、李丁丁、李鹤等师兄，感谢郑龙、张宇、范学鹏、叶成晨、郭人通等同学。
+感谢实验室的吴松、余辰、刘海昆、陆枫、肖江、顾琳等老师，感谢刘海昆、李丁丁、李鹤等师兄，感谢郑龙、张宇、范学鹏、叶成晨、郭人通等同学。
 谢谢各位在实验室的陪伴，陪我渡过八年的曲折坎坷、喜怒哀乐。
 我的博士生涯，因为你们而变得多姿多彩，成为我人生中最宝贵的经历。
 

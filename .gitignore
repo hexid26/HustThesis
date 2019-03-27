@@ -14,3 +14,5 @@ legacy/
 *.log
 *.pdf
 *_temp.tex
+*.lot
+*.lof

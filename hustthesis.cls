@@ -47,6 +47,8 @@
 %%  Right brace   \}     Tilde         \~}
 \RequirePackage{ifthen}
 \RequirePackage{xkeyval}
+\RequirePackage{mathptmx}
+
 \newif\ifHUST@finalformat
 \HUST@finalformattrue
 \DeclareOptionX{format}[final]{
@@ -138,15 +140,18 @@
       \RequirePackage[CJKmath]{xeCJK}
       \setCJKmainfont[
        BoldFont={Adobe Heiti Std},
-       ItalicFont={Adobe Kaiti Std}]{Adobe Song Std}
+       %ItalicFont={Adobe Kaiti Std}]{Adobe Song Std}
+       ItalicFont={Adobe Kaiti Std}]{Songti SC}
       \setCJKsansfont{Adobe Kaiti Std}
-      \setCJKmonofont{Adobe Fangsong Std}
+      %\setCJKmonofont{Adobe Fangsong Std}
+      \setCJKmonofont{Songti SC}
       \xeCJKsetup{PunctStyle=kaiming}
 
       \newcommand\ziju[2]{{\renewcommand{\CJKglue}{\hskip #1} #2}}
       \newCJKfontfamily\HEI{Adobe Heiti Std}
       \newCJKfontfamily\KAI{Adobe Kaiti Std}
-      \newCJKfontfamily\FANGSONG{Adobe Fangsong Std}
+      %\newCJKfontfamily\FANGSONG{Adobe Fangsong Std}
+      \newCJKfontfamily\FANGSONG{Songti SC}
       \newcommand{\hei}[1]{{\HEI #1}}
       \newcommand{\kai}[1]{{\KAI #1}}
       \newcommand{\fangsong}[1]{{\FANGSONG #1}}
@@ -161,6 +166,7 @@
       % 中文字体
       \setmainjfont[
        BoldFont={AdobeHeitiStd-Regular},
+       %ItalicFont={AdobeKaitiStd-Regular}]{AdobeSongStd-Light}
        ItalicFont={AdobeKaitiStd-Regular}]{AdobeSongStd-Light}
       \setsansjfont{AdobeKaitiStd-Regular}
       \defaultjfontfeatures{JFM=kaiming}
@@ -168,10 +174,12 @@
       \newcommand\ziju[2]{\vbox{\ltjsetparameter{kanjiskip=#1} #2}}
       \newjfontfamily\HEI{AdobeHeitiStd-Regular}
       \newjfontfamily\KAI{AdobeKaitiStd-Regular}
-      \newjfontfamily\FANGSONG{AdobeFangsongStd-Regular}
+      %\newjfontfamily\FANGSONG{AdobeFangsongStd-Regular}
+      \newjfontfamily\FANGSONG{SongtiSC-Regular}
       \newcommand{\hei}[1]{{\jfontspec{AdobeHeitiStd-Regular} #1}}
       \newcommand{\kai}[1]{{\jfontspec{AdobeKaitiStd-Regular} #1}}
-      \newcommand{\fangsong}[1]{{\jfontspec{AdobeFangsongStd-Regular} #1}}
+      %\newcommand{\fangsong}[1]{{\jfontspec{AdobeFangsongStd-Regular} #1}}
+      \newcommand{\fangsong}[1]{{\jfontspec{SongtiSC-Regular} #1}}
     \else\fi
     \RequirePackage{zhnumber}
     \def\CJKnumber#1{\zhnumber{#1}} % 兼容CJKnumb
@@ -739,23 +747,23 @@
       \TurnOnTabFontSetting
     \end{center}
     }
-  \parbox[t][6cm][t]{\textwidth}{
-    \vspace{1.0cm}
+  \parbox[t][9cm][t]{\textwidth}{
+    \vspace{4.0cm}
     \begin{center}
     \includegraphics[scale=1.1]{figures/hust-title.pdf}\\[0.8cm]
-    \ziju{10bp}{\fontsize{42pt}{54.6pt}\selectfont\HEI\HUST@zhapplyname}
+    \ziju{10bp}{\fontsize{42pt}{54.6pt}\selectfont\FANGSONG\HUST@zhapplyname}
     \end{center}
   }
   \parbox[t][4.8cm][t]{.8\textwidth}{
     \vspace{1.4cm}
     \begin{center}
-    \fontsize{22pt}{35.2pt}\selectfont\hei{\HUST@zhtitle}
+    \fontsize{22pt}{35.2pt}\selectfont\FANGSONG{\HUST@zhtitle}
     \end{center}
   }
   \parbox[t][7.4cm][t]{\textwidth}{
     \vspace{1.2cm}
     \begin{center}
-    \fontsize{18pt}{27.0pt}\selectfont
+    \fontsize{18pt}{18pt}\selectfont
     \setlength{\extrarowheight}{0pt}
     \TurnOffTabFontSetting
     \begin{tabular}{p{5em}@{{：\hspace{1em}}}l}
@@ -783,13 +791,13 @@
     \parbox[t][5.7cm][t]{\textwidth}{
       \begin{center}
         \fontsize{18pt}{23.4pt}\selectfont
-        \textbf{\textsf{\HUST@entitle}}
+        \textbf{\HUST@entitle}
       \end{center}
     }
     \parbox[t][5cm][t]{.8\textwidth}{
       \begin{center}
-      \setlength{\extrarowheight}{5pt}
-      \fontsize{16pt}{24.0pt}\selectfont
+      \setlength{\extrarowheight}{0pt}
+      \fontsize{16pt}{16pt}\selectfont
       \TurnOffTabFontSetting
       %\begin{tabular}{l@{~:~}p{18em}}
         \begin{tabular}{p{6.8em}@{{：\hspace{1.6em}}}l}
@@ -806,7 +814,7 @@
     \parbox[t][7cm][b]{.8\textwidth}{
       \begin{center}
       \bfseries
-      \fontsize{14pt}{28.0pt}\selectfont
+      \fontsize{16pt}{16pt}\selectfont
       \HUST@enschoolname \\
       \HUST@enaddress \\
       \endateformat
@@ -899,7 +907,7 @@
   \endgroup
 }
 \def\HUST@enabstractpage{
-  \chapter*{\textsf{\HUST@enabstractname}}
+  \chapter*{\textrm{\HUST@enabstractname}}
   \begingroup
   %\fontsize{10.5pt}{13.7pt}\selectfont
   \fontsize{12pt}{15.6pt}\selectfont
@@ -919,6 +927,7 @@
     \HUST@zhabstractpage
     \clearpage
   }
+  \addcontentsline{toc}{chapter}{\HUST@enabstractname}
   \HUST@enabstractpage
   \clearpage
 }

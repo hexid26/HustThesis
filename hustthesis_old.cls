@@ -288,7 +288,7 @@
     \zhaddress{#1}\enaddress{#2}
   }
 }
-\address{中国，武汉，430074}{Wuhan~430074, P.~R.~China}
+\address{中国，武汉，430074}{Wuhan, 430074, P.~R.~China}
 \def\zhapplyname#1{\def\HUST@zhapplyname{#1}}
 \def\enapplyname#1{\def\HUST@enapplyname{#1}}
 \DeclareDocumentCommand\applyname{m g}
@@ -380,7 +380,7 @@
     \def\tableautorefname{表}
     \def\appendixautorefname{附录}
     \expandafter\def\csname\appendixname autorefname\endcsname{\appendixname}
-    \def\chapterautorefname~#1\null{第\zhnumber{#1}章\null}
+    \def\chapterautorefname~#1\null{第~#1~章\null}
     \def\sectionautorefname~#1\null{#1~小节\null}
     \def\subsectionautorefname~#1\null{#1~小节\null}
     \def\subsubsectionautorefname~#1\null{#1~小节\null}
@@ -637,7 +637,7 @@
   }
   {
     \ifthenelse{\equal{\HUST@language}{chinese}}
-    {\zhnumber{\thechapter}}
+    {{\thechapter}}
     {Chapter~\thechapter}
   }
   {1em}

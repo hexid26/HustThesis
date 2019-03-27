@@ -669,6 +669,20 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
   \label{Figure_EntireTest}
 \end{figure}
 
+% \vspace{-1.5em}
+\begin{figure}[!ht]
+  \centering
+  % \vspace{-1.5em}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}}
+  \vspace{-0.5em}
+  \caption{不同时间划分的对感知质量的影响}
+  \vspace{-1em}
+  \label{Figure_BestT}
+\end{figure}
+
 为了验证时间配额划分算法的准确性，测试中使用参数 $N=6000$、 $N_f=4$、 $\lambda_n = 0.000027$、 $\lambda_f=0.00018$ 定义的模拟场景。
 移动群智感知应用的生命周期 $T_{total\_time}$ 设置为 100 秒。
 在目标区域内，一共有 $N$ 个移动设备，由于每个移动设备生成一组感知数据，因此可以利用收集到的感知数据总数与 $N$ 的比值来表示感知数据的收集比例，这一比例也反映出感知应用的执行效率。
@@ -680,35 +694,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 当时间划分为 59.5 秒时，感知任务分发过程和感知数据收集过程达到平衡，此时可以收集到最多的感知数据。
 在算法执行中，$N\_slots$ （章节~\ref{UIC:algo}）被设置为 $10^7$，算法执行时间不超过 2500 毫秒。
 
-% \vspace{-1.5em}
-\begin{figure}[!h]
-  \centering
-  \vspace{-1.5em}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}}
-  \vspace{-0.5em}
-  \caption{不同时间划分的对感知质量的影响}
-  \vspace{-1em}
-  \label{Figure_BestT}
-\end{figure}
-
-
 \subsection{边缘服务部署对感知质量的影响}
-
-\begin{figure}[!b]
-  \centering
-	% \vspace{-1.5em}
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1n.pdf}}
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1ln.pdf}}\\
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1nf.pdf}}
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1lf.pdf}}
-	\vspace{-1em}
-	\caption{各参数对感知质量的影响}
-	% \vspace{-1.5em}
-	\label{Figure_SingleValTest}
-\end{figure}
 
 在之前的测试中，以 $N$（移动设备数量）、$N_f$（基站数量）、$\lambda_n$（移动设备之间的相遇率）和 $\lambda_f$（移动设备和基站的通信概率）作为参数来描述边缘网络中的不同资源部署场景。
 通过之前的测试结果也反映出不同的场景参数对群智感知应用的执行效率也有不同的影响效果。
@@ -721,6 +707,19 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 在对比中可以观察到，在边缘计算支撑下的移动群智感知应用中，
 移动设备的数量$N$对感知效率的影响最大，其次是移动设备的相遇率 $\lambda_n$。
 而基站数量 $N_f$ 和基站与移动设备的通信概率 $\lambda_f$ 的影响作用，都相对较小。
+
+\begin{figure}[!h]
+  \centering
+	\vspace{-1em}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1n.pdf}}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1ln.pdf}}\\
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1nf.pdf}}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1lf.pdf}}
+	\vspace{-1em}
+	\caption{各参数对感知质量的影响}
+	\vspace{-1.5em}
+	\label{Figure_SingleValTest}
+\end{figure}
 
 \subsection{边缘服务部署策略分析}
 \label{ISPA:结论}
