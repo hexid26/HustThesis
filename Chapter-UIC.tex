@@ -669,20 +669,6 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
   \label{Figure_EntireTest}
 \end{figure}
 
-% \vspace{-1.5em}
-\begin{figure}[!ht]
-  \centering
-  % \vspace{-1.5em}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}}
-  \vspace{-0.5em}
-  \caption{不同时间划分的对感知质量的影响}
-  \vspace{-1em}
-  \label{Figure_BestT}
-\end{figure}
-
 为了验证时间配额划分算法的准确性，测试中使用参数 $N=6000$、 $N_f=4$、 $\lambda_n = 0.000027$、 $\lambda_f=0.00018$ 定义的模拟场景。
 移动群智感知应用的生命周期 $T_{total\_time}$ 设置为 100 秒。
 在目标区域内，一共有 $N$ 个移动设备，由于每个移动设备生成一组感知数据，因此可以利用收集到的感知数据总数与 $N$ 的比值来表示感知数据的收集比例，这一比例也反映出感知应用的执行效率。
@@ -693,6 +679,20 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 当任务分发时间分配过多时（70秒），所有的感知数据无法及时被发送至基站，导致在生命周期内无法收集齐所有的感知数据。
 当时间划分为 59.5 秒时，感知任务分发过程和感知数据收集过程达到平衡，此时可以收集到最多的感知数据。
 在算法执行中，$N\_slots$ （章节~\ref{UIC:algo}）被设置为 $10^7$，算法执行时间不超过 2500 毫秒。
+
+\vspace{-1em}
+\begin{figure}[!ht]
+  \centering
+  % \vspace{-1.5em}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}}
+  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}}
+  \vspace{-0.5em}
+  \caption{不同时间划分的对感知质量的影响}
+  \vspace{-1.5em}
+  \label{Figure_BestT}
+\end{figure}
 
 \subsection{边缘服务部署对感知质量的影响}
 

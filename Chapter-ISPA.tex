@@ -1,4 +1,4 @@
-\chapter{面向感知数据计算卸载的边缘网络调度机制}
+\chapter{面向感知数据计算卸载的边缘网络调度}
 
 在移动群智感知中，由于移动设备的处理能力存在个体差异，计算能力较弱的移动设备可以将部分感知数据处理任务卸载至边缘服务器上，以减少因本地数据处理导致的时延。
 当使用软件定义网络（Software-Defined Network，简称SDN）管理网络资源时，SDN 交换机的流表容量因三进制内容可寻址存储器（Ternary content addressable memory，简称 TCAM）的容量而受到不可避免的限制。
@@ -766,12 +766,22 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=290pt]{./figures/Sec_ISPA/large_E}
+  \includegraphics[width=250pt]{./figures/Sec_ISPA/large_E}
   % \vspace{-1em}
   \vspace{-0.5em}
   \caption{ LSW 和 SPF 调度算法对能量总开销的影响}
   \label{fig_largeE}
   \vspace{-1em}
+\end{figure}
+
+\begin{figure}[!b]
+  \centering
+  \includegraphics[width=250pt]{./figures/Sec_ISPA/large_Au}
+  % \vspace{-1em}
+  \vspace{-0.5em}
+  \caption{LSW 和 SPF 调度算法对平均任务卸载效率的影响}
+  \vspace{-1em}
+  \label{fig_largeAu}
 \end{figure}
 
 图~\ref{fig_largeAu} 显示了LSW调度算法和 SPF 调度算法对平均任务卸载比率的影响。
@@ -780,22 +790,12 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 在该测试中，两种调度算法都没有很好的避开高时延链路带来的影响。
 但是，相较于 SPF 调度算法，LSW算法的抗干扰能力要更好一些。
 
-\begin{figure}[!h]
-  \centering
-  \includegraphics[width=290pt]{./figures/Sec_ISPA/large_Au}
-  % \vspace{-1em}
-  \vspace{-0.5em}
-  \caption{LSW 和 SPF 调度算法对平均任务卸载效率的影响}
-  \vspace{-1em}
-  \label{fig_largeAu}
-\end{figure}
-
 图~\ref{fig_largeL} 显示了LSW调度算法和 SPF 调度算法对边缘网络中链接使用数量的影响。当参与群智感知的感知设备数量相同时，LSW方法中使用的链路数比SPF算法中的链路数少10\%。
 这也意味着LSW调度算法对 SDN 交换机的流表容量占用更小，可以支撑的感知设备数量更多。
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=290pt]{./figures/Sec_ISPA/large_link}
+  \includegraphics[width=250pt]{./figures/Sec_ISPA/large_link}
   % \vspace{-1em}
   \vspace{-0.5em}
   \caption{LSW 和 SPF 调度算法对网络链路数量的影响}
