@@ -722,14 +722,48 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 	\label{Figure_SingleValTest}
 \end{figure}
 
-\subsection{边缘服务部署策略分析}
+\subsection{模型分析效率}
+
+\red{
+对于群智感知应用的发起者而言，可以通过 ONE 模拟器来获知群智感知应用的执行效率。
+尽管使用模拟器可以得到较真实时间数十倍以上的加速比，但是当模拟场景中节点数量增加时，模拟器的工作时长也会成倍增加。
+该测试的运行环境使用了 Intel XEON E5-2696 CPU（@3GHz）、64G 内存，ONE 模拟器中设置的区域大小为1000000平方米，基站均匀分布在该区域内。
+移动设备在该区域中，个体速度处于 $1m/s$ 至 $10m/s$ 之间，以随机游走的方式移动。
+通过表~\ref{tab_one} 可以发现，不同的节点数量，让 ONE 模拟器的工作时长急剧增加。
+而使用本章提出的群智感知执行过程分析模型，预测感知应用执行效率的时间复杂度为 $O(N_{slots})$。
+其中，$N_{slots}$ 是感知应用生命周期的划分数量。
+当 $N_{slots} = 10^6$ 时，同样测试环境下的计算时间为 0.487 秒。
+因此，使用本章提出的分析模型，可以更快的预测群智感知应用的执行效率。
+}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[!h]
+\centering
+\caption{ ONE 模拟器在不同场景下的工作时间}
+\label{tab_one}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\multicolumn{2}{|c|}{\multirow{2}{*}{\textbf{\begin{tabular}[c]{@{}c@{}}模拟耗时\\ 单位：秒\end{tabular}}}} & \multicolumn{5}{c|}{\textbf{移动设备数量}} \\ \cline{3-7} 
+\multicolumn{2}{|c|}{} & \textbf{1000} & \textbf{2000} & \textbf{3000} & \textbf{4000} & \textbf{5000} \\ \hline
+\multirow{7}{*}{\textbf{\begin{tabular}[c]{@{}c@{}}基\\ 站\\ 数\\ 量\end{tabular}}} & \textbf{4} & 14.48 & 56.70 & 147.12 & 266.24 & 426.21 \\ \cline{2-7} 
+  & \textbf{5} & 16.00 & 71.03 & 160.79 & 326.92 & 498.94 \\ \cline{2-7} 
+  & \textbf{6} & 20.91 & 83.83 & 200.72 & 380.97 & 637.36 \\ \cline{2-7} 
+  & \textbf{7} & 23.06 & 97.93 & 229.49 & 458.05 & 694.22 \\ \cline{2-7} 
+  & \textbf{8} & 26.94 & 106.89 & 251.90 & 480.30 & 788.00 \\ \cline{2-7} 
+  & \textbf{9} & 29.26 & 117.59 & 284.35 & 533.33 & 866.55 \\ \cline{2-7} 
+  & \textbf{10} & 33.14 & 131.58 & 305.30 & 573.59 & 925.05 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection{不同种类资源调度的优化收益分析}
 \label{ISPA:结论}
 
-\begin{figure}[!b]
+\begin{figure}[!h]
   \centering
 	% \vspace{-1.5em}
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1n.pdf}}
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1ln.pdf}}\\
+	{\includegraphics[width=200pt]{./figures/Sec_UIC/args/1n.pdf}}
+	{\includegraphics[width=200pt]{./figures/Sec_UIC/args/1ln.pdf}}\\
 	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1nf.pdf}}
 	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1lf.pdf}}
 	\vspace{-1em}
@@ -763,4 +797,4 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 通过任务传播过程和数据收集过程的量化分析，在感知应用生命周期定的情况下，研究了感知效率影响因素优先级和改进方法，并提出任务分发和数据收集两个过程的时间划分方法。
 最大限度地提高移动群智感知应用的感知效率。
 并通过模拟实验，验证了模型的正确性和优化机制的有效性。
-\red{利用该模型，可以根据群智感知应用场景更快地预测感知任务在生命周期内可以收集的感知数据数量。同时，也可用来预估移动设备的运动状态以及边缘服务部署对感知效率的影响，以辅助调整群智感知在边缘环境下的优化策略。}
+\red{利用该模型，可以根据群智感知应用场景更快地预测感知任务在生命周期内可以收集的感知数据数量。同时，也可用来快速预测移动设备的运动状态以及边缘服务部署对感知效率的影响，以辅助调整群智感知应用在边缘环境下的优化策略。}
