@@ -10,20 +10,23 @@ else
 endif
 
 # Program Defintions
-# TEX    = lualatex -shell-escape -8bit
-TEX    = xelatex
+TEX    = lualatex -shell-escape -8bit
 BIBTEX = bibtex
 INDEX  = makeindex -q
 RM     = $(if $(filter $(OS_TYPE),Windows),del /f /q ,rm -f )
 
 all: hxthesis
 hxthesis : hxthesis.pdf
-cb: clean hxthesis
 
 hxthesis.pdf : hxthesis.tex hustthesis.cls hustthesis.bst ref.bib
 	@$(TEX) $(<F)
 	@$(BIBTEX) $(basename $(<F))
 	@$(TEX) $(<F)
+	@$(TEX) $(<F)
+
+fast : hxthesis_fast
+hxthesis_fast : hxthesis_fast.pdf
+hxthesis_fast.pdf : hxthesis.tex hustthesis.cls hustthesis.bst ref.bib
 	@$(TEX) $(<F)
 
 clean:

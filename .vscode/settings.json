@@ -1,7 +1,7 @@
 {
   "latex-workshop.latex.recipes": [
     {
-      "name": "lualatex-quick-compile",
+      "name": "quick-compile",
       "tools": [
         "xelatex"
       ]
