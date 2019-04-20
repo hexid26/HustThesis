@@ -4,7 +4,7 @@
 % [ ] 公式是否增加推导过程
 % [ ] D2D 通信增加几篇文献并做简要说明
 
-\chapter{基于随机过程的群智感知执行效率理论分析及应用}
+\chapter{基于边端融合的群智感知任务调度机制}
 
 如今，人类社会已经进入万物互联时代。
 无处不在的移动设备让移动群智感知的覆盖区域更开阔、采集任务更丰富、数据收集更全面。
@@ -757,19 +757,6 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 \subsection{不同种类资源调度的优化收益分析}
 \label{ISPA:结论}
 
-\begin{figure}[!h]
-  \centering
-	% \vspace{-1.5em}
-	{\includegraphics[width=200pt]{./figures/Sec_UIC/args/1n.pdf}}
-	{\includegraphics[width=200pt]{./figures/Sec_UIC/args/1ln.pdf}}\\
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1nf.pdf}}
-	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1lf.pdf}}
-	\vspace{-1em}
-	\caption{各参数对感知效率的收益比例}
-	% \vspace{-1.5em}
-	\label{Figure_SingleVal}
-\end{figure}
-
 为了更直观比较不同边缘服务资源对移动群智感知效率的影响，在此将 $N=5000$、$N_f=2$、$\lambda_n = 0.00003$、$\lambda_f=0.0004$ 做为图~\ref{Figure_SingleVal} 的基准测试场景（图中 base 实线）。
 同样，感知应用的生命周期依然为100秒。
 通过对四种不同参数进行变化，可以看出图中曲线变化趋势有着非常明显的不同。
@@ -785,6 +772,19 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 另一方面，租用更多的基站，意味着蜂窝通信网络覆盖的范围更大。
 随着目标区域的扩大，可以增加参与群智感知的移动设备数量。
 但是是否需要增加基站来作为群智感知应用的边缘服务节点，还需要根据移动设备的具体分布状态进行调整。
+
+\begin{figure}[!h]
+  \centering
+	\vspace{-1em}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1n.pdf}}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1ln.pdf}}\\
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1nf.pdf}}
+	{\includegraphics[width=210pt]{./figures/Sec_UIC/args/1lf.pdf}}
+	\vspace{-1em}
+	\caption{各参数对感知效率的收益比例}
+	\vspace{-4em}
+	\label{Figure_SingleVal}
+\end{figure}
 
 \section{本章小结}
 

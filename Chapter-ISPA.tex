@@ -1,4 +1,4 @@
-\chapter{考虑流表容量的能耗最小化感知数据计算卸载调度}
+\chapter{面向计算任务卸载的群智感知网络流调度机制}
 
 在移动群智感知中，由于移动设备的处理能力存在个体差异，计算能力较弱的移动设备可以将部分感知数据处理任务卸载至边缘服务器上，以减少因本地数据处理导致的时延。
 该过程涉及大量数据流的管理，软件定义网络（Software-Defined Network，简称SDN）被视为网络流管理的有效未来网络技术。
@@ -182,6 +182,7 @@
     $\boldsymbol{U}$ & 由感知设备 $u$ 构成的集合\\\hline
     $\boldsymbol{S}$ & 由主基站 $s$ 构成的集合\\\hline
     $\boldsymbol{R}$ & 由 SDN 交换机 $r$ 构成的集合\\\hline
+    $\boldsymbol{C_r}$ & SDN 交换机 $r$ 的流表容量\\\hline
     $\Lus$ & 感知设备$u$ 到主基站 $s$ 的链路 $\lus$ 构成的集合\\\hline
     $\xu$ & 感知设备$u$是否使用计算任务卸载\\\hline
     $\xus$ & 感知设备$u$的计算任务是否卸载到主基站$s$\\\hline
@@ -392,7 +393,9 @@
 因此，链路$\lus$的带宽必须满足所有感知设备的通信需求。
 假设链路$\lus$的最大带宽是$\Blus$，并且上行链路和下行链路的带宽需求分别为$\Bu$和$\Bd$。那么约束条件可以描述为式~\eqref{formula_Bandwidth}。
 
+\vspace{-1em}
 \begin{equation}
+% \vspace{-1em}
 \label{formula_Bandwidth}
 \begin{gathered}
 \sum\limits_{u \in \boldsymbol{U}} \sum\limits_{s\in \boldsymbol{S}}\lambdau\aus(\xlus \cdot \Bu + \ylus \cdot \Bd) \leq \Blus, \ 
@@ -407,6 +410,7 @@
 因此，对于任意 SDN 交换机，承载的规则数目不可超过其流表容量$C_r$。
 利用之前定义的二进制变量 $xlus$ ，二者的关系应当满足如式~\eqref{formula_linkconstr}。
 
+\vspace{-1em}
 \begin{equation}
 \label{formula_linkconstr}
 \begin{gathered}
@@ -422,6 +426,7 @@
 则感知数据的处理总能耗 $E$ 可以利用式~\eqref{formula_Energy} 来计算。
 而本章的最终优化目标，就是在上述约束条件下，令 $E$ 取最小值。
 
+% \vspace{-1em}
 \begin{equation}
 \label{formula_Energy}
   \begin{gathered}
@@ -434,14 +439,16 @@
 针对式~\eqref{formula_tscloudconstr}，定义新的变量 $\beta_{us}$ 和 $\delta_{us}$。
 其计算方法如式~\eqref{formula_beta} 和式~\eqref{formula_delta} 。
 
+\vspace{-1em}
 \begin{equation}
-  \label{formula_beta}
+\label{formula_beta}
   \begin{gathered}
     \beta_{us} = \aus \xlus,
     \quad \forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}
   \end{gathered}
 \end{equation}
 
+\vspace{-1em}
 \begin{equation}
   \label{formula_delta}
   \begin{gathered}
@@ -698,13 +705,13 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 在该图中，从侧面反映出LSW链路调度方法维持较高的计算资源平均卸载比率。
 虽然不及最优解给出的调度策略，但基本趋势维持一致。
 
-\vspace{-0.5em}
+% \vspace{-0.5em}
 \begin{figure}[!h]
   \centering
   \includegraphics[width=290pt]{./figures/Sec_ISPA/small_Au}
-  \vspace{-0.5em}
+  % \vspace{-0.5em}
   \caption{不同调度方法对平均计算任务卸载比率的影响}
-  \vspace{-0.5em}
+  % \vspace{-0.5em}
   \label{fig_smallAu}
 \end{figure}
 \vspace{-0.5em}
