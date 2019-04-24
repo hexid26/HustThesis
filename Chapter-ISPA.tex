@@ -657,9 +657,9 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 \subsection{算法分析}
 
 第一个小型网络的拓扑结构如图~\ref{fig_smallNetwork} 所示。在此图中，定义了每条链路的时延和带宽。SDN交换机的流表容量依次定义为100，100，80，80，80，100，100。
-在该网络中，交换机$0$和交换机$1$是接入点，交换机$5$和交换机$6$连接到不同的主基站。
-连接到交换机$6$的主基站比连接到交换机$5$的主基站快10\%。
-分布在交换机$0$和交换机$1$之间的感知设备数量从10开始，以10为步进增加至100，且每个感知设备的任务到达率设置为25个任务/秒至50个任务/秒，且均匀分布。
+在该网络中，交换机$0$和交换机$5$是接入点，交换机$1$和交换机$6$连接到不同的主基站。
+连接到交换机$6$的主基站比连接到交换机$1$的主基站快10\%。
+分布在交换机$0$和交换机$5$之间的感知设备数量从10开始，以10为步进增加至100，且每个感知设备的任务到达率设置为25个任务/秒至50个任务/秒，且均匀分布。
 其中，感知设备执行计算任务的能耗成本 $\eu=10$，主基站执行计算任务的能耗成本$\es=100$。
 
 \begin{figure}[!h]
@@ -687,7 +687,7 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=290pt]{./figures/Sec_ISPA/small_E}
+  \includegraphics[width=310pt]{./figures/Sec_ISPA/small_E}
   \vspace{-1em}
   \caption{不同调度方法对感知设备总能耗的影响}
   % \vspace{-0.5em}
@@ -707,7 +707,7 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 % \vspace{-0.5em}
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=290pt]{./figures/Sec_ISPA/small_Au}
+  \includegraphics[width=310pt]{./figures/Sec_ISPA/small_Au}
   % \vspace{-0.5em}
   \caption{不同调度方法对平均计算任务卸载比率的影响}
   % \vspace{-0.5em}
