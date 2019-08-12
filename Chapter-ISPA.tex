@@ -1,7 +1,10 @@
 \chapter{面向计算任务卸载的群智感知网络流调度机制}
 
-在移动群智感知中，由于移动设备的处理能力存在个体差异，计算能力较弱的移动设备可以将部分感知数据处理任务卸载至边缘服务器上，以减少因本地数据处理导致的时延。
-该过程涉及大量数据流的管理，软件定义网络（Software-Defined Network，简称SDN）被视为网络流管理的有效未来网络技术。
+尽管无处不在的移动设备可以收集海量的感知数据，但是其较弱的计算能力无法完成这些感知数据的即时处理。
+借助边缘计算和 D2D 通信，为感知数据的高效处理提供了新的契机。
+借助软件定义网络（Software-Defined Network，简称SDN），可以有效管理该过程中产生的大量数据流。
+% 在移动群智感知中，由于移动设备的处理能力存在个体差异，计算能力较弱的移动设备可以将部分感知数据处理任务卸载至边缘服务器上，以减少因本地数据处理导致的时延。
+% 该过程涉及大量数据流的管理，软件定义网络（Software-Defined Network，简称SDN）被视为网络流管理的有效未来网络技术。
 然而，SDN 交换机的流表容量因三进制内容可寻址存储器（Ternary Content Addressable Memory，简称 TCAM）的容量而受到不可避免的限制。
 面对大量的移动设备，SDN 在调度移动设备的网络链接时，必须考虑流表容量、带宽和任务卸载决策之间的约束。
 基于这些约束条件，本章首先基于计网协同的原则构建了整型线性规划（Integer Linear Programming，简称 ILP）模型来描述负载决策、传输时延和以及感知数据处理成本之间的关系。
@@ -33,7 +36,9 @@
 因此，在部分实时性要求高、感知数据处理复杂的群智感知应用中，可以借助边缘计算在数据产生源附近部署相应的边缘服务，来实现原始感知数据的实时处理与收集。
 
 然而，边缘计算不同于云计算模型，由于边缘服务器的分布较为独立，没有专用的内部网络支撑计算任务在不同服务器之间的调度。
-因此，在进行计算任务卸载时，感知设备和边缘服务器之间的网络链接需要根据计算卸载决策进行协同调度。
+在边缘环境执行计算任务卸载时，需要对网络资源和边缘计算资源进行协同调度，
+同时利用有限的网络传输资源及边缘计算资源，完成海量感知数据的快速处理与收集。
+% 因此，在进行计算任务卸载时，感知设备和边缘服务器之间的网络链接需要根据计算卸载决策进行协同调度。
 基于这一目的，本章利用 SDN 对边缘网络中的网络资源进行管理，利用其控制平面和数据平面的隔离的特征~\cite{Committee:2012un}，实现计算任务卸载和网络资源的协同调度。
 
 % 网络中的设备数量和流量类型正在急剧增长。为了更有效地管理网络，新出现的网络架构SDN被发明出来。SDN的目标是分离控制平面和数据平面~\cite{Committee:2012un}。SDN采用可编程网络，并利用虚拟化技术，这与其他网络体系结构不同。同时，SDN还可以共享网络基础设施，使网络功能实现软件化。
@@ -214,7 +219,7 @@
 另一方面，由于感知设备可以划分任意比例的计算任务至主基站上，因此使用 $\aus$（$\aus \in [0,1]$）来代表感知数据计算任务的卸载比例。
 当 $\aus = 1$ 时，感知设备$u$的计算任务全部在主基站 $s$ 上执行，当 $\aus = 0$ 时，感知设备 $u$ 不利用主基站 $s$ 处理感知数据。
 
-基于上述定义， $\aus$ 和 $\xus$ 之间的关系可以用式~\eqref{formula_xus}来表达。
+基于上述定义， $\aus$ 和 $\xus$ 之间的关系可以用式~\eqref{formula_xus} 来表达。
 该式中，如果 $\aus = 0$，说明感知设备 $u$ 没有将感知数据的计算任务卸载到主基站 $s$，因此 $\xus$ 的值也应该为0。
 如果 $\aus \in (0, 1]$，说明感知设备 $u$ 将比例为 $\aus$ 的感知数据计算任务卸载到主基站 $s$，此时 $\xus = 1$，。
 
@@ -512,9 +517,18 @@
 \end{aligned}
 \end{equation}
 
+在式~\eqref{formula_energy} 中， $E$ 的表达式中存在变量 $\aus (\aus \in [0,1])$ 。
+根据式~\eqref{formula_Energy} 可知，本章优化目标是一个最大最小工厂选址问题（Minimax Facility Location Problem）。
+而对于 $\aus$ 而言，式~\eqref{formula_xus} 说明 $\aus$ 的取值受到 0、1 变量 $\xus$ 的约束。
+另一方面 0、1 变量 $\xlus$ 与 $\xus$ 之间也因式~\eqref{formula_xusl} 和 式~\eqref{formula_xusl1} 构成工厂选址问题。
+由于网络资源的限制条件多围绕 $\xlus$ 定义，因此 $\xlus$ 与 $\xus$ 之间为限量的工厂选址问题（Capacitated Facility Location Problem）。
+根据文献\cite{ORTIZASTORQUIZA2018791}，本章的优化问题是一个 2 层工厂选择问题（2-Level Facility Location Problem）。
+因此该问题为一个 NP 问题，但是可以通过线性规划的方法在伪多项式时间内求解。
+
+
 \subsection{依据权重的链路调度算法}
 
-针对本章提出的 ILP 模型，可以利用数学工具计算出计算任务卸载与网络资源协同调度的最佳决策。
+由于上述模型中 $\xlus$ 与 $\xus$ 均为整型变量，因此可以借助 ILP 模型利用数学工具计算出计算任务卸载与网络资源协同调度的最佳决策。
 但是 ILP 模型求解的高计算复杂度，让最佳决策的求解时间成本难以接受。
 同时，随着网络规模的不断扩大，求解时间也成指数级趋势上升。
 为此，本节设计了一种依据权重的链路调度（Link Scheduling with Weight，简称LSW）算法，来避免 ILP 模型求解的繁冗过程，实现快速获取次优协同调度决策的目的。
@@ -522,7 +536,29 @@
 LSW 算法是一个两阶段启发式算法。首先，该算法确定$\sum_{s \in \boldsymbol{S}}\aus$和$\sum_{u \in \boldsymbol{U}}\aus$，创建针对感知设备$u$和主基站$s$的不同组合，每种组合创建首选链接集合。
 然后，该算法针对模型中的约束条件，为感知设备$u$和服务器$s$分配最合适的链路，并调整$\aus$，减少感知设备的能源开销。
 
-\begin{algorithm}[!b]
+\textbf{第一阶段 （算法~\ref{algo_aus}）}:
+在式~\eqref{formula_Energy}，$\lambdau$、$\es$ 和 $\eu$ 是常数。
+变量 $\aus$ 是确定感知设备总能耗 $E$ 值的唯一变量。
+为了降低总能耗开销，必须在 $\es$ 和 $\eu$ 之间调整系数$\aus$。
+因此，当 $\es > \eu$ 时，$\aus$ 应当使 $\sum_{s \in \boldsymbol{S}}{\aus}$ 取最大值，当 $\es \leq \eu$ 时，$\aus$ 应当使 $\sum_{s \in \boldsymbol{S}}{\aus}$ 取最小值。
+因此，LSW 算法第一阶段的工作是找出$\sum_{s \in \boldsymbol{S}}\aus$的取值范围。
+
+利用约束条件~\eqref{formula_tscloudconstr} 和~\eqref{formula_tulocalconstr}，可以得到$\sum_{s \in \boldsymbol{S}}\aus$的范围和$\sum_{u \in \boldsymbol{U}}\aus$的范围：
+
+\vspace{-1em}
+
+\begin{equation*}
+\begin{gathered}
+\sum_{s \in \boldsymbol{S}}\aus \in [max(0, 1- \frac{\uu}{\lambdau}), 1], \quad \forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}\\
+\sum_{u \in \boldsymbol{U}}\aus \in [0, \frac{\us}{\lambdau}], \quad \forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}
+% \vspace{-1em}
+\end{gathered}
+\end{equation*}
+
+在确定$\sum_{s \in \boldsymbol{S}}\aus$和$\sum_{u \in \boldsymbol{U}}\aus$的范围后，可以根据约束条件式~\eqref{formula_tulocalconstr} 找出一组从感知设备$u$到主基站$s$的链接集合。
+这些信息能够作为算法~\ref{algo_findminpaths} 的输入，帮助感知设备$u$选择连接主基站$s$的最佳链路。
+
+\begin{algorithm}[!t]
 \setstretch{\algostretch}
 \KwIn{$\lambdau$ 感知设备$u$的计算任务到达速率\\$\quad\quad\quad \uu$ 感知设备$u$的计算任务处理速度\\$\quad\quad\quad \us$ 主基站$s$的计算任务处理速度\\$\quad\quad\quad \eu$ 感知设备执行计算任务的能耗成本\\$\quad\quad\quad \es$  主基站执行计算任务的能耗成本}
 % \KwIn{$\uu$ : 感知设备$u$的计算任务处理速度}
@@ -552,27 +588,9 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 \label{algo_aus}
 \end{algorithm}
 
-\textbf{第一阶段 （算法~\ref{algo_aus}）}:
-在式~\eqref{formula_Energy}，$\lambdau$、$\es$ 和 $\eu$ 是常数。
-变量 $\aus$ 是确定感知设备总能耗 $E$ 值的唯一变量。
-为了降低总能耗开销，必须在 $\es$ 和 $\eu$ 之间调整系数$\aus$。
-因此，当 $\es > \eu$ 时，$\aus$ 应当使 $\sum_{s \in \boldsymbol{S}}{\aus}$ 取最大值，当 $\es \leq \eu$ 时，$\aus$ 应当使 $\sum_{s \in \boldsymbol{S}}{\aus}$ 取最小值。
-因此，LSW 算法第一阶段的工作是找出$\sum_{s \in \boldsymbol{S}}\aus$的取值范围。
-
-利用约束条件~\eqref{formula_tscloudconstr} 和~\eqref{formula_tulocalconstr}，可以得到$\sum_{s \in \boldsymbol{S}}\aus$的范围和$\sum_{u \in \boldsymbol{U}}\aus$的范围：
-
-\vspace{-1em}
-
-\begin{equation*}
-\begin{gathered}
-\sum_{s \in \boldsymbol{S}}\aus \in [max(0, 1- \frac{\uu}{\lambdau}), 1], \quad \forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}\\
-\sum_{u \in \boldsymbol{U}}\aus \in [0, \frac{\us}{\lambdau}], \quad \forall\ u \in \boldsymbol{U}, s \in \boldsymbol{S}
-% \vspace{-1em}
-\end{gathered}
-\end{equation*}
-
-在确定$\sum_{s \in \boldsymbol{S}}\aus$和$\sum_{u \in \boldsymbol{U}}\aus$的范围后，可以根据约束条件式~\eqref{formula_tulocalconstr} 找出一组从感知设备$u$到主基站$s$的链接集合。
-这些信息能够作为算法~\ref{algo_findminpaths} 的输入，帮助感知设备$u$选择连接主基站$s$的最佳链路。
+对于算法 3.1，假设感知设备 $u$ 和主基站 $s$ 之间的链路数量为 $n$，显然 $n$ 大于感知设备和主基站的数量。
+因此算法 3.1 的时间复杂度主要集中在创建链路集合和链路排序。
+所以，算法 3.1 的时间复杂度可以利用$O(n^2\log{n})$表示。
 
 \textbf{第二阶段 （算法~\ref{algo_findminpaths}）}:
 在算法~\ref{algo_aus}中，可以得到$\sum_{s \in \boldsymbol{S}}\aus$的最优解。
@@ -643,6 +661,11 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 当某个链路的权值比其他链接的权值高出 10\%时，该链接会从可选择链接中屏蔽。
 这种设定可以使各链路的带宽负载以及 SDN 交换机中流表的使用率均匀增加，实现链路调度的负载均衡。
 
+对于算法 3.2 而言，其时间复杂度集中在第 8 行开始的 for 循环中。
+由于采用了贪心算法的策略，需要对算法 3.1 中生成的链路集合进行遍历。
+所以，第 8 行开始，算法的时间复杂度为 $O(n^2)$。
+因此，算法 3.2 的整体时间复杂度为 $O(n^3)$。
+由于算法 3.1 的时间复杂度为 $O{n^2\log{n}}$，所以本章所设计的依据权重的链路调度算法时间复杂度为 $O(n^3)$。
 
 
 % 链路调度算法旨在使带宽使用率和链路使用率同时增长。 在规则空间和带宽限制下保障用户的QoS而不产生额外开销是链路选择的重要依据。 因此，本文的链路调度策略为每个链路设定权重，并且使链路的权重尽可能相近。 所以，两种资源的占用率的权重比例相同。 其中，所有链路的最大权重差值不能超过10\%。 当某个链接的权重比其他链接的权重高出 10\%时，该链接会从可选择链接中屏蔽。 这个策略是为了防止高 QoS 链接被快速占满。 一旦高质量的链路和服务器被占用完全，其余用户必须降低卸载比率以确保QoS，这将导致能耗成本的增加。
@@ -696,16 +719,8 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 
 % 链路调度算法LSW的目标是最小化总能耗$E$。因此，比较了三种方法计算出的不同的$E$值。如图~\ref{fig_smallE} 所示，不同的链路调度策略会影响卸载场景中的总能耗。当用户数量较少时，链路调度算法不会对能耗产生太大影响。随着用户数量的增加，能源成本之间的差距急剧扩大。当网络中有100个用户时，LSW方法的总能耗比最优解（Gurobi计算得出）高12.6 \%，比SPF方法的最优解高36.4\%。同时，100名用户使SDN网络基本上处于满负荷状态。因此，当SDN网络的负载接近满负荷时，LSW方法此时存在局限性。从这个图中，当SDN网络负载不满时，LSW方法和最优解之间的差异可以减少到小于10\%。
 
-图~\ref{fig_smallAu} 描述的是同一网络拓扑下，不同调度方法对感知设备平均计算任务卸载比率的影响。
-图中，感知设备数量从20到50区间，由于感知设备任务到达率以及计算任务处理速度设置的差异，产生了计算任务平均卸载比率上扬的趋势。
-但就整体而言，随着感知设备的增加，需要使用的网络资源逐渐增多，当网络资源产生竞争时，必然影响计算任务卸载的决策，使任务卸载的比率随着用户数量的增加而减少。
-图中，由于 SPF 调度算法优先选择通信时延最小的链路。
-当优势链路占用过多时，剩余链路资源因无法满足其他约束条件，导致计算任务的平均卸载比例大幅下降，也从侧面反映出图~\ref{fig_smallE} 中，SPF 算法下感知设备总能耗急剧上升的原因。
-在该图中，从侧面反映出LSW链路调度方法维持较高的计算资源平均卸载比率。
-虽然不及最优解给出的调度策略，但基本趋势维持一致。
-
 % \vspace{-0.5em}
-\begin{figure}[!h]
+\begin{figure}[!b]
   \centering
   \includegraphics[width=310pt]{./figures/Sec_ISPA/small_Au}
   % \vspace{-0.5em}
@@ -715,6 +730,13 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 \end{figure}
 \vspace{-0.5em}
 
+图~\ref{fig_smallAu} 描述的是同一网络拓扑下，不同调度方法对感知设备平均计算任务卸载比率的影响。
+图中，感知设备数量从20到50区间，由于感知设备任务到达率以及计算任务处理速度设置的差异，产生了计算任务平均卸载比率上扬的趋势。
+但就整体而言，随着感知设备的增加，需要使用的网络资源逐渐增多，当网络资源产生竞争时，必然影响计算任务卸载的决策，使任务卸载的比率随着用户数量的增加而减少。
+图中，由于 SPF 调度算法优先选择通信时延最小的链路。
+当优势链路占用过多时，剩余链路资源因无法满足其他约束条件，导致计算任务的平均卸载比例大幅下降，也从侧面反映出图~\ref{fig_smallE} 中，SPF 算法下感知设备总能耗急剧上升的原因。
+在该图中，从侧面反映出LSW链路调度方法维持较高的计算资源平均卸载比率。
+虽然不及最优解给出的调度策略，但基本趋势维持一致。
 
 \begin{figure}[!h]
   \centering
@@ -767,7 +789,7 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
 这个网络中每个交换机的规则空间是2000。
 在该SDN网络设置中，有30\%的链路的数据传输时延不能满足群智感知对感知数据传输的时延要求，由此来模拟真实网络中的不稳定因素。
 
-\begin{figure}[!b]
+\begin{figure}[!h]
   \centering
   \includegraphics[width=290pt]{./figures/Sec_ISPA/large_Au}
   % \vspace{-1em}
@@ -826,7 +848,7 @@ $\as = \sum_{s \in \boldsymbol{S}}\aus, \  \au = \sum_{u \in \boldsymbol{U}}\aus
   % \vspace{-1em}
   \vspace{-0.5em}
   \caption{四种调度算法对网络链路数量的影响}
-  \vspace{-2em}
+  \vspace{-1em}
   \label{fig_largeL}
 \end{figure}
 

@@ -11,7 +11,7 @@
 为了实现高效率、大覆盖的移动群智感知应用，边缘计算已经替代云计算为移动群智感知提供基础支撑。
 通过在边缘服务器上部署相关服务，可以增加群智感知应用的执行效率。
 % 利用边缘服务器分发感知任务，可以大大提高感知任务的空间覆盖率。
-同时，使用低成本的 D2D 通信发送感知任务、收集感知数据，助于招募更多的参与者，还能减少主干网络的流量负载。
+同时，借助低成本的 D2D 通信发送感知任务、收集感知数据，助于招募更多的参与者，还能减少主干网络的流量负载。
 % 同时，低成本的 D2D 通信也有助于更多的移动设备参与到群智感知过程中。
 % 尽管大量的研究工作利用模拟或系统实验证明了边缘计算和D2D通信对移动群智感知的积极作用，但是这些研究工作并没有考虑移动设备自身的运动特征对移动群智感知造成的影响。
 考虑移动设备运动状态对 D2D 通信造成的影响，以及网络边缘各种资源和群智感知应用执行效率之间的联系，本章将移动群智感知的场景进行参数量化，针对移动群智感知的执行过程建立随机过程分析模型。
@@ -469,6 +469,7 @@ I(t) = \frac{N (e^{(\lambda_n N + \lambda_f N_f) t} - 1)}{e^{(\lambda_n N + \lam
 因此，需要找到群智感知在实行过程中合适的时间配额划分，让 $D(t)$ 取值最大是本章的优化目的。
 由于 $t = 0$ 和 $t = T_{total\_time}$ 时，$D(t)$ 恒等于 $0$，而通过观察 $D(t)$ 的函数式，可以发现 $D(t)$ 在 $ t \in [0, T_{total\_time}] $ 时是连续函数。
 因此，一定存在一个 $t$ 的取值，使 $D(t)$ 最大。
+而本章节的最终目标，就是在现有条件下，让移动群智感知应用能够收集到更多的感知数据，即使的 $D(t)$ 达到最大值。
 
 \subsection{基于感知任务生命周期的感知任务执行划分算法}
 \label{UIC:algo}
@@ -479,7 +480,7 @@ I(t) = \frac{N (e^{(\lambda_n N + \lambda_f N_f) t} - 1)}{e^{(\lambda_n N + \lam
 在上一小节中已经提到，当移动群智感知的目标场景已经确定时，感知任务分发时长和感知数据收集时长，都会影响感知应用在其生命周期内能收集的感知数据总量，进而影响感知效率。
 所以在有限的生命周期内，需要合理分配感知任务分发过程和感知数据收集过程的时间配额，以提高移动群智感知应用的感知效率。
 当任务分发过程的时间配额为 $t$ 时，在生命周期 $T_{total\_time}$ 中群智感知应用可以收集到的感知数据总数可以利用式~\eqref{Formula_DataAmount} 计算。
-因此，必须基于式~\eqref{Formula_DataAmount} 给出合理的群智感知执行时间划分，令 $D(t)$ 最大。
+% 因此，必须基于式~\eqref{Formula_DataAmount} 给出合理的群智感知执行时间划分，令 $D(t)$ 最大。
 
 
 \begin{algorithm}[!b]
@@ -603,17 +604,54 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 在获得感知任务的移动设备增多之后，设备之间的 D2D 通信让区域内的任务分发源也越来越多，因此能够执行感知任务的移动设备数量呈指数趋势上升。
 当感知任务的覆盖接近饱和时，未接受感知任务的移动设备数量较少，因此感知任务的部署速度逐渐降低，获得感知任务的移动设备总数逐步趋近于目标区域内的移动设备总数。
 
+% \begin{figure}[!h]
+%   \centering
+%   % \vspace{-2em}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-1.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-2.pdf}}\\
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-3.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-4.pdf}}
+%   \vspace{-0.5em}
+%   \caption{任务分发过程中分析结果和模拟结果对比}
+%   \vspace{-0.5em}
+%   \label{Figure_PropagationTest}
+% \end{figure}
+
 \begin{figure}[!h]
   \centering
-  % \vspace{-2em}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-1.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-2.pdf}}\\
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-3.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-4.pdf}}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-1.pdf}
+    \label{Figure_PropagationTestA}
+    \vspace{-1.5em}
+    \caption{$N=10000, N_f=10, \\\lambda_n=0.00004,\lambda_f=0.00003$}
+  \end{subfigure}
+  % \vspace{1em}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-2.pdf}
+    \label{Figure_PropagationTestB}
+    \vspace{-1.5em}
+    \caption{$N=2000, N_f=15, \\\lambda_n=0.0005,\lambda_f=0.0003$}
+  \end{subfigure}\\
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-3.pdf}
+    \label{Figure_PropagationTestC}
+    \vspace{-1.5em}
+    \caption{$N=40000, N_f=1, \\\lambda_n=0.000003,\lambda_f=0.000002$}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Propagation/F3-4.pdf}
+    \label{Figure_PropagationTestD}
+    \vspace{-1.5em}
+    \caption{$N=40000, N_f=2, \\\lambda_n=0.000003,\lambda_f=0.000004$}
+  \end{subfigure}
   \vspace{-0.5em}
   \caption{任务分发过程中分析结果和模拟结果对比}
-  \vspace{-0.5em}
-  \label{Figure_PropagationTest}
+% \vspace{-1.2em}
+\label{Figure_PropagationTest}
 \end{figure}
 
 然后，用同样的方法来验证数据收集过程的分析。
@@ -629,17 +667,105 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 同时，通过对比图~\ref{Figure_PropagationTest} 和图~\ref{Figure_CollectionTest} ，可以发现在感知数据收集末期，理论结果和模拟结果有明显逼近趋势。
 在模拟实验中，感知数据收集总量在某些时刻突然大幅增加，造成这种现象的原因是因为某一移动设备在和基站通信之前经由 D2D 通信得到了其它移动设备的感知数据。
 
+% \begin{figure}[!h]
+%   \vspace{-0.5em}
+%   \centering
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-0.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-1.pdf}}\\
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-2.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-3.pdf}}
+%   \vspace{-0.5em}
+%   \caption{数据收集过程中分析结果和模拟结果对比}
+%   \vspace{-1em}
+%   \label{Figure_CollectionTest}
+% \end{figure}
+
 \begin{figure}[!h]
-  \vspace{-0.5em}
   \centering
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-0.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-1.pdf}}\\
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-2.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-3.pdf}}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-0.pdf}
+    \label{Figure_CollectionTestA}
+    \vspace{-1.5em}
+    \caption{$N=10000, N_f=10, \\\lambda_n=0.000004,\lambda_f=0.000006$}
+  \end{subfigure}
+  % \vspace{1em}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-1.pdf}
+    \label{Figure_CollectionTestB}
+    \vspace{-1.5em}
+    \caption{$N=10000, N_f=100, \\\lambda_n=0.000004,\lambda_f=0.000009$}
+  \end{subfigure}\\
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-2.pdf}
+    \label{Figure_CollectionTestC}
+    \vspace{-1.5em}
+    \caption{$N=3000, N_f=2, \\\lambda_n=0.00001,\lambda_f=0.00002$}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/Collection/R1-3.pdf}
+    \label{Figure_CollectionTestD}
+    \vspace{-1.5em}
+    \caption{$N=3000, N_f=18, \\\lambda_n=0.00002,\lambda_f=0.00009$}
+  \end{subfigure}
   \vspace{-0.5em}
   \caption{数据收集过程中分析结果和模拟结果对比}
-  \vspace{-1em}
-  \label{Figure_CollectionTest}
+% \vspace{-1.2em}
+\label{Figure_CollectionTest}
+\end{figure}
+
+
+% \begin{figure}[!h]
+%   \centering
+%   % \vspace{-1em}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/0.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/1.pdf}}\\
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/2.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/3.pdf}}
+%   \vspace{-0.5em}
+%   \caption{不同时间配额下的分析结果和模拟结果}
+%   \vspace{-1em}
+%   \label{Figure_EntireTest}
+% \end{figure}
+
+\begin{figure}[!b]
+  \centering
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/0.pdf}
+    \label{Figure_EntireTestA}
+    \vspace{-1.5em}
+    \caption{$N=5000, N_f=2, \\\lambda_n=0.00003,\lambda_f=0.0004$}
+  \end{subfigure}
+  % \vspace{1em}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/1.pdf}
+    \label{Figure_EntireTestB}
+    \vspace{-1.5em}
+    \caption{$N=5000, N_f=6, \\\lambda_n=0.00003,\lambda_f=0.008$}
+  \end{subfigure}\\
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/2.pdf}
+    \label{Figure_EntireTestC}
+    \vspace{-1.5em}
+    \caption{$N=6000, N_f=2, \\\lambda_n=0.00005,\lambda_f=0.0012$}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/3.pdf}
+    \label{Figure_EntireTestD}
+    \vspace{-1.5em}
+    \caption{$N=6000, N_f=6, \\\lambda_n=0.00005,\lambda_f=0.0016$}
+  \end{subfigure}
+  \vspace{-0.5em}
+  \caption{不同时间配额下的分析结果和模拟结果}
+% \vspace{-1.2em}
+\label{Figure_EntireTest}
 \end{figure}
 
 最后，结合群智感知任务分发和感知任务收集，对边缘网络中群智感知应用执行过程进行模拟和分析。
@@ -660,17 +786,56 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 由于在固定生命周期内，需要同时兼顾感知任务的分发和感知数据的收集，因此，当感知应用执行时间的划分不合理时，会导致感知数据的收集总量减少，降低感知服务质量。
 这也意味着存在一个最佳时间分配，可以最大限度地提高感知效率。
 
-\begin{figure}[!h]
+
+% \vspace{-1em}
+% \begin{figure}[!ht]
+%   \centering
+%   \vspace{-1.5em}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}}
+%   {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}}
+%   \vspace{-0.5em}
+%   \caption{不同时间划分的对感知效率的影响}
+%   \vspace{-1.5em}
+%   \label{Figure_BestT}
+% \end{figure}
+
+\begin{figure}[!b]
   \centering
-  % \vspace{-1em}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/0.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/1.pdf}}\\
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/2.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/RcvsSim/3.pdf}}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}
+    \label{Figure_BestTA}
+    \vspace{-1.5em}
+    \caption{$t=25$s}
+  \end{subfigure}
+  % \vspace{1em}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}
+    \label{Figure_BestTB}
+    \vspace{-1.5em}
+    \caption{$t=50$s}
+  \end{subfigure}\\
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}
+    \label{Figure_BestTC}
+    \vspace{-1.5em}
+    \caption{$t=70$s}
+  \end{subfigure}
+  \begin{subfigure}[h]{0.48\linewidth}
+    \centering
+    \includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}
+    \label{Figure_BestTD}
+    \vspace{-1.5em}
+    \caption{$t=59.5$s}
+  \end{subfigure}
   \vspace{-0.5em}
-  \caption{不同时间配额下的分析结果和模拟结果}
-  \vspace{-1em}
-  \label{Figure_EntireTest}
+  \caption{不同时间划分的对感知效率的影响}
+% \vspace{-1.2em}
+\label{Figure_BestT}
 \end{figure}
 
 为了验证时间配额划分算法的准确性，测试中使用参数 $N=6000$、 $N_f=4$、 $\lambda_n = 0.000027$、 $\lambda_f=0.00018$ 定义的模拟场景。
@@ -684,20 +849,6 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 当任务分发时间分配过多时（70秒），所有的感知数据无法及时被发送至基站，导致在生命周期内无法收集齐所有的感知数据。
 当时间划分为 59.5 秒时，感知任务分发过程和感知数据收集过程达到平衡，此时可以收集到最多的感知数据。
 在算法执行中，$N\_slots$ （章节~\ref{UIC:algo}）被设置为 $10^7$，算法执行时间不超过 2500 毫秒。
-
-% \vspace{-1em}
-\begin{figure}[!ht]
-  \centering
-  \vspace{-1.5em}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/0.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/1.pdf}}\\
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/2.pdf}}
-  {\includegraphics[width=214pt]{./figures/Sec_UIC/BestT/3.pdf}}
-  \vspace{-0.5em}
-  \caption{不同时间划分的对感知效率的影响}
-  \vspace{-1.5em}
-  \label{Figure_BestT}
-\end{figure}
 
 \subsection{边缘资源对感知效率的影响}
 
@@ -715,7 +866,7 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 
 \begin{figure}[!h]
   \centering
-	\vspace{-1em}
+	% \vspace{-1em}
 	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1n.pdf}}
 	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1ln.pdf}}\\
 	{\includegraphics[width=210pt]{./figures/Sec_UIC/SingleVar/1nf.pdf}}
@@ -774,6 +925,22 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 % 	\label{Figure_SingleVal}
 % \end{figure}
 
+为了更直观比较不同边缘资源对移动群智感知效率的影响，在此将 $N=5000$、$N_f=2$、$\lambda_n = 0.00003$、$\lambda_f=0.0004$ 做为图~\ref{Figure_SingleVal} 的基准测试场景（图中 base 实线）。
+同样，感知应用的生命周期依然为100秒。
+通过对四种不同参数进行变化，可以看出图中曲线变化趋势有着非常明显的不同。
+在这四幅图中，横坐标代表移动群智感知应用的执行时间。
+纵坐标代表当前时间点基站能收到感知数据数量。
+因此，该图可以直观的反映出群智感知应用在执行过程中，哪一阶段能够收获最多的感知数据。
+同时，图中曲线和横轴构成的图形的面积，也就是对应场景参数下感知数据收集的总数量。
+图~\ref{Figure_SingleVal}（a） 表述的是群智感知中移动设备数量的变化对感知数据和感知效率的影响。
+相较于其他三幅图，可以发现群智感知志愿者数量的基数对感知结果以及感知效率都有着巨大的影响。
+这也从另一方面说明了大多数研究为何要关注于参与者的招募工作和激励工作。
+通过对比图~\ref{Figure_SingleVal}（c） 和图~\ref{Figure_SingleVal}（d），可以发现基站的数量虽然会对感知数据的总量和感知效率产生影响，但是与其租用更多的基站作为边缘服务节点，提高基站和移动设备的通信频率显然更加划算。
+当基站与移动设备的通信频率达到一定瓶颈时，此时再租用更多的基站作为边缘服务器，性价比更高。
+另一方面，租用更多的基站，意味着蜂窝通信网络覆盖的范围更大。
+随着目标区域的扩大，增加参与群智感知的移动设备数量可以显著提高群智感知的执行效率。
+但是通过图~\ref{Figure_SingleVal}（b）和图~\ref{Figure_SingleVal}（c）的对比，可以发现是否需要增加基站来作为群智感知应用的边缘服务节点，还需要根据移动设备的运动状态进行调整。
+
 \begin{figure}[!h]
   \centering
   % \vspace{-1em}
@@ -802,23 +969,6 @@ ONE~（Opportunistic Network Environment）模拟器~\footnote{The ONE simulator
 	% \vspace{-4em}
 	\label{Figure_SingleVal}
 \end{figure}
-
-为了更直观比较不同边缘资源对移动群智感知效率的影响，在此将 $N=5000$、$N_f=2$、$\lambda_n = 0.00003$、$\lambda_f=0.0004$ 做为图~\ref{Figure_SingleVal} 的基准测试场景（图中 base 实线）。
-同样，感知应用的生命周期依然为100秒。
-通过对四种不同参数进行变化，可以看出图中曲线变化趋势有着非常明显的不同。
-在这四幅图中，横坐标代表移动群智感知应用的执行时间。
-纵坐标代表当前时间点基站能收到感知数据数量。
-因此，该图可以直观的反映出群智感知应用在执行过程中，哪一阶段能够收获最多的感知数据。
-同时，图中曲线和横轴构成的图形的面积，也就是对应场景参数下感知数据收集的总数量。
-图~\ref{Figure_SingleVal}（a） 表述的是群智感知中移动设备数量的变化对感知数据和感知效率的影响。
-相较于其他三幅图，可以发现群智感知志愿者数量的基数对感知结果以及感知效率都有着巨大的影响。
-这也从另一方面说明了大多数研究为何要关注于参与者的招募工作和激励工作。
-通过对比图~\ref{Figure_SingleVal}（c） 和图~\ref{Figure_SingleVal}（d），可以发现基站的数量虽然会对感知数据的总量和感知效率产生影响，但是与其租用更多的基站作为边缘服务节点，提高基站和移动设备的通信频率显然更加划算。
-当基站与移动设备的通信频率达到一定瓶颈时，此时再租用更多的基站作为边缘服务器，性价比更高。
-另一方面，租用更多的基站，意味着蜂窝通信网络覆盖的范围更大。
-随着目标区域的扩大，增加参与群智感知的移动设备数量可以显著提高群智感知的执行效率。
-但是通过图~\ref{Figure_SingleVal}（b）和图~\ref{Figure_SingleVal}（c）的对比，可以发现是否需要增加基站来作为群智感知应用的边缘服务节点，还需要根据移动设备的运动状态进行调整。
-
 
 \section{本章小结}
 
