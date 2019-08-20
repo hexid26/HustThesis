@@ -494,27 +494,27 @@
 
 \ifthenelse{\equal{\HUST@degree}{none}}{
   \def\HUST@zhapplyname{学位论文}
-  \def\HUST@enapplyname{A Thesis Submitted in Partial Fulfillment of the Requirements for the Degree}
+  \def\HUST@enapplyname{A Dissertation Submitted in Partial Fulfillment of the Requirements for the Degree}
 }{}
 
 \ifthenelse{\equal{\HUST@degree}{fyp}}{
   \def\HUST@zhapplyname{毕业设计论文}
-  \def\HUST@enapplyname{A Thesis Submitted in Partial Fulfillment of the Requirements for Final Year Project}
+  \def\HUST@enapplyname{A Dissertation Submitted in Partial Fulfillment of the Requirements for Final Year Project}
 }{}
 
 \ifthenelse{\equal{\HUST@degree}{bachelor}}{
   \def\HUST@zhapplyname{学士学位论文}
-  \def\HUST@enapplyname{A Thesis Submitted in Partial Fulfillment of the Requirements for the Degree of Bachelor}
+  \def\HUST@enapplyname{A Dissertation Submitted in Partial Fulfillment of the Requirements for the Degree of Bachelor}
 }{}
 
 \ifthenelse{\equal{\HUST@degree}{master}}{
   \def\HUST@zhapplyname{硕士学位论文}
-  \def\HUST@enapplyname{A Thesis Submitted in Partial Fulfillment of the Requirements for the Degree of Master}
+  \def\HUST@enapplyname{A Dissertation Submitted in Partial Fulfillment of the Requirements for the Degree of Master}
 }{}
 
 \ifthenelse{\equal{\HUST@degree}{phd}}{
   \def\HUST@zhapplyname{博士学位论文}
-  \def\HUST@enapplyname{A Thesis Submitted in Partial Fulfillment of the Requirements for the Degree of Philosophy}
+  \def\HUST@enapplyname{A Dissertation Submitted in Partial Fulfillment of the Requirements for the Degree of Philosophy}
 }{}
 
 \ifthenelse{\equal{\HUST@language}{chinese}}{
