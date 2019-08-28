@@ -617,7 +617,7 @@
   skip=12pt
 }
 \renewcommand{\thetable}{\arabic{chapter}.\arabic{table}}
-\renewcommand{\thefigure}{\arabic{chapter}-\arabic{figure}}
+\renewcommand{\thefigure}{\arabic{chapter}.\arabic{figure}}
 \definecolor{HUST@lstgreen}{rgb}{0,0.6,0}
 \definecolor{HUST@lstmauve}{rgb}{0.58,0,0.82}
 
@@ -684,25 +684,33 @@
 \fancyhf{}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{1pt}
+\newcommand{\headrulecolor}[1]{\patchcmd{\headrule}{\hrule}{\color{#1}\hrule}{}{}}
+\headrulecolor{red}
+\newcommand{\footrulecolor}[1]{\patchcmd{\footrule}{\hrule}{\color{#1}\hrule}{}{}}
+\footrulecolor{red}
+\patchcmd{\ps@plain}{\thepage}{\textcolor{red}{\thepage}}{}{}
+
 \setlength{\headsep}{-9pt}
 %\setlength{\footskip}{\dimexpr\headsep+1.5\baselineskip+.4pt}
 \setlength{\textheight}{650pt}
 \setlength{\topmargin}{-7pt}
 
 \ifthenelse{\equal{\HUST@degree}{fyp}}{
-  \fancyfoot[R]{\thepage}
+  \fancyfoot[R]{\textcolor{red}{\thepage}}
 }{
-  \fancyfoot[C]{\thepage}
+  \fancyfoot[C]{\textcolor{red}{\thepage}}
 }
 
 \ifthenelse{\equal{\HUST@language}{english-draft}}{}{
   \ifHUST@finalformat\else
     \fancyhead[C]{
-      \ziju{1em}{\kai{\fontsize{14pt}{18.2pt}\selectfont\HUST@zhschoolname\HUST@zhapplyname}}
+      \ziju{1em}{\kai{\fontsize{14pt}{18.2pt}\selectfont{\textcolor{red}{\HUST@zhschoolname\HUST@zhapplyname}}}}
       \vskip -5pt
       \vbox{
-        \hrule width \textwidth height 2pt
+        \textcolor{red}{\hrule width \textwidth height 1.5pt}
       }
+      \vskip -19pt
+      \textcolor{red}{\hrule width \textwidth height 1.5pt}
     }
   \fi
 }
